@@ -1,0 +1,135 @@
+const fetch = require('node-fetch');
+const { XMLParser, XMLBuilder } = require('fast-xml-parser');
+
+const RU_BASE_URL = 'https://rm.rentalsunited.com/api/Handler.ashx';
+const RU_USERNAME = 'hello.dhilshadh@gmail.com';
+const RU_PASSWORD = 'HodoStays@12';
+
+const xmlParser = new XMLParser();
+const xmlBuilder = new XMLBuilder();
+
+class RentalsUnitedClient {
+    constructor() {
+        this.baseUrl = RU_BASE_URL;
+        this.username = RU_USERNAME;
+        this.password = RU_PASSWORD;
+    }
+
+    wrapXml(body) {
+        return `<?xml version="1.0" encoding="utf-8"?>${body}`;
+    }
+
+    async makeRequest(xmlBody) {
+        try {
+            console.log('Sending XML Request:', xmlBody);
+
+            const response = await fetch(this.baseUrl, {
+                method: 'POST',
+                headers: {
+                    'User-Agent': 'Hodo-Stay-Backend/1.0',
+                    'content': 'application/xml',
+                    'accept': 'application/xml'
+                },
+                body: xmlBody // Send XML without wrapping
+            });
+
+            const responseText = await response.text();
+            console.log('Raw Response:', responseText);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseText}`);
+            }
+
+            return responseText;
+        } catch (error) {
+            console.error('RU API Error:', error);
+            throw error;
+        }
+    }
+
+    // 1. List Properties in a Location (Pull_ListProp_RQ)
+    async pullListProp(locationId, includeNLA = false) {
+        const xmlBody = `<Pull_ListProp_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <LocationID>${locationId}</LocationID>
+ <IncludeNLA>${includeNLA}</IncludeNLA>
+</Pull_ListProp_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 2. Get Property Details (Pull_ListSpecProp_RQ)
+    async pullListSpecProp(propertyId, currency = 'USD') {
+        const xmlBody = `<Pull_ListSpecProp_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <PropertyID>${propertyId}</PropertyID>
+ <Currency>${currency}</Currency>
+</Pull_ListSpecProp_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 3. Get Availability & Price Quote (Pull_GetPropertyAvbPrice_RQ)
+    async pullGetPropertyAvbPrice(propertyId, dateFrom, dateTo, nop = null, currency = 'USD') {
+        let xmlBody = `<Pull_GetPropertyAvbPrice_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <PropertyID>${propertyId}</PropertyID>
+ <DateFrom>${dateFrom}</DateFrom>
+ <DateTo>${dateTo}</DateTo>`;
+
+        if (nop) {
+            xmlBody += `\n <NOP>${nop}</NOP>`;
+        }
+
+        xmlBody += `\n <Currency>${currency}</Currency>
+</Pull_GetPropertyAvbPrice_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 4. Get Reservations List (Pull_ListReservations_RQ)
+    async pullListReservations(dateFrom, dateTo, locationId = 0) {
+        const xmlBody = `<Pull_ListReservations_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <DateFrom>${dateFrom}</DateFrom>
+ <DateTo>${dateTo}</DateTo>
+ <LocationID>${locationId}</LocationID>
+ <Statuses>
+   <StatusID>1</StatusID>
+   <StatusID>2</StatusID>
+   <StatusID>3</StatusID>
+   <StatusID>4</StatusID>
+ </Statuses>
+</Pull_ListReservations_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 5. Create Confirmed Reservation (Push_PutConfirmedReservationMulti_RQ)
+    async pushPutConfirmedReservation(reservationData) {
+        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><Reservation><StayInfos><StayInfo><PropertyID>${reservationData.propertyId}</PropertyID><DateFrom>${reservationData.dateFrom}</DateFrom><DateTo>${reservationData.dateTo}</DateTo><NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests><Costs><RUPrice>${reservationData.ruPrice}</RUPrice><ClientPrice>${reservationData.clientPrice}</ClientPrice><AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid></Costs></StayInfo></StayInfos><CustomerInfo><Name>${reservationData.customerName}</Name><SurName>${reservationData.customerSurname}</SurName><Email>${reservationData.customerEmail}</Email><Phone>${reservationData.customerPhone || ''}</Phone></CustomerInfo><Comments>${reservationData.comments || ''}</Comments></Reservation></Push_PutConfirmedReservationMulti_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 6. Cancel Reservation (Push_CancelReservation_RQ)
+    async pushCancelReservation(reservationId, cancelTypeId = 2) {
+        const xmlBody = `<Push_CancelReservation_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><ReservationID>${reservationId}</ReservationID><CancelTypeID>${cancelTypeId}</CancelTypeID></Push_CancelReservation_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+}
+
+module.exports = new RentalsUnitedClient();
