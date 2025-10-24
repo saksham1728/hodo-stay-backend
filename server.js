@@ -30,7 +30,7 @@ app.use('/api/', limiter);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001'],
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -44,9 +44,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Database connection with options
 const mongooseOptions = {
   maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  bufferCommands: false
+  serverSelectionTimeoutMS: 30000, // 30 seconds
+  socketTimeoutMS: 60000, // 60 seconds
+  connectTimeoutMS: 30000, // 30 seconds
+  bufferCommands: true,
+  retryWrites: true,
+  w: 'majority'
 };
 
 mongoose.connect(process.env.MONGODB_URI, mongooseOptions)

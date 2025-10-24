@@ -138,7 +138,8 @@ class BookingController {
       let query = {};
       
       // Check if propertyId is a valid MongoDB ObjectId
-      if (propertyId.match(/^[0-9a-fA-F]{24}$/)) {
+      const propertyIdStr = String(propertyId);
+      if (propertyIdStr.match(/^[0-9a-fA-F]{24}$/)) {
         query = {
           $or: [
             { ruPropertyId: parseInt(propertyId) },
