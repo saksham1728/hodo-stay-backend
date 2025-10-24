@@ -28,9 +28,9 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://hodo-stay.onrender.com']
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'https://hodo-stay.onrender.com'],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -97,7 +97,7 @@ app.get('/health', (req, res) => {
 
 // Root route
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'Hodo Stay Backend API is running!',
     version: '1.0.0',
     environment: process.env.NODE_ENV || 'development',
