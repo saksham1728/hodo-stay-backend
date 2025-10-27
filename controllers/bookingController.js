@@ -1,33 +1,233 @@
-const { Booking, Property, User, AvailabilityCalendar, SyncLog } = require('../models');
+const { Booking, User, Unit } = require('../models');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 
 const xmlParser = new XMLParser();
 
 class BookingController {
-  // Get user's bookings
+  // Create a new booking
+  async createBooking(req, res) {
+    try {
+      const {
+        userId,
+        unitId,
+        checkInDate,
+        checkOutDate,
+        guests,
+        pricing,
+        guestInfo,
+        specialRequests
+      } = req.body;
+      
+      // Validate required fields
+      if (!userId || !unitId || !checkInDate || !checkOutDate || !guests || !pricing) {
+        return res.status(400).json({
+          success: false,
+          message: 'Missing required booking information'
+        });
+      }
+      
+      // Validate dates
+      const checkIn = new Date(checkInDate);
+      const checkOut = new Date(checkOutDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (checkIn < today) {
+        return res.status(400).json({
+          success: false,
+          message: 'Check-in date cannot be in the past'
+        });
+      }
+      
+      if (checkOut <= checkIn) {
+        return res.status(400).json({
+          success: false,
+          message: 'Check-out date must be after check-in date'
+        });
+      }
+      
+      // Check if user exists
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+      
+      // Check if unit exists
+      const unit = await Unit.findById(unitId);
+      if (!unit) {
+        return res.status(404).json({
+          success: false,
+          message: 'Unit not found'
+        });
+      }
+      
+      // Check for conflicting bookings
+      const conflictingBooking = await Booking.findOne({
+        unitId: unitId,
+        status: { $in: ['pending', 'confirmed'] },
+        $or: [
+          {
+            checkInDate: { $lte: checkOut },
+            checkOutDate: { $gte: checkIn }
+          }
+        ]
+      });
+      
+      if (conflictingBooking) {
+        return res.status(400).json({
+          success: false,
+          message: 'Unit is not available for the selected dates'
+        });
+      }
+      
+      // Calculate nights
+      const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+      
+      // Create booking
+      const booking = new Booking({
+        userId,
+        buildingId: unit.buildingId,
+        unitId,
+        ruPropertyId: unit.ruPropertyId,
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
+        guests: {
+          adults: guests.adults,
+          children: guests.children || 0,
+          total: guests.adults + (guests.children || 0)
+        },
+        pricing: {
+          ...pricing,
+          nights
+        },
+        guestInfo: {
+          primaryGuest: guestInfo,
+          specialRequests: specialRequests || ''
+        }
+      });
+      
+      await booking.save();
+      
+      // Update user booking count
+      await User.findByIdAndUpdate(userId, {
+        $inc: { totalBookings: 1 }
+      });
+      
+      // Populate booking with user and unit details
+      const populatedBooking = await Booking.findById(booking._id)
+        .populate('userId', 'firstName lastName email phone')
+        .populate('unitId', 'name images');
+      
+      res.status(201).json({
+        success: true,
+        data: {
+          booking: populatedBooking
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error in createBooking:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
+
+  // Get booking by ID
+  async getBookingById(req, res) {
+    try {
+      const { bookingId } = req.params;
+      
+      const booking = await Booking.findById(bookingId)
+        .populate('userId', 'firstName lastName email phone')
+        .populate('unitId', 'name images buildingId');
+      
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+      
+      res.json({
+        success: true,
+        data: {
+          booking
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error in getBookingById:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
+
+  // Get booking by reference
+  async getBookingByReference(req, res) {
+    try {
+      const { reference } = req.params;
+      
+      const booking = await Booking.findOne({ bookingReference: reference.toUpperCase() })
+        .populate('userId', 'firstName lastName email phone')
+        .populate('unitId', 'name images buildingId');
+      
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+      
+      res.json({
+        success: true,
+        data: {
+          booking
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error in getBookingByReference:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
+
+  // Get user bookings
   async getUserBookings(req, res) {
     try {
       const { userId } = req.params;
-      const { status, page = 1, limit = 10 } = req.query;
-
-      const query = { user: userId };
+      const { page = 1, limit = 10, status } = req.query;
+      
+      // Build query
+      const query = { userId };
       if (status) {
         query.status = status;
       }
-
+      
+      // Pagination
       const skip = (page - 1) * limit;
-
+      
       const bookings = await Booking.find(query)
-        .populate('property', 'name images location')
-        .populate('user', 'firstName lastName email')
+        .populate('unitId', 'name images buildingId')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit))
-        .lean();
-
+        .limit(parseInt(limit));
+      
       const totalBookings = await Booking.countDocuments(query);
-
+      
       res.json({
         success: true,
         data: {
@@ -41,7 +241,7 @@ class BookingController {
           }
         }
       });
-
+      
     } catch (error) {
       console.error('Error in getUserBookings:', error);
       res.status(500).json({
@@ -52,326 +252,56 @@ class BookingController {
     }
   }
 
-  // Get all reservations (admin)
-  async getAllReservations(req, res) {
-    try {
-      const {
-        status,
-        propertyId,
-        dateFrom,
-        dateTo,
-        page = 1,
-        limit = 20
-      } = req.query;
-
-      const query = {};
-
-      if (status) query.status = status;
-      if (propertyId) query.ruPropertyId = parseInt(propertyId);
-
-      if (dateFrom || dateTo) {
-        query.$or = [];
-        if (dateFrom) query.$or.push({ checkIn: { $gte: new Date(dateFrom) } });
-        if (dateTo) query.$or.push({ checkOut: { $lte: new Date(dateTo) } });
-      }
-
-      const skip = (page - 1) * limit;
-
-      const reservations = await Booking.find(query)
-        .populate('property', 'name images location')
-        .populate('user', 'firstName lastName email')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit))
-        .lean();
-
-      const totalReservations = await Booking.countDocuments(query);
-
-      res.json({
-        success: true,
-        data: {
-          reservations,
-          pagination: {
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(totalReservations / limit),
-            totalReservations,
-            hasNext: page * limit < totalReservations,
-            hasPrev: page > 1
-          }
-        }
-      });
-
-    } catch (error) {
-      console.error('Error in getAllReservations:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-        error: error.message
-      });
-    }
-  }
-
-  // Create a new booking
-  async createBooking(req, res) {
-    try {
-      const {
-        propertyId,
-        userId,
-        checkIn,
-        checkOut,
-        numberOfGuests,
-        guestInfo,
-        specialRequests = ''
-      } = req.body;
-
-      // Validate required fields
-      if (!propertyId || !userId || !checkIn || !checkOut || !numberOfGuests || !guestInfo) {
-        return res.status(400).json({
-          success: false,
-          message: 'Missing required booking information'
-        });
-      }
-
-      console.log(`Creating booking for property ${propertyId}: ${checkIn} to ${checkOut}`);
-
-      // Check if property exists
-      let query = {};
-      
-      // Check if propertyId is a valid MongoDB ObjectId
-      const propertyIdStr = String(propertyId);
-      if (propertyIdStr.match(/^[0-9a-fA-F]{24}$/)) {
-        query = {
-          $or: [
-            { ruPropertyId: parseInt(propertyId) },
-            { _id: propertyId }
-          ]
-        };
-      } else {
-        // If not a valid ObjectId, only search by ruPropertyId
-        query = { ruPropertyId: parseInt(propertyId) };
-      }
-      
-      const property = await Property.findOne(query);
-
-      if (!property) {
-        return res.status(404).json({
-          success: false,
-          message: 'Property not found'
-        });
-      }
-
-      // Check if user exists
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'User not found'
-        });
-      }
-
-      // Check availability
-      const unavailableDates = await AvailabilityCalendar.checkAvailability(
-        property.ruPropertyId,
-        new Date(checkIn),
-        new Date(checkOut)
-      );
-
-      if (unavailableDates.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'Selected dates are not available',
-          unavailableDates: unavailableDates.map(d => d.date)
-        });
-      }
-
-      // Get fresh pricing from API
-      const xmlResponse = await ruClient.pullGetPropertyAvbPrice(
-        property.ruPropertyId,
-        checkIn,
-        checkOut,
-        numberOfGuests,
-        'USD'
-      );
-      const parsedResponse = xmlParser.parse(xmlResponse);
-
-      if (parsedResponse.error) {
-        return res.status(400).json({
-          success: false,
-          error: parsedResponse.error,
-          message: 'Error getting price quote from Rentals United'
-        });
-      }
-
-      const priceData = parsedResponse?.Pull_GetPropertyAvbPrice_RS?.PropertyPrices;
-
-      if (!priceData) {
-        return res.status(400).json({
-          success: false,
-          message: 'No pricing available for selected dates'
-        });
-      }
-
-      // Extract pricing information
-      const propertyPrice = priceData.PropertyPrice;
-      const basePrice = parseFloat(propertyPrice['#text'] || propertyPrice);
-      const cleaningFee = parseFloat(propertyPrice['@_Cleaning'] || 0);
-      const taxes = parseFloat(propertyPrice['@_Taxes'] || 0);
-      const totalAmount = basePrice + cleaningFee + taxes;
-
-      // Create booking in MongoDB
-      const booking = new Booking({
-        property: property._id,
-        ruPropertyId: property.ruPropertyId,
-        user: userId,
-        guestInfo: {
-          firstName: guestInfo.firstName,
-          lastName: guestInfo.lastName,
-          email: guestInfo.email,
-          phone: guestInfo.phone,
-          numberOfGuests,
-          specialRequests
-        },
-        checkIn: new Date(checkIn),
-        checkOut: new Date(checkOut),
-        pricing: {
-          basePrice,
-          cleaningFee,
-          taxes,
-          totalAmount,
-          currency: 'USD',
-          ruPrice: basePrice,
-          clientPrice: totalAmount,
-          alreadyPaid: 0
-        },
-        status: 'pending'
-      });
-
-      await booking.save();
-
-      // Block dates in availability calendar
-      await AvailabilityCalendar.blockDates(
-        property.ruPropertyId,
-        new Date(checkIn),
-        new Date(checkOut),
-        'booking_system'
-      );
-
-      res.status(201).json({
-        success: true,
-        data: {
-          booking: {
-            id: booking._id,
-            bookingReference: booking.bookingReference,
-            propertyId: property.ruPropertyId,
-            checkIn: booking.checkIn,
-            checkOut: booking.checkOut,
-            totalAmount: booking.pricing.totalAmount,
-            status: booking.status
-          }
-        },
-        message: 'Booking created successfully. Please proceed with payment.'
-      });
-
-    } catch (error) {
-      console.error('Error in createBooking:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-        error: error.message
-      });
-    }
-  }
-
-  // Confirm booking after payment
-  async confirmBooking(req, res) {
+  // Update booking status
+  async updateBookingStatus(req, res) {
     try {
       const { bookingId } = req.params;
-      const { paymentId, transactionId } = req.body;
-
-      const booking = await Booking.findById(bookingId).populate('property');
-
+      const { status, notes } = req.body;
+      
+      const validStatuses = ['pending', 'confirmed', 'cancelled', 'completed', 'no-show'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid booking status'
+        });
+      }
+      
+      const updateData = { status };
+      
+      // Add notes if provided
+      if (notes) {
+        updateData.$push = {
+          notes: {
+            message: notes,
+            addedBy: 'system',
+            addedAt: new Date()
+          }
+        };
+      }
+      
+      const booking = await Booking.findByIdAndUpdate(
+        bookingId,
+        updateData,
+        { new: true }
+      ).populate('userId', 'firstName lastName email phone')
+       .populate('unitId', 'name images buildingId');
+      
       if (!booking) {
         return res.status(404).json({
           success: false,
           message: 'Booking not found'
         });
       }
-
-      if (booking.status !== 'pending') {
-        return res.status(400).json({
-          success: false,
-          message: 'Booking is not in pending status'
-        });
-      }
-
-      // Update payment information
-      booking.payment.paymentId = paymentId;
-      booking.payment.transactionId = transactionId;
-      booking.payment.paymentStatus = 'completed';
-      booking.payment.paidAt = new Date();
-      booking.pricing.alreadyPaid = booking.pricing.totalAmount;
-      booking.status = 'confirmed';
-
-      await booking.save();
-
-      // Create reservation in Rentals United
-      try {
-        const reservationData = {
-          propertyId: booking.ruPropertyId,
-          dateFrom: booking.checkIn.toISOString().split('T')[0],
-          dateTo: booking.checkOut.toISOString().split('T')[0],
-          numberOfGuests: booking.guestInfo.numberOfGuests,
-          ruPrice: booking.pricing.ruPrice,
-          clientPrice: booking.pricing.clientPrice,
-          alreadyPaid: booking.pricing.alreadyPaid,
-          customerName: booking.guestInfo.firstName,
-          customerSurname: booking.guestInfo.lastName,
-          customerEmail: booking.guestInfo.email,
-          customerPhone: booking.guestInfo.phone,
-          comments: booking.guestInfo.specialRequests
-        };
-
-        const xmlResponse = await ruClient.pushPutConfirmedReservation(reservationData);
-        const parsedResponse = xmlParser.parse(xmlResponse);
-
-        if (parsedResponse.error) {
-          // Mark for manual sync
-          booking.syncStatus.needsSync = true;
-          booking.syncStatus.lastSyncError = parsedResponse.error;
-          await booking.save();
-
-          console.error('Failed to create reservation in RU:', parsedResponse.error);
-        } else {
-          const reservationId = parsedResponse?.Push_PutConfirmedReservationMulti_RS?.ReservationID;
-          if (reservationId) {
-            booking.ruReservationId = reservationId;
-            booking.status = 'ru_confirmed';
-            booking.syncStatus.lastSyncedAt = new Date();
-            await booking.save();
-          }
-        }
-      } catch (ruError) {
-        console.error('Error creating RU reservation:', ruError);
-        booking.syncStatus.needsSync = true;
-        booking.syncStatus.lastSyncError = ruError.message;
-        await booking.save();
-      }
-
+      
       res.json({
         success: true,
         data: {
-          booking: {
-            id: booking._id,
-            bookingReference: booking.bookingReference,
-            ruReservationId: booking.ruReservationId,
-            status: booking.status
-          }
-        },
-        message: 'Booking confirmed successfully'
+          booking
+        }
       });
-
+      
     } catch (error) {
-      console.error('Error in confirmBooking:', error);
+      console.error('Error in updateBookingStatus:', error);
       res.status(500).json({
         success: false,
         message: 'Internal server error',
@@ -380,71 +310,65 @@ class BookingController {
     }
   }
 
-  // Cancel a booking
+  // Cancel booking
   async cancelBooking(req, res) {
     try {
       const { bookingId } = req.params;
-      const { reason, cancelledBy = 'guest' } = req.body;
-
-      const booking = await Booking.findById(bookingId);
-
+      const { reason, refundAmount } = req.body;
+      
+      const booking = await Booking.findById(bookingId)
+        .populate('userId', 'firstName lastName email phone')
+        .populate('unitId', 'name images buildingId');
+      
       if (!booking) {
         return res.status(404).json({
           success: false,
           message: 'Booking not found'
         });
       }
-
-      if (['cancelled', 'refunded'].includes(booking.status)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Booking is already cancelled'
-        });
-      }
-
-      // Cancel in Rentals United if it exists there
-      if (booking.ruReservationId) {
+      
+      // Cancel in Rentals United if booking was pushed there
+      if (booking.ruBookingId) {
         try {
-          const xmlResponse = await ruClient.pushCancelReservation(
-            booking.ruReservationId,
-            cancelledBy === 'guest' ? 2 : 1
-          );
+          console.log(`Cancelling booking in Rentals United: ${booking.ruBookingId}`);
+          const xmlResponse = await ruClient.pushCancelReservation(booking.ruBookingId, 2);
           const parsedResponse = xmlParser.parse(xmlResponse);
-
+          
           if (parsedResponse.error) {
-            console.error('Failed to cancel in RU:', parsedResponse.error);
+            console.error('RU cancellation failed:', parsedResponse.error);
+            // Continue with local cancellation even if RU fails
+          } else {
+            console.log('✅ Booking cancelled in Rentals United');
           }
         } catch (ruError) {
-          console.error('Error cancelling RU reservation:', ruError);
+          console.error('Error cancelling in RU:', ruError);
+          // Continue with local cancellation
         }
       }
-
-      // Update booking status
-      booking.status = 'cancelled';
-      booking.cancellation = {
-        cancelledAt: new Date(),
-        cancelledBy,
-        reason
-      };
-
-      await booking.save();
-
-      // Unblock dates in availability calendar
-      await AvailabilityCalendar.unblockDates(
-        booking.ruPropertyId,
-        booking.checkIn,
-        booking.checkOut
-      );
-
+      
+      // Update local booking
+      const updatedBooking = await Booking.findByIdAndUpdate(
+        bookingId,
+        {
+          status: 'cancelled',
+          cancellation: {
+            cancelledAt: new Date(),
+            cancelledBy: 'user',
+            reason: reason || 'User cancellation',
+            refundAmount: refundAmount || 0
+          }
+        },
+        { new: true }
+      ).populate('userId', 'firstName lastName email phone')
+       .populate('unitId', 'name images buildingId');
+      
       res.json({
         success: true,
         data: {
-          bookingId: booking._id,
-          status: booking.status
-        },
-        message: 'Booking cancelled successfully'
+          booking: updatedBooking
+        }
       });
-
+      
     } catch (error) {
       console.error('Error in cancelBooking:', error);
       res.status(500).json({
@@ -455,30 +379,150 @@ class BookingController {
     }
   }
 
-  // Get booking details
-  async getBookingDetails(req, res) {
+  // Confirm booking and push to Rentals United
+  async confirmBooking(req, res) {
     try {
       const { bookingId } = req.params;
-
+      
       const booking = await Booking.findById(bookingId)
-        .populate('property', 'name images location checkInOut')
-        .populate('user', 'firstName lastName email phone')
-        .lean();
-
+        .populate('userId', 'firstName lastName email phone')
+        .populate('unitId', 'name ruPropertyId');
+      
       if (!booking) {
         return res.status(404).json({
           success: false,
           message: 'Booking not found'
         });
       }
+      
+      if (booking.status !== 'pending') {
+        return res.status(400).json({
+          success: false,
+          message: 'Only pending bookings can be confirmed'
+        });
+      }
+      
+      // Push booking to Rentals United
+      try {
+        console.log(`Pushing booking to Rentals United: ${booking.bookingReference}`);
+        
+        const reservationData = {
+          propertyId: booking.unitId.ruPropertyId,
+          dateFrom: booking.checkInDate.toISOString().split('T')[0],
+          dateTo: booking.checkOutDate.toISOString().split('T')[0],
+          numberOfGuests: booking.guests.total,
+          ruPrice: booking.pricing.totalAmount,
+          clientPrice: booking.pricing.totalAmount,
+          alreadyPaid: booking.payment.status === 'paid' ? booking.pricing.totalAmount : 0,
+          customerName: booking.userId.firstName,
+          customerSurname: booking.userId.lastName,
+          customerEmail: booking.userId.email,
+          customerPhone: booking.userId.phone || '',
+          comments: `Hodo Stay Booking: ${booking.bookingReference}. ${booking.guestInfo.specialRequests || ''}`
+        };
+        
+        const xmlResponse = await ruClient.pushPutConfirmedReservation(reservationData);
+        const parsedResponse = xmlParser.parse(xmlResponse);
+        
+        if (parsedResponse.error) {
+          console.error('RU booking creation failed:', parsedResponse.error);
+          return res.status(400).json({
+            success: false,
+            message: 'Failed to confirm booking with Rentals United',
+            error: parsedResponse.error
+          });
+        }
+        
+        // Extract RU booking ID from response
+        const ruBookingId = parsedResponse?.Push_PutConfirmedReservationMulti_RS?.ReservationID;
+        
+        // Update local booking with RU booking ID and confirm status
+        const updatedBooking = await Booking.findByIdAndUpdate(
+          bookingId,
+          {
+            status: 'confirmed',
+            ruBookingId: ruBookingId,
+            $push: {
+              notes: {
+                message: `Booking confirmed and pushed to Rentals United. RU Booking ID: ${ruBookingId}`,
+                addedBy: 'system',
+                addedAt: new Date()
+              }
+            }
+          },
+          { new: true }
+        ).populate('userId', 'firstName lastName email phone')
+         .populate('unitId', 'name images buildingId');
+        
+        console.log(`✅ Booking confirmed in Rentals United with ID: ${ruBookingId}`);
+        
+        res.json({
+          success: true,
+          data: {
+            booking: updatedBooking
+          }
+        });
+        
+      } catch (ruError) {
+        console.error('Error pushing to RU:', ruError);
+        res.status(500).json({
+          success: false,
+          message: 'Failed to confirm booking with Rentals United',
+          error: ruError.message
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error in confirmBooking:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
 
+  // Get reservations from Rentals United
+  async getRUReservations(req, res) {
+    try {
+      const { dateFrom, dateTo, locationId = 0 } = req.query;
+      
+      if (!dateFrom || !dateTo) {
+        return res.status(400).json({
+          success: false,
+          message: 'dateFrom and dateTo are required'
+        });
+      }
+      
+      console.log(`Fetching RU reservations from ${dateFrom} to ${dateTo}`);
+      
+      const xmlResponse = await ruClient.pullListReservations(dateFrom, dateTo, locationId);
+      const parsedResponse = xmlParser.parse(xmlResponse);
+      
+      if (parsedResponse.error) {
+        return res.status(400).json({
+          success: false,
+          error: parsedResponse.error,
+          message: 'Error fetching reservations from Rentals United'
+        });
+      }
+      
+      const reservations = parsedResponse?.Pull_ListReservations_RS?.Reservations?.Reservation || [];
+      const reservationsArray = Array.isArray(reservations) ? reservations : [reservations];
+      
       res.json({
         success: true,
-        data: { booking }
+        data: {
+          reservations: reservationsArray,
+          dateFrom,
+          dateTo,
+          locationId,
+          total: reservationsArray.length
+        }
       });
-
+      
     } catch (error) {
-      console.error('Error in getBookingDetails:', error);
+      console.error('Error in getRUReservations:', error);
       res.status(500).json({
         success: false,
         message: 'Internal server error',
@@ -488,4 +532,5 @@ class BookingController {
   }
 }
 
-module.exports = new BookingController();
+const bookingController = new BookingController();
+module.exports = bookingController;

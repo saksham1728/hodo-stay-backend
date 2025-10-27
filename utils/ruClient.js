@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const { XMLParser, XMLBuilder } = require('fast-xml-parser');
 
 const RU_BASE_URL = 'https://rm.rentalsunited.com/api/Handler.ashx';
-const RU_USERNAME = 'hello.dhilshadh@gmail.com';
-const RU_PASSWORD = 'HodoStays@12';
+const RU_USERNAME = process.env.RU_USERNAME || 'hello.dhilshadh@gmail.com';
+const RU_PASSWORD = process.env.RU_PASSWORD || 'HodoStays@12';
 
 const xmlParser = new XMLParser();
 const xmlBuilder = new XMLBuilder();

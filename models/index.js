@@ -1,14 +1,11 @@
-// Central export file for all models
-const Property = require('./Property');
+const Building = require('./Building');
+const Unit = require('./Unit');
 const User = require('./User');
 const Booking = require('./Booking');
-const AvailabilityCalendar = require('./AvailabilityCalendar');
-const SyncLog = require('./SyncLog');
 
 module.exports = {
-  Property,
+  Building,
+  Unit,
   User,
-  Booking,
-  AvailabilityCalendar,
-  SyncLog
+  Booking
 };
