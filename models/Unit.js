@@ -15,7 +15,8 @@ const unitSchema = new mongoose.Schema({
 
   // Building reference
   buildingId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Building',
     required: true,
     index: true
   },

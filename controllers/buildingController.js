@@ -5,20 +5,14 @@ const { XMLParser } = require('fast-xml-parser');
 const xmlParser = new XMLParser();
 
 class BuildingController {
-  // Get all buildings (property groups) with unit counts
+  // Get all buildings
   async getBuildings(req, res) {
     try {
-      const { locationId = 41982, page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10 } = req.query;
       
-      console.log(`Fetching buildings for location: ${locationId}`);
+      console.log('Fetching all buildings');
       
-      // Build query
-      const query = {
-        'location.detailedLocationID': parseInt(locationId),
-        isActive: true
-      };
-      
-      // Pagination
+      const query = { isActive: true };
       const skip = (page - 1) * limit;
       
       // Get buildings with unit counts
@@ -27,7 +21,7 @@ class BuildingController {
         {
           $lookup: {
             from: 'units',
-            localField: 'buildingId',
+            localField: '_id',
             foreignField: 'buildingId',
             as: 'units'
           }
@@ -45,64 +39,13 @@ class BuildingController {
             }
           }
         },
+        { $project: { units: 0 } }, // Don't send all unit data
         { $sort: { createdAt: -1 } },
         { $skip: skip },
         { $limit: parseInt(limit) }
       ]);
       
       const totalBuildings = await Building.countDocuments(query);
-      
-      // Check if we need to sync (no buildings found OR data is stale)
-      const needsSync = buildings.length === 0 || buildingController.isDataStale(buildings[0]?.lastSyncedAt, 10); // 10 minutes
-      
-      if (needsSync) {
-        console.log(buildings.length === 0 ? 'No buildings found, attempting sync...' : 'Data is stale, refreshing from API...');
-        await buildingController.syncFromAPI(locationId);
-        
-        // Re-query after sync
-        const syncedBuildings = await Building.aggregate([
-          { $match: query },
-          {
-            $lookup: {
-              from: 'units',
-              localField: 'buildingId',
-              foreignField: 'buildingId',
-              as: 'units'
-            }
-          },
-          {
-            $addFields: {
-              totalUnits: { $size: '$units' },
-              availableUnits: {
-                $size: {
-                  $filter: {
-                    input: '$units',
-                    cond: { $and: [{ $eq: ['$$this.isActive', true] }, { $eq: ['$$this.isArchived', false] }] }
-                  }
-                }
-              }
-            }
-          },
-          { $sort: { createdAt: -1 } },
-          { $skip: skip },
-          { $limit: parseInt(limit) }
-        ]);
-        
-        return res.json({
-          success: true,
-          data: {
-            buildings: syncedBuildings,
-            pagination: {
-              currentPage: parseInt(page),
-              totalPages: Math.ceil(syncedBuildings.length / limit),
-              totalBuildings: syncedBuildings.length,
-              hasNext: false,
-              hasPrev: false
-            },
-            locationId: locationId
-          }
-        });
-      }
       
       res.json({
         success: true,
@@ -114,8 +57,7 @@ class BuildingController {
             totalBuildings,
             hasNext: page * limit < totalBuildings,
             hasPrev: page > 1
-          },
-          locationId: locationId
+          }
         }
       });
       
@@ -137,7 +79,7 @@ class BuildingController {
       console.log(`Fetching building details for: ${buildingId}`);
       
       // Get building
-      const building = await Building.findOne({ buildingId }).lean();
+      const building = await Building.findById(buildingId).lean();
       
       if (!building) {
         return res.status(404).json({
@@ -173,90 +115,190 @@ class BuildingController {
     }
   }
 
-  // Sync buildings and units from Rentals United API
-  async syncFromAPI(locationId = 41982) {
+  // Create a new building
+  async createBuilding(req, res) {
     try {
-      console.log(`Starting sync for location: ${locationId}`);
+      const buildingData = req.body;
       
-      // Get property list from Rentals United
-      const xmlResponse = await ruClient.pullListProp(locationId, false);
-      const parsedResponse = xmlParser.parse(xmlResponse);
+      console.log('Creating new building:', buildingData.name);
       
-      if (parsedResponse.error) {
-        throw new Error(`API Error: ${parsedResponse.error}`);
-      }
+      const building = new Building(buildingData);
+      await building.save();
       
-      const apiProperties = parsedResponse?.Pull_ListProp_RS?.Properties?.Property || [];
-      const propertiesArray = Array.isArray(apiProperties) ? apiProperties : [apiProperties];
-      
-      console.log(`Found ${propertiesArray.length} units from API`);
-      
-      // Group properties by building (using PUID or location)
-      const buildingGroups = {};
-      
-      for (const apiProperty of propertiesArray) {
-        const buildingKey = apiProperty.PUID || `location_${apiProperty.DetailedLocationID}`;
-        
-        if (!buildingGroups[buildingKey]) {
-          buildingGroups[buildingKey] = {
-            buildingId: buildingKey,
-            name: `Property Group ${buildingKey}`,
-            location: {
-              detailedLocationID: parseInt(apiProperty.DetailedLocationID)
-            },
-            units: []
-          };
-        }
-        
-        buildingGroups[buildingKey].units.push(apiProperty);
-      }
-      
-      // Save buildings and units
-      for (const [buildingKey, buildingData] of Object.entries(buildingGroups)) {
-        // Create or update building
-        await Building.findOneAndUpdate(
-          { buildingId: buildingKey },
-          {
-            buildingId: buildingKey,
-            name: buildingData.name,
-            location: buildingData.location,
-            totalUnits: buildingData.units.length,
-            lastSyncedAt: new Date()
-          },
-          { upsert: true, new: true }
-        );
-        
-        // Create or update units
-        for (const apiUnit of buildingData.units) {
-          await Unit.findOneAndUpdate(
-            { ruPropertyId: apiUnit.ID },
-            {
-              ruPropertyId: apiUnit.ID,
-              ruOwnerID: apiUnit.OwnerID,
-              buildingId: buildingKey,
-              name: apiUnit.Name,
-              lastSyncedAt: new Date(),
-              ruLastMod: new Date(apiUnit.LastMod)
-            },
-            { upsert: true, new: true }
-          );
-        }
-      }
-      
-      console.log(`✅ Sync completed: ${Object.keys(buildingGroups).length} buildings, ${propertiesArray.length} units`);
+      res.status(201).json({
+        success: true,
+        message: 'Building created successfully',
+        data: { building }
+      });
       
     } catch (error) {
-      console.error('Sync failed:', error);
-      throw error;
+      console.error('Error creating building:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to create building',
+        error: error.message
+      });
     }
   }
 
-  // Helper method to check if data is stale
-  isDataStale(lastSyncedAt, maxAgeMinutes = 10) {
-    if (!lastSyncedAt) return true;
-    
-    const maxAge = maxAgeMinutes * 60 * 1000; // Convert to milliseconds
-    return (Date.now() - new Date(lastSyncedAt).getTime()) > maxAge;
+  // Sync units from RU API for a specific building
+  async syncUnitsForBuilding(req, res) {
+    try {
+      const { buildingId } = req.params;
+      const { locationId = 41982 } = req.body;
+      
+      console.log(`Syncing units for building ${buildingId} from location ${locationId}`);
+      
+      // Verify building exists
+      const building = await Building.findById(buildingId);
+      if (!building) {
+        return res.status(404).json({
+          success: false,
+          message: 'Building not found'
+        });
+      }
+      
+      // Step 1: Get list of properties in location
+      const listXml = await ruClient.pullListProp(locationId, false);
+      const listResponse = xmlParser.parse(listXml);
+      
+      if (listResponse.error) {
+        throw new Error(`API Error: ${listResponse.error}`);
+      }
+      
+      const apiProperties = listResponse?.Pull_ListProp_RS?.Properties?.Property || [];
+      const propertiesArray = Array.isArray(apiProperties) ? apiProperties : [apiProperties];
+      
+      console.log(`Found ${propertiesArray.length} properties from RU API`);
+      
+      let savedCount = 0;
+      
+      // Step 2: Get detailed info for each property and save
+      for (const apiProperty of propertiesArray) {
+        const propertyId = parseInt(apiProperty.ID);
+        
+        try {
+          // Get detailed property info
+          const detailXml = await ruClient.pullListSpecProp(propertyId);
+          const detailResponse = xmlParser.parse(detailXml);
+          const propertyDetail = detailResponse?.Pull_ListSpecProp_RS?.Property;
+          
+          if (!propertyDetail) {
+            console.log(`Skipping property ${propertyId} - no details found`);
+            continue;
+          }
+          
+          const unitData = {
+            ruPropertyId: propertyId,
+            ruOwnerID: parseInt(apiProperty.OwnerID) || 0,
+            buildingId: buildingId,
+            name: propertyDetail.Name || apiProperty.Name || `Unit ${propertyId}`,
+            description: propertyDetail.Description || '',
+            space: parseFloat(propertyDetail.Space) || 0,
+            standardGuests: parseInt(propertyDetail.StandardGuests) || 1,
+            canSleepMax: parseInt(propertyDetail.CanSleepMax) || 1,
+            noOfUnits: parseInt(propertyDetail.NoOfUnits) || 1,
+            floor: parseInt(propertyDetail.Floor) || 0,
+            propertyType: {
+              propertyTypeID: parseInt(propertyDetail.PropertyTypeID) || 0,
+              objectTypeID: parseInt(propertyDetail.ObjectTypeID) || 0
+            },
+            pricing: {
+              deposit: parseFloat(propertyDetail.Deposit) || 0,
+              securityDeposit: parseFloat(propertyDetail.SecurityDeposit) || 0
+            },
+            checkInOut: {
+              checkInFrom: propertyDetail.CheckInFrom || '',
+              checkInTo: propertyDetail.CheckInTo || '',
+              checkOutUntil: propertyDetail.CheckOutUntil || '',
+              place: propertyDetail.CheckInOutPlace || ''
+            },
+            images: [],
+            amenities: [],
+            compositionRooms: [],
+            lastSyncedAt: new Date(),
+            ruLastMod: apiProperty.LastMod ? new Date(apiProperty.LastMod) : new Date()
+          };
+          
+          // Parse images if available
+          if (propertyDetail.Images?.Image) {
+            const images = Array.isArray(propertyDetail.Images.Image) 
+              ? propertyDetail.Images.Image 
+              : [propertyDetail.Images.Image];
+            
+            unitData.images = images.map((img, index) => ({
+              imageTypeID: parseInt(img['@_ImageTypeID']) || 0,
+              imageReferenceID: parseInt(img['@_ImageReferenceID']) || 0,
+              url: typeof img === 'string' ? img : (img['#text'] || img),
+              isPrimary: index === 0
+            }));
+          }
+          
+          // Parse amenities if available
+          if (propertyDetail.Amenities?.Amenity) {
+            const amenities = Array.isArray(propertyDetail.Amenities.Amenity)
+              ? propertyDetail.Amenities.Amenity
+              : [propertyDetail.Amenities.Amenity];
+            
+            unitData.amenities = amenities.map(amenity => ({
+              amenityID: parseInt(amenity['@_ID']) || 0,
+              count: parseInt(amenity['@_Count']) || 1
+            }));
+          }
+          
+          // Parse composition rooms if available
+          if (propertyDetail.CompositionRooms?.CompositionRoom) {
+            const rooms = Array.isArray(propertyDetail.CompositionRooms.CompositionRoom)
+              ? propertyDetail.CompositionRooms.CompositionRoom
+              : [propertyDetail.CompositionRooms.CompositionRoom];
+            
+            unitData.compositionRooms = rooms.map(room => ({
+              compositionRoomID: parseInt(room['@_ID']) || 0,
+              count: parseInt(room['@_Count']) || 1
+            }));
+          }
+          
+          // Upsert unit
+          await Unit.findOneAndUpdate(
+            { ruPropertyId: unitData.ruPropertyId },
+            unitData,
+            { upsert: true, new: true }
+          );
+          
+          savedCount++;
+          
+          // Add small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 300));
+        } catch (error) {
+          console.log(`Error fetching property ${propertyId}:`, error.message);
+        }
+      }
+      
+      // Update building's total units count
+      const totalUnits = await Unit.countDocuments({ buildingId, isActive: true, isArchived: false });
+      await Building.findByIdAndUpdate(buildingId, { totalUnits });
+      
+      console.log(`✅ Synced ${savedCount} units for building ${building.name}`);
+      
+      res.json({
+        success: true,
+        message: `Successfully synced ${savedCount} units`,
+        data: {
+          buildingId,
+          buildingName: building.name,
+          unitsSynced: savedCount,
+          totalUnits
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error syncing units:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to sync units',
+        error: error.message
+      });
+    }
   }
 }
 
