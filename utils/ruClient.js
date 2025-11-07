@@ -124,9 +124,53 @@ class RentalsUnitedClient {
         return await this.makeRequest(xmlBody);
     }
 
-    // 6. Cancel Reservation (Push_CancelReservation_RQ)
+    // 6. Create Confirmed Reservation (Full Version)
+    async pushPutConfirmedReservationMulti(reservationData) {
+        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <Reservation>
+   <StayInfos>
+     <StayInfo>
+       <PropertyID>${reservationData.propertyId}</PropertyID>
+       <DateFrom>${reservationData.dateFrom}</DateFrom>
+       <DateTo>${reservationData.dateTo}</DateTo>
+       <NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests>
+       <Costs>
+         <RUPrice>${reservationData.ruPrice}</RUPrice>
+         <ClientPrice>${reservationData.clientPrice}</ClientPrice>
+         <AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid>
+         <ChannelCommission>0.00</ChannelCommission>
+       </Costs>
+     </StayInfo>
+   </StayInfos>
+   <CustomerInfo>
+     <Name>${reservationData.customerName}</Name>
+     <SurName>${reservationData.customerSurname}</SurName>
+     <Email>${reservationData.customerEmail}</Email>
+     <Phone>${reservationData.customerPhone || ''}</Phone>
+     ${reservationData.customerAddress ? `<Address>${reservationData.customerAddress}</Address>` : ''}
+     ${reservationData.customerZipCode ? `<ZipCode>${reservationData.customerZipCode}</ZipCode>` : ''}
+   </CustomerInfo>
+   ${reservationData.comments ? `<Comments>${reservationData.comments}</Comments>` : ''}
+ </Reservation>
+</Push_PutConfirmedReservationMulti_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 7. Cancel Reservation (Push_CancelReservation_RQ)
     async pushCancelReservation(reservationId, cancelTypeId = 2) {
-        const xmlBody = `<Push_CancelReservation_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><ReservationID>${reservationId}</ReservationID><CancelTypeID>${cancelTypeId}</CancelTypeID></Push_CancelReservation_RQ>`;
+        const xmlBody = `<Push_CancelReservation_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <ReservationID>${reservationId}</ReservationID>
+ <CancelTypeID>${cancelTypeId}</CancelTypeID>
+</Push_CancelReservation_RQ>`;
 
         return await this.makeRequest(xmlBody);
     }

@@ -1,25 +1,30 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  // Booking reference
+  // Booking References
   bookingReference: {
     type: String,
-    required: true,
+    required: false, // Will be auto-generated in pre-save hook
     unique: true,
     index: true
   },
-
-  // User reference
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  ruReservationId: {
+    type: Number,
     index: true
   },
 
-  // Property references
+  // User reference (optional for now - guest checkout)
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
+    index: true
+  },
+
+  // Property References
   buildingId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Building',
     required: true,
     index: true
   },
@@ -31,152 +36,161 @@ const bookingSchema = new mongoose.Schema({
   },
   ruPropertyId: {
     type: Number,
+    required: true,
+    index: true
+  },
+
+  // Booking Dates
+  checkIn: {
+    type: Date,
+    required: true,
+    index: true
+  },
+  checkOut: {
+    type: Date,
+    required: true,
+    index: true
+  },
+  nights: {
+    type: Number,
     required: true
   },
 
-  // Booking dates
-  checkInDate: {
-    type: Date,
-    required: true,
-    index: true
-  },
-  checkOutDate: {
-    type: Date,
-    required: true,
-    index: true
-  },
-
-  // Guest details
-  guests: {
-    adults: {
-      type: Number,
+  // Guest Information (as per RU API requirements)
+  guestInfo: {
+    name: {
+      type: String,
       required: true,
-      min: 1
+      maxlength: 20
     },
-    children: {
-      type: Number,
-      default: 0,
-      min: 0
+    surname: {
+      type: String,
+      required: true,
+      maxlength: 30
     },
-    total: {
-      type: Number,
-      required: true
+    email: {
+      type: String,
+      required: true,
+      maxlength: 100,
+      index: true
+    },
+    phone: {
+      type: String,
+      required: true,
+      maxlength: 30
+    },
+    address: {
+      type: String,
+      maxlength: 50
+    },
+    zipCode: {
+      type: String,
+      maxlength: 15
     }
   },
 
-  // Pricing breakdown
+  // Guest Details
+  numberOfGuests: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  numberOfAdults: {
+    type: Number,
+    default: 1
+  },
+  numberOfChildren: {
+    type: Number,
+    default: 0
+  },
+  numberOfInfants: {
+    type: Number,
+    default: 0
+  },
+
+  // Pricing Information
   pricing: {
-    basePrice: {
+    ruPrice: {
       type: Number,
       required: true
     },
-    nights: {
+    clientPrice: {
       type: Number,
       required: true
     },
-    subtotal: {
-      type: Number,
-      required: true
-    },
-    taxes: {
+    alreadyPaid: {
       type: Number,
       default: 0
     },
-    fees: {
-      cleaningFee: {
-        type: Number,
-        default: 0
-      },
-      serviceFee: {
-        type: Number,
-        default: 0
-      }
-    },
-    totalAmount: {
-      type: Number,
-      required: true
-    },
     currency: {
       type: String,
-      default: 'USD'
+      default: 'INR'
     }
   },
 
-  // Payment details
+  // Payment Information
   payment: {
+    paymentId: String,
+    orderId: String,
+    signature: String,
     status: {
       type: String,
-      enum: ['pending', 'paid', 'failed', 'refunded'],
+      enum: ['pending', 'completed', 'failed', 'refunded'],
       default: 'pending'
     },
     method: String,
-    transactionId: String,
     paidAt: Date
   },
 
-  // Booking status
+  // Booking Status
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no-show'],
+    enum: ['pending', 'confirmed', 'cancelled', 'completed'],
     default: 'pending',
     index: true
   },
+  ruStatus: String,
 
-  // Guest information
-  guestInfo: {
-    primaryGuest: {
-      firstName: String,
-      lastName: String,
-      email: String,
-      phone: String
-    },
-    specialRequests: String,
-    arrivalTime: String
-  },
-
-  // Rentals United booking reference (if pushed to RU)
-  ruBookingId: String,
-
-  // Cancellation details
+  // Cancellation Info
   cancellation: {
     cancelledAt: Date,
-    cancelledBy: String,
+    cancelledBy: {
+      type: String,
+      enum: ['guest', 'admin', 'system']
+    },
     reason: String,
-    refundAmount: Number
+    refundAmount: Number,
+    refundStatus: {
+      type: String,
+      enum: ['pending', 'processed', 'failed']
+    }
   },
 
-  // Notes and communication
-  notes: [{
-    message: String,
-    addedBy: String,
-    addedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+  // Special Requests
+  specialRequests: {
+    type: String,
+    maxlength: 500
+  }
 }, {
   timestamps: true
 });
 
-// Indexes for better performance
-bookingSchema.index({ checkInDate: 1, checkOutDate: 1 });
-bookingSchema.index({ status: 1, createdAt: -1 });
-bookingSchema.index({ 'payment.status': 1 });
-
-// Virtual for booking duration
-bookingSchema.virtual('duration').get(function () {
-  const diffTime = Math.abs(this.checkOutDate - this.checkInDate);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-});
-
-// Generate booking reference
-bookingSchema.pre('save', function (next) {
+// Generate booking reference before saving
+bookingSchema.pre('save', function(next) {
   if (!this.bookingReference) {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    this.bookingReference = `HS-${timestamp}-${random}`.toUpperCase();
+    // Generate format: HODO-YYYYMMDD-XXXX
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.floor(1000 + Math.random() * 9000);
+    this.bookingReference = `HODO-${dateStr}-${random}`;
   }
   next();
 });
+
+// Indexes for faster queries
+bookingSchema.index({ userId: 1, status: 1 });
+bookingSchema.index({ 'guestInfo.email': 1 });
+bookingSchema.index({ 'payment.orderId': 1 });
+bookingSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Booking', bookingSchema);
