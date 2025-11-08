@@ -1,6 +1,7 @@
 const { Booking, Unit } = require('../models');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
+const emailService = require('../services/emailService');
 
 const xmlParser = new XMLParser();
 
@@ -36,10 +37,66 @@ class BookingController {
     }
   }
 
-  // Get bookings by email (for guest checkout)
-  async getBookingsByEmail(req, res) {
+  // Get bookings by access token (secure method)
+  async getBookingsByToken(req, res) {
     try {
-      const { email } = req.query;
+      const { token } = req.query;
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: 'Access token is required'
+        });
+      }
+
+      // Find booking by token
+      const booking = await Booking.findOne({ accessToken: token })
+        .populate('unitId')
+        .populate('buildingId');
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Invalid or expired access token'
+        });
+      }
+
+      // Check if token is expired
+      if (new Date() > booking.tokenExpiresAt) {
+        return res.status(401).json({
+          success: false,
+          message: 'Access token has expired'
+        });
+      }
+
+      // Get all bookings for this email
+      const allBookings = await Booking.find({ 'guestInfo.email': booking.guestInfo.email })
+        .populate('unitId')
+        .populate('buildingId')
+        .sort({ createdAt: -1 });
+
+      res.json({
+        success: true,
+        data: { 
+          bookings: allBookings,
+          email: booking.guestInfo.email
+        }
+      });
+
+    } catch (error) {
+      console.error('Error fetching bookings by token:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch bookings',
+        error: error.message
+      });
+    }
+  }
+
+  // Request access link via email
+  async requestAccessLink(req, res) {
+    try {
+      const { email } = req.body;
 
       if (!email) {
         return res.status(400).json({
@@ -48,21 +105,44 @@ class BookingController {
         });
       }
 
+      // Find all bookings for this email
       const bookings = await Booking.find({ 'guestInfo.email': email })
         .populate('unitId')
         .populate('buildingId')
         .sort({ createdAt: -1 });
 
+      if (bookings.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No bookings found for this email address'
+        });
+      }
+
+      // Send access link email
+      try {
+        await emailService.sendAccessLink(email, bookings);
+        console.log('✅ Access link email sent to:', email);
+      } catch (emailError) {
+        console.error('❌ Error sending access link email:', emailError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to send access link email'
+        });
+      }
+
       res.json({
         success: true,
-        data: { bookings }
+        message: 'Access link sent to your email',
+        data: {
+          bookingsCount: bookings.length
+        }
       });
 
     } catch (error) {
-      console.error('Error fetching bookings:', error);
+      console.error('Error requesting access link:', error);
       res.status(500).json({
         success: false,
-        message: 'Failed to fetch bookings',
+        message: 'Failed to send access link',
         error: error.message
       });
     }
@@ -118,6 +198,19 @@ class BookingController {
       };
 
       await booking.save();
+
+      // Populate for email
+      await booking.populate('unitId');
+      await booking.populate('buildingId');
+
+      // Send cancellation confirmation email
+      try {
+        await emailService.sendCancellationConfirmation(booking);
+        console.log('✅ Cancellation email sent to:', booking.guestInfo.email);
+      } catch (emailError) {
+        console.error('❌ Error sending cancellation email:', emailError);
+        // Don't fail the cancellation if email fails
+      }
 
       res.json({
         success: true,

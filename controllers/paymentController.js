@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { Booking, Unit } = require('../models');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
+const emailService = require('../services/emailService');
 
 const xmlParser = new XMLParser();
 
@@ -211,12 +212,23 @@ class PaymentController {
 
       // Populate unit details for response
       await booking.populate('unitId');
+      await booking.populate('buildingId');
+
+      // Send booking confirmation email with access token
+      try {
+        await emailService.sendBookingConfirmation(booking);
+        console.log('✅ Booking confirmation email sent to:', booking.guestInfo.email);
+      } catch (emailError) {
+        console.error('❌ Error sending confirmation email:', emailError);
+        // Don't fail the booking if email fails
+      }
 
       res.json({
         success: true,
         message: 'Payment verified and booking confirmed',
         data: {
           booking: {
+            _id: booking._id,
             bookingReference: booking.bookingReference,
             ruReservationId: booking.ruReservationId,
             status: booking.status,
@@ -225,6 +237,7 @@ class PaymentController {
             nights: booking.nights,
             guestInfo: booking.guestInfo,
             pricing: booking.pricing,
+            accessToken: booking.accessToken,
             unit: {
               name: booking.unitId.name,
               images: booking.unitId.images

@@ -5,8 +5,11 @@ const bookingController = require('../controllers/bookingController');
 // GET /api/bookings/reference/:bookingReference - Get booking by reference
 router.get('/reference/:bookingReference', bookingController.getBookingByReference);
 
-// GET /api/bookings/email - Get bookings by email
-router.get('/email', bookingController.getBookingsByEmail);
+// GET /api/bookings/by-token - Get bookings by access token (secure)
+router.get('/by-token', bookingController.getBookingsByToken);
+
+// POST /api/bookings/request-access - Request access link via email
+router.post('/request-access', bookingController.requestAccessLink);
 
 // GET /api/bookings - Get all bookings (admin)
 router.get('/', bookingController.getAllBookings);
