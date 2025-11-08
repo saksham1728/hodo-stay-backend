@@ -1,42 +1,51 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
 class EmailService {
   constructor() {
-    // Create transporter using environment variables
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    });
+    // Initialize SendGrid with API key
+    const sendgridApiKey = process.env.SENDGRID_API_KEY || process.env.SMTP_PASS;
+    
+    if (sendgridApiKey && sendgridApiKey.startsWith('SG.')) {
+      sgMail.setApiKey(sendgridApiKey);
+      this.useSendGrid = true;
+      console.log('✅ SendGrid Web API initialized (works on Render free tier)');
+    } else {
+      this.useSendGrid = false;
+      console.warn('⚠️  SendGrid API key not found. Email sending disabled.');
+    }
 
-    this.fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
-    this.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173' || 'https://hodo-stay.onrender.com';
+    this.fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@hodostay.com';
+    this.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   }
 
   /**
    * Send booking confirmation email with access token
    */
   async sendBookingConfirmation(booking) {
+    if (!this.useSendGrid) {
+      console.warn('⚠️  Email service not configured, skipping email');
+      return { success: false, message: 'Email service not configured' };
+    }
+
     try {
       const accessLink = `${this.frontendUrl}/my-bookings?token=${booking.accessToken}`;
       const confirmationLink = `${this.frontendUrl}/booking-confirmed/${booking.bookingReference}`;
 
-      const mailOptions = {
-        from: `"Hodo Stay" <${this.fromEmail}>`,
+      const msg = {
         to: booking.guestInfo.email,
+        from: this.fromEmail,
         subject: `Booking Confirmed - ${booking.bookingReference}`,
         html: this.getBookingConfirmationTemplate(booking, accessLink, confirmationLink)
       };
 
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Booking confirmation email sent:', info.messageId);
-      return { success: true, messageId: info.messageId };
+      const response = await sgMail.send(msg);
+      console.log('✅ Booking confirmation email sent to:', booking.guestInfo.email);
+      return { success: true, messageId: response[0].headers['x-message-id'] };
     } catch (error) {
-      console.error('Error sending booking confirmation email:', error);
+      console.error('❌ Error sending booking confirmation email:', error);
+      if (error.response) {
+        console.error('SendGrid error details:', error.response.body);
+      }
       throw error;
     }
   }
@@ -45,19 +54,27 @@ class EmailService {
    * Send cancellation confirmation email
    */
   async sendCancellationConfirmation(booking) {
+    if (!this.useSendGrid) {
+      console.warn('⚠️  Email service not configured, skipping email');
+      return { success: false, message: 'Email service not configured' };
+    }
+
     try {
-      const mailOptions = {
-        from: `"Hodo Stay" <${this.fromEmail}>`,
+      const msg = {
         to: booking.guestInfo.email,
+        from: this.fromEmail,
         subject: `Booking Cancelled - ${booking.bookingReference}`,
         html: this.getCancellationTemplate(booking)
       };
 
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Cancellation email sent:', info.messageId);
-      return { success: true, messageId: info.messageId };
+      const response = await sgMail.send(msg);
+      console.log('✅ Cancellation email sent to:', booking.guestInfo.email);
+      return { success: true, messageId: response[0].headers['x-message-id'] };
     } catch (error) {
-      console.error('Error sending cancellation email:', error);
+      console.error('❌ Error sending cancellation email:', error);
+      if (error.response) {
+        console.error('SendGrid error details:', error.response.body);
+      }
       throw error;
     }
   }
@@ -66,19 +83,27 @@ class EmailService {
    * Send access link email (for users who lost their link)
    */
   async sendAccessLink(email, bookings) {
+    if (!this.useSendGrid) {
+      console.warn('⚠️  Email service not configured, skipping email');
+      return { success: false, message: 'Email service not configured' };
+    }
+
     try {
-      const mailOptions = {
-        from: `"Hodo Stay" <${this.fromEmail}>`,
+      const msg = {
         to: email,
+        from: this.fromEmail,
         subject: 'Your Hodo Stay Bookings',
         html: this.getAccessLinkTemplate(email, bookings)
       };
 
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Access link email sent:', info.messageId);
-      return { success: true, messageId: info.messageId };
+      const response = await sgMail.send(msg);
+      console.log('✅ Access link email sent to:', email);
+      return { success: true, messageId: response[0].headers['x-message-id'] };
     } catch (error) {
-      console.error('Error sending access link email:', error);
+      console.error('❌ Error sending access link email:', error);
+      if (error.response) {
+        console.error('SendGrid error details:', error.response.body);
+      }
       throw error;
     }
   }
