@@ -31,6 +31,27 @@ const unitSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  
+  // Unit type for grouping (e.g., "2BHK", "2BHK Penthouse", "3BHK")
+  unitType: {
+    type: String,
+    required: true,
+    trim: true,
+    index: true
+  },
+  
+  // URL-friendly slug for unit type
+  unitTypeSlug: {
+    type: String,
+    trim: true,
+    index: true
+  },
+  
+  // Mark one unit per type as representative for display
+  isRepresentative: {
+    type: Boolean,
+    default: false
+  },
 
   // Unit specifications
   space: Number, // Square meters
@@ -121,9 +142,7 @@ const unitSchema = new mongoose.Schema({
 });
 
 // Indexes for better performance
-unitSchema.index({ buildingId: 1 });
 unitSchema.index({ isActive: 1, isArchived: 1 });
-unitSchema.index({ 'location.detailedLocationID': 1 });
 
 // Virtual for primary image
 unitSchema.virtual('primaryImage').get(function () {

@@ -1,85 +1,39 @@
-const { Building, Unit } = require('../models');
+const { Building, Unit, Booking } = require('../models');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 
 const xmlParser = new XMLParser();
 
 class BuildingController {
-  // Get all buildings
-  async getBuildings(req, res) {
+  /**
+   * Get all buildings
+   */
+  async getAllBuildings(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-      
-      console.log('Fetching all buildings');
-      
-      const query = { isActive: true };
-      const skip = (page - 1) * limit;
-      
-      // Get buildings with unit counts
-      const buildings = await Building.aggregate([
-        { $match: query },
-        {
-          $lookup: {
-            from: 'units',
-            localField: '_id',
-            foreignField: 'buildingId',
-            as: 'units'
-          }
-        },
-        {
-          $addFields: {
-            totalUnits: { $size: '$units' },
-            availableUnits: {
-              $size: {
-                $filter: {
-                  input: '$units',
-                  cond: { $and: [{ $eq: ['$$this.isActive', true] }, { $eq: ['$$this.isArchived', false] }] }
-                }
-              }
-            }
-          }
-        },
-        { $project: { units: 0 } }, // Don't send all unit data
-        { $sort: { createdAt: -1 } },
-        { $skip: skip },
-        { $limit: parseInt(limit) }
-      ]);
-      
-      const totalBuildings = await Building.countDocuments(query);
+      const buildings = await Building.find({ isActive: true });
       
       res.json({
         success: true,
-        data: {
-          buildings,
-          pagination: {
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(totalBuildings / limit),
-            totalBuildings,
-            hasNext: page * limit < totalBuildings,
-            hasPrev: page > 1
-          }
-        }
+        data: { buildings }
       });
-      
     } catch (error) {
-      console.error('Error in getBuildings:', error);
+      console.error('Error fetching buildings:', error);
       res.status(500).json({
         success: false,
-        message: 'Internal server error',
+        message: 'Failed to fetch buildings',
         error: error.message
       });
     }
   }
 
-  // Get building details with all its units
-  async getBuildingDetails(req, res) {
+  /**
+   * Get building by ID with all units
+   */
+  async getBuildingById(req, res) {
     try {
       const { buildingId } = req.params;
       
-      console.log(`Fetching building details for: ${buildingId}`);
-      
-      // Get building
-      const building = await Building.findById(buildingId).lean();
+      const building = await Building.findById(buildingId);
       
       if (!building) {
         return res.status(404).json({
@@ -87,69 +41,35 @@ class BuildingController {
           message: 'Building not found'
         });
       }
-      
-      // Get all units in this building
-      const units = await Unit.find({
-        buildingId: buildingId,
-        isActive: true,
-        isArchived: false
-      }).lean();
-      
+
+      // Get all units for this building
+      const units = await Unit.find({ buildingId, isActive: true, isArchived: false });
+
       res.json({
         success: true,
         data: {
-          building: {
-            ...building,
-            units: units
-          }
+          building,
+          units
         }
       });
-      
     } catch (error) {
-      console.error('Error in getBuildingDetails:', error);
+      console.error('Error fetching building:', error);
       res.status(500).json({
         success: false,
-        message: 'Internal server error',
+        message: 'Failed to fetch building',
         error: error.message
       });
     }
   }
 
-  // Create a new building
-  async createBuilding(req, res) {
-    try {
-      const buildingData = req.body;
-      
-      console.log('Creating new building:', buildingData.name);
-      
-      const building = new Building(buildingData);
-      await building.save();
-      
-      res.status(201).json({
-        success: true,
-        message: 'Building created successfully',
-        data: { building }
-      });
-      
-    } catch (error) {
-      console.error('Error creating building:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to create building',
-        error: error.message
-      });
-    }
-  }
-
-  // Sync units from RU API for a specific building
-  async syncUnitsForBuilding(req, res) {
+  /**
+   * Get building with unit types grouped
+   * Shows: "2BHK (8 available)", "2BHK Penthouse (1 available)", etc.
+   */
+  async getBuildingWithUnitTypes(req, res) {
     try {
       const { buildingId } = req.params;
-      const { locationId = 41982 } = req.body;
-      
-      console.log(`Syncing units for building ${buildingId} from location ${locationId}`);
-      
-      // Verify building exists
+
       const building = await Building.findById(buildingId);
       if (!building) {
         return res.status(404).json({
@@ -157,145 +77,220 @@ class BuildingController {
           message: 'Building not found'
         });
       }
+
+      // Get all active units
+      const allUnits = await Unit.find({ 
+        buildingId,
+        isActive: true,
+        isArchived: false
+      });
+
+      // Group by unitType
+      const unitTypesMap = {};
       
-      // Step 1: Get list of properties in location
-      const listXml = await ruClient.pullListProp(locationId, false);
-      const listResponse = xmlParser.parse(listXml);
-      
-      if (listResponse.error) {
-        throw new Error(`API Error: ${listResponse.error}`);
-      }
-      
-      const apiProperties = listResponse?.Pull_ListProp_RS?.Properties?.Property || [];
-      const propertiesArray = Array.isArray(apiProperties) ? apiProperties : [apiProperties];
-      
-      console.log(`Found ${propertiesArray.length} properties from RU API`);
-      
-      let savedCount = 0;
-      
-      // Step 2: Get detailed info for each property and save
-      for (const apiProperty of propertiesArray) {
-        const propertyId = parseInt(apiProperty.ID);
+      allUnits.forEach(unit => {
+        const type = unit.unitType;
         
-        try {
-          // Get detailed property info
-          const detailXml = await ruClient.pullListSpecProp(propertyId);
-          const detailResponse = xmlParser.parse(detailXml);
-          const propertyDetail = detailResponse?.Pull_ListSpecProp_RS?.Property;
-          
-          if (!propertyDetail) {
-            console.log(`Skipping property ${propertyId} - no details found`);
-            continue;
-          }
-          
-          const unitData = {
-            ruPropertyId: propertyId,
-            ruOwnerID: parseInt(apiProperty.OwnerID) || 0,
-            buildingId: buildingId,
-            name: propertyDetail.Name || apiProperty.Name || `Unit ${propertyId}`,
-            description: propertyDetail.Description || '',
-            space: parseFloat(propertyDetail.Space) || 0,
-            standardGuests: parseInt(propertyDetail.StandardGuests) || 1,
-            canSleepMax: parseInt(propertyDetail.CanSleepMax) || 1,
-            noOfUnits: parseInt(propertyDetail.NoOfUnits) || 1,
-            floor: parseInt(propertyDetail.Floor) || 0,
-            propertyType: {
-              propertyTypeID: parseInt(propertyDetail.PropertyTypeID) || 0,
-              objectTypeID: parseInt(propertyDetail.ObjectTypeID) || 0
-            },
-            pricing: {
-              deposit: parseFloat(propertyDetail.Deposit) || 0,
-              securityDeposit: parseFloat(propertyDetail.SecurityDeposit) || 0
-            },
-            checkInOut: {
-              checkInFrom: propertyDetail.CheckInFrom || '',
-              checkInTo: propertyDetail.CheckInTo || '',
-              checkOutUntil: propertyDetail.CheckOutUntil || '',
-              place: propertyDetail.CheckInOutPlace || ''
-            },
-            images: [],
-            amenities: [],
-            compositionRooms: [],
-            lastSyncedAt: new Date(),
-            ruLastMod: apiProperty.LastMod ? new Date(apiProperty.LastMod) : new Date()
+        if (!unitTypesMap[type]) {
+          unitTypesMap[type] = {
+            unitType: type,
+            unitTypeSlug: unit.unitTypeSlug,
+            count: 0,
+            representativeUnit: null
           };
-          
-          // Parse images if available
-          if (propertyDetail.Images?.Image) {
-            const images = Array.isArray(propertyDetail.Images.Image) 
-              ? propertyDetail.Images.Image 
-              : [propertyDetail.Images.Image];
-            
-            unitData.images = images.map((img, index) => ({
-              imageTypeID: parseInt(img['@_ImageTypeID']) || 0,
-              imageReferenceID: parseInt(img['@_ImageReferenceID']) || 0,
-              url: typeof img === 'string' ? img : (img['#text'] || img),
-              isPrimary: index === 0
-            }));
-          }
-          
-          // Parse amenities if available
-          if (propertyDetail.Amenities?.Amenity) {
-            const amenities = Array.isArray(propertyDetail.Amenities.Amenity)
-              ? propertyDetail.Amenities.Amenity
-              : [propertyDetail.Amenities.Amenity];
-            
-            unitData.amenities = amenities.map(amenity => ({
-              amenityID: parseInt(amenity['@_ID']) || 0,
-              count: parseInt(amenity['@_Count']) || 1
-            }));
-          }
-          
-          // Parse composition rooms if available
-          if (propertyDetail.CompositionRooms?.CompositionRoom) {
-            const rooms = Array.isArray(propertyDetail.CompositionRooms.CompositionRoom)
-              ? propertyDetail.CompositionRooms.CompositionRoom
-              : [propertyDetail.CompositionRooms.CompositionRoom];
-            
-            unitData.compositionRooms = rooms.map(room => ({
-              compositionRoomID: parseInt(room['@_ID']) || 0,
-              count: parseInt(room['@_Count']) || 1
-            }));
-          }
-          
-          // Upsert unit
-          await Unit.findOneAndUpdate(
-            { ruPropertyId: unitData.ruPropertyId },
-            unitData,
-            { upsert: true, new: true }
-          );
-          
-          savedCount++;
-          
-          // Add small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 300));
-        } catch (error) {
-          console.log(`Error fetching property ${propertyId}:`, error.message);
         }
-      }
-      
-      // Update building's total units count
-      const totalUnits = await Unit.countDocuments({ buildingId, isActive: true, isArchived: false });
-      await Building.findByIdAndUpdate(buildingId, { totalUnits });
-      
-      console.log(`✅ Synced ${savedCount} units for building ${building.name}`);
-      
-      res.json({
-        success: true,
-        message: `Successfully synced ${savedCount} units`,
-        data: {
-          buildingId,
-          buildingName: building.name,
-          unitsSynced: savedCount,
-          totalUnits
+
+        unitTypesMap[type].count++;
+        
+        // Use representative unit, or first unit as fallback
+        if (unit.isRepresentative || !unitTypesMap[type].representativeUnit) {
+          unitTypesMap[type].representativeUnit = {
+            _id: unit._id,
+            name: unit.name,
+            description: unit.description,
+            images: unit.images,
+            amenities: unit.amenities,
+            space: unit.space,
+            standardGuests: unit.standardGuests,
+            canSleepMax: unit.canSleepMax
+          };
         }
       });
-      
+
+      const unitTypes = Object.values(unitTypesMap);
+
+      res.json({
+        success: true,
+        data: {
+          building,
+          unitTypes,
+          totalUnits: allUnits.length
+        }
+      });
+
     } catch (error) {
-      console.error('Error syncing units:', error);
+      console.error('Error fetching building with unit types:', error);
       res.status(500).json({
         success: false,
-        message: 'Failed to sync units',
+        message: 'Failed to fetch building details',
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * Get cheapest available unit for a unit type with live pricing
+   * Checks ALL units of the type and returns the cheapest available one
+   */
+  async getBestAvailableUnit(req, res) {
+    try {
+      const { unitType, buildingId, checkIn, checkOut, guests } = req.body;
+
+      console.log('🔍 getBestAvailableUnit called with:', { unitType, buildingId, checkIn, checkOut, guests });
+
+      if (!unitType || !buildingId || !checkIn || !checkOut) {
+        return res.status(400).json({
+          success: false,
+          message: 'Missing required fields'
+        });
+      }
+
+      // Get all units of this type
+      const units = await Unit.find({
+        buildingId,
+        unitType,
+        isActive: true,
+        isArchived: false
+      });
+
+      console.log(`📊 Found ${units.length} units of type "${unitType}"`);
+
+      if (units.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No units found for this type'
+        });
+      }
+
+      // Check which units are already booked locally
+      const bookedUnitIds = await Booking.find({
+        buildingId,
+        status: { $in: ['confirmed', 'pending'] },
+        $or: [
+          {
+            checkInDate: { $lt: new Date(checkOut) },
+            checkOutDate: { $gt: new Date(checkIn) }
+          }
+        ]
+      }).distinct('unitId');
+
+      console.log(`🔒 ${bookedUnitIds.length} units already booked locally`);
+
+      // Filter out booked units
+      const availableUnits = units.filter(unit => 
+        !bookedUnitIds.some(bookedId => bookedId.toString() === unit._id.toString())
+      );
+
+      console.log(`✅ ${availableUnits.length} units available locally`);
+
+      if (availableUnits.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No units available for selected dates',
+          unitType
+        });
+      }
+
+      // Check pricing for ALL available units and find cheapest
+      const unitsWithPricing = [];
+
+      for (const unit of availableUnits) {
+        try {
+          console.log(`💰 Checking pricing for unit ${unit.name} (RU ID: ${unit.ruPropertyId})`);
+          
+          // Call RU API directly
+          const response = await ruClient.pullGetPropertyAvbPrice(
+            unit.ruPropertyId,
+            checkIn,
+            checkOut,
+            null // No NOP parameter
+          );
+
+          const parsedResponse = xmlParser.parse(response);
+          const priceData = parsedResponse.Pull_GetPropertyAvbPrice_RS;
+          
+          // Check for error status (Status ID != 0 means error)
+          if (priceData && priceData.Status) {
+            const statusId = priceData.Status['@_ID'] || priceData.Status.ID;
+            
+            // Status ID 0 = Success, anything else is an error
+            if (statusId && statusId !== '0' && statusId !== 0) {
+              console.log(`  ✗ Not available (Status ${statusId})`);
+              continue;
+            }
+          }
+          
+          // Parse PropertyPrices structure
+          if (priceData && priceData.PropertyPrices) {
+            const propertyPrices = priceData.PropertyPrices;
+            const propertyPrice = propertyPrices.PropertyPrice;
+            
+            if (propertyPrice) {
+              const price = parseFloat(propertyPrice['#text'] || propertyPrice || 0);
+              const currency = propertyPrices['@_Currency'] || 'USD';
+              const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+
+              unitsWithPricing.push({
+                unit,
+                pricing: {
+                  propertyId: unit.ruPropertyId,
+                  price,
+                  available: true,
+                  currency,
+                  pricePerNight: price / nights,
+                  nights
+                }
+              });
+              console.log(`  ✓ Available at ${currency} ${price}`);
+            }
+          } else {
+            console.log(`  ✗ Not available in RU`);
+          }
+        } catch (error) {
+          console.error(`  ✗ Error checking unit ${unit.name}:`, error.message);
+        }
+      }
+
+      if (unitsWithPricing.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No units available in Rentals United for selected dates',
+          unitType
+        });
+      }
+
+      // Sort by price and get cheapest
+      unitsWithPricing.sort((a, b) => a.pricing.price - b.pricing.price);
+      const cheapest = unitsWithPricing[0];
+
+      console.log(`🎯 Cheapest unit: ${cheapest.unit.name} at ${cheapest.pricing.currency} ${cheapest.pricing.price}`);
+
+      return res.json({
+        success: true,
+        data: {
+          unit: cheapest.unit,
+          pricing: cheapest.pricing,
+          unitType,
+          availableUnits: unitsWithPricing.length,
+          totalUnitsOfType: units.length
+        }
+      });
+
+    } catch (error) {
+      console.error('Error getting best available unit:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to get available unit',
         error: error.message
       });
     }

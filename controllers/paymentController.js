@@ -1,23 +1,16 @@
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
 const { Booking, Unit } = require('../models');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 const emailService = require('../services/emailService');
+const razorpayService = require('../services/razorpayService');
 
 const xmlParser = new XMLParser();
-
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
 
 class PaymentController {
   // Create Razorpay order
   async createOrder(req, res) {
     try {
-      const { amount, currency = 'INR', bookingData } = req.body;
+      const { amount, currency = 'USD', bookingData } = req.body;
 
       // Validate required fields
       if (!amount || !bookingData) {
@@ -27,34 +20,60 @@ class PaymentController {
         });
       }
 
-      // Create Razorpay order
-      const options = {
-        amount: Math.round(amount * 100), // Convert to paise
+      // Validate amount is positive
+      if (amount <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Amount must be greater than zero'
+        });
+      }
+
+      // Validate booking data
+      if (!bookingData.unitId || !bookingData.checkIn || !bookingData.checkOut) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid booking data'
+        });
+      }
+
+      // Generate unique receipt ID
+      const receipt = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Create Razorpay order using service
+      const result = await razorpayService.createOrder({
+        amount: amount,
         currency: currency,
-        receipt: `receipt_${Date.now()}`,
+        receipt: receipt,
         notes: {
           unitId: bookingData.unitId,
           checkIn: bookingData.checkIn,
-          checkOut: bookingData.checkOut
+          checkOut: bookingData.checkOut,
+          guests: bookingData.numberOfGuests
         }
-      };
+      });
 
-      const order = await razorpay.orders.create(options);
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to create payment order',
+          error: result.error
+        });
+      }
 
-      console.log('Razorpay order created:', order.id);
+      console.log('✅ Razorpay order created:', result.order.id);
 
       res.json({
         success: true,
         data: {
-          orderId: order.id,
-          amount: order.amount,
-          currency: order.currency,
+          orderId: result.order.id,
+          amount: result.order.amount,
+          currency: result.order.currency,
           key: process.env.RAZORPAY_KEY_ID
         }
       });
 
     } catch (error) {
-      console.error('Error creating Razorpay order:', error);
+      console.error('❌ Error creating Razorpay order:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to create payment order',
@@ -81,28 +100,22 @@ class PaymentController {
         });
       }
 
-      // Verify Razorpay signature (skip for test/mock payments)
-      const isTestPayment = razorpay_payment_id.startsWith('pay_test_') ||
-        razorpay_payment_id.startsWith('pay_mock_');
+      // Verify Razorpay signature using secure service
+      const isValid = razorpayService.verifyPaymentSignature({
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature
+      });
 
-      if (!isTestPayment) {
-        const sign = razorpay_order_id + '|' + razorpay_payment_id;
-        const expectedSign = crypto
-          .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-          .update(sign.toString())
-          .digest('hex');
-
-        if (razorpay_signature !== expectedSign) {
-          return res.status(400).json({
-            success: false,
-            message: 'Invalid payment signature'
-          });
-        }
-      } else {
-        console.log('⚠️  Test payment detected - skipping signature verification');
+      if (!isValid) {
+        console.error('❌ Payment signature verification failed');
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid payment signature. Payment verification failed.'
+        });
       }
 
-      console.log('✅ Payment verified successfully');
+      console.log('✅ Payment signature verified successfully');
 
       // Get unit details
       const unit = await Unit.findById(bookingData.unitId);
@@ -260,15 +273,13 @@ class PaymentController {
   async handleWebhook(req, res) {
     try {
       const webhookSignature = req.headers['x-razorpay-signature'];
-      const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+      const webhookBody = JSON.stringify(req.body);
 
-      // Verify webhook signature
-      const expectedSignature = crypto
-        .createHmac('sha256', webhookSecret)
-        .update(JSON.stringify(req.body))
-        .digest('hex');
+      // Verify webhook signature using secure service
+      const isValid = razorpayService.verifyWebhookSignature(webhookBody, webhookSignature);
 
-      if (webhookSignature !== expectedSignature) {
+      if (!isValid) {
+        console.error('❌ Invalid webhook signature');
         return res.status(400).json({
           success: false,
           message: 'Invalid webhook signature'
