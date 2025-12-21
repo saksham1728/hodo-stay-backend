@@ -155,7 +155,7 @@ class PaymentController {
           ruPrice: bookingData.pricing.ruPrice,
           clientPrice: bookingData.pricing.clientPrice,
           alreadyPaid: bookingData.pricing.clientPrice,
-          currency: bookingData.pricing.currency || 'INR'
+          currency: bookingData.pricing.currency || 'USD'
         },
         payment: {
           paymentId: razorpay_payment_id,

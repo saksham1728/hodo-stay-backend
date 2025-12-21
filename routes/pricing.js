@@ -114,7 +114,7 @@ router.get('/units/:unitId/quote', async (req, res) => {
             pricing: {
                 totalPrice: totalPrice,
                 pricePerNight: pricePerNight,
-                currency: 'INR', // Changed to INR since we're getting Indian Rupees
+                currency: 'USD', // Prices from Rentals United are in USD
                 breakdown: {
                     basePrice: pricePerNight,
                     taxes: 0, // No tax calculation for now

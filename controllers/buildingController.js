@@ -187,11 +187,37 @@ class BuildingController {
       console.log(`🔒 ${bookedUnitIds.length} units already booked locally`);
 
       // Filter out booked units
-      const availableUnits = units.filter(unit => 
+      let availableUnits = units.filter(unit => 
         !bookedUnitIds.some(bookedId => bookedId.toString() === unit._id.toString())
       );
 
       console.log(`✅ ${availableUnits.length} units available locally`);
+
+      // Filter by guest capacity if guests parameter is provided
+      if (guests && parseInt(guests) > 0) {
+        const requestedGuests = parseInt(guests);
+        const unitsBeforeGuestFilter = availableUnits.length;
+        
+        availableUnits = availableUnits.filter(unit => {
+          const canAccommodate = unit.standardGuests >= requestedGuests;
+          if (!canAccommodate) {
+            console.log(`  ✗ ${unit.name} can only accommodate ${unit.standardGuests} guests (requested: ${requestedGuests})`);
+          }
+          return canAccommodate;
+        });
+
+        console.log(`👥 Guest filter: ${unitsBeforeGuestFilter} units → ${availableUnits.length} units can accommodate ${requestedGuests} guests`);
+
+        if (availableUnits.length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: `No units of type "${unitType}" can accommodate ${requestedGuests} guests. Please select a different unit type or reduce the number of guests.`,
+            unitType,
+            requestedGuests,
+            maxGuestsForType: Math.max(...units.map(u => u.standardGuests || 0))
+          });
+        }
+      }
 
       if (availableUnits.length === 0) {
         return res.status(404).json({
