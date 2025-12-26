@@ -20,7 +20,7 @@ class UnitController {
         query = { ruPropertyId: parseInt(unitId) };
       }
       
-      let unit = await Unit.findOne(query).lean();
+      let unit = await Unit.findOne(query).populate('buildingId', 'name').lean();
       
       if (!unit) {
         return res.status(404).json({
