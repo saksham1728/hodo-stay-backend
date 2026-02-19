@@ -6,15 +6,58 @@ const xmlParser = new XMLParser();
 
 class BuildingController {
   /**
-   * Get all buildings
+   * Get all buildings with complete data
    */
   async getAllBuildings(req, res) {
     try {
       const buildings = await Building.find({ isActive: true });
       
+      // Format buildings for frontend compatibility
+      const formattedBuildings = buildings.map(building => ({
+        _id: building._id,
+        name: building.name,
+        title: building.title || building.name,
+        subTitle: building.subTitle,
+        slug: building.slug,
+        description: building.description,
+        
+        // Location - use new structure, fallback to legacy
+        location: building.location?.city ? building.location : {
+          addressLine1: building.legacyLocation?.address || '',
+          city: building.legacyLocation?.city || '',
+          state: building.legacyLocation?.state || '',
+          country: building.legacyLocation?.country || '',
+          pincode: building.legacyLocation?.zipCode || ''
+        },
+        
+        // Images - provide both formats
+        images: building.images || [],
+        gallery: building.gallery || [],
+        heroImage: building.heroImage,
+        
+        // Amenities - provide both formats
+        amenities: building.amenities || [],
+        legacyAmenities: building.legacyAmenities || [],
+        
+        // New content fields
+        highlights: building.highlights || [],
+        accessibility: building.accessibility || [],
+        policies: building.policies || [],
+        reviewSummary: building.reviewSummary || [],
+        reviews: building.reviews || [],
+        roomTypes: building.roomTypes || [],
+        seo: building.seo,
+        
+        // Metadata
+        totalUnits: building.totalUnits,
+        isActive: building.isActive,
+        createdAt: building.createdAt,
+        updatedAt: building.updatedAt
+      }));
+      
       res.json({
         success: true,
-        data: { buildings }
+        data: { buildings: formattedBuildings }
       });
     } catch (error) {
       console.error('Error fetching buildings:', error);
@@ -27,7 +70,7 @@ class BuildingController {
   }
 
   /**
-   * Get building by ID with all units
+   * Get building by ID with all units and complete data
    */
   async getBuildingById(req, res) {
     try {
@@ -45,10 +88,55 @@ class BuildingController {
       // Get all units for this building
       const units = await Unit.find({ buildingId, isActive: true, isArchived: false });
 
+      // Format building data for frontend
+      const formattedBuilding = {
+        _id: building._id,
+        name: building.name,
+        title: building.title || building.name,
+        subTitle: building.subTitle,
+        slug: building.slug,
+        description: building.description,
+        
+        // Location - use new structure, fallback to legacy
+        location: building.location?.city ? building.location : {
+          addressLine1: building.legacyLocation?.address || '',
+          city: building.legacyLocation?.city || '',
+          state: building.legacyLocation?.state || '',
+          country: building.legacyLocation?.country || '',
+          pincode: building.legacyLocation?.zipCode || '',
+          latitude: building.legacyLocation?.coordinates?.latitude,
+          longitude: building.legacyLocation?.coordinates?.longitude
+        },
+        
+        // Images - provide both formats
+        images: building.images || [],
+        gallery: building.gallery || [],
+        heroImage: building.heroImage,
+        
+        // Amenities - provide both formats
+        amenities: building.amenities || [],
+        legacyAmenities: building.legacyAmenities || [],
+        
+        // New content fields
+        highlights: building.highlights || [],
+        accessibility: building.accessibility || [],
+        policies: building.policies || [],
+        reviewSummary: building.reviewSummary || [],
+        reviews: building.reviews || [],
+        roomTypes: building.roomTypes || [],
+        seo: building.seo,
+        
+        // Metadata
+        totalUnits: building.totalUnits,
+        isActive: building.isActive,
+        createdAt: building.createdAt,
+        updatedAt: building.updatedAt
+      };
+
       res.json({
         success: true,
         data: {
-          building,
+          building: formattedBuilding,
           units
         }
       });
@@ -63,7 +151,7 @@ class BuildingController {
   }
 
   /**
-   * Get building with unit types grouped
+   * Get building with unit types grouped and complete data
    * Shows: "2BHK (8 available)", "2BHK Penthouse (1 available)", etc.
    */
   async getBuildingWithUnitTypes(req, res) {
@@ -119,10 +207,52 @@ class BuildingController {
 
       const unitTypes = Object.values(unitTypesMap);
 
+      // Format building data for frontend
+      const formattedBuilding = {
+        _id: building._id,
+        name: building.name,
+        title: building.title || building.name,
+        subTitle: building.subTitle,
+        slug: building.slug,
+        description: building.description,
+        
+        // Location
+        location: building.location?.city ? building.location : {
+          addressLine1: building.legacyLocation?.address || '',
+          city: building.legacyLocation?.city || '',
+          state: building.legacyLocation?.state || '',
+          country: building.legacyLocation?.country || '',
+          pincode: building.legacyLocation?.zipCode || '',
+          latitude: building.legacyLocation?.coordinates?.latitude,
+          longitude: building.legacyLocation?.coordinates?.longitude
+        },
+        
+        // Images
+        images: building.images || [],
+        gallery: building.gallery || [],
+        heroImage: building.heroImage,
+        
+        // Amenities
+        amenities: building.amenities || [],
+        
+        // New content fields
+        highlights: building.highlights || [],
+        accessibility: building.accessibility || [],
+        policies: building.policies || [],
+        reviewSummary: building.reviewSummary || [],
+        reviews: building.reviews || [],
+        roomTypes: building.roomTypes || [],
+        seo: building.seo,
+        
+        // Metadata
+        totalUnits: building.totalUnits,
+        isActive: building.isActive
+      };
+
       res.json({
         success: true,
         data: {
-          building,
+          building: formattedBuilding,
           unitTypes,
           totalUnits: allUnits.length
         }
