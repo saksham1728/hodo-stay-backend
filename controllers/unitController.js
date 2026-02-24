@@ -5,7 +5,7 @@ const { XMLParser } = require('fast-xml-parser');
 const xmlParser = new XMLParser();
 
 class UnitController {
-  // Get unit details with full information from API
+  // Get unit details with full information from MongoDB (NO RU API calls)
   async getUnitDetails(req, res) {
     try {
       const { unitId } = req.params;
@@ -20,7 +20,7 @@ class UnitController {
         query = { ruPropertyId: parseInt(unitId) };
       }
       
-      let unit = await Unit.findOne(query).populate('buildingId', 'name').lean();
+      const unit = await Unit.findOne(query).populate('buildingId', 'name').lean();
       
       if (!unit) {
         return res.status(404).json({
@@ -29,71 +29,7 @@ class UnitController {
         });
       }
       
-      // Check if we need to fetch fresh data (data is stale or missing details)
-      const needsFreshData = unitController.isDataStale(unit.lastSyncedAt, 10) || !unit.description || !unit.images?.length;
-      
-      if (needsFreshData) {
-        // Get detailed info from Rentals United API
-        try {
-          console.log(`Fetching fresh detailed info from API for unit: ${unit.ruPropertyId}`);
-          
-          const xmlResponse = await ruClient.pullListSpecProp(unit.ruPropertyId, 'USD');
-        const parsedResponse = xmlParser.parse(xmlResponse);
-        
-        if (parsedResponse.error) {
-          console.log('API error, returning cached data');
-        } else {
-          const apiUnit = parsedResponse?.Pull_ListSpecProp_RS?.Property;
-          
-          if (apiUnit) {
-            // Update unit with detailed information
-            const updatedUnit = await Unit.findOneAndUpdate(
-              { ruPropertyId: unit.ruPropertyId },
-              {
-                name: apiUnit.Name,
-                description: apiUnit.Descriptions?.Description?.Text || '',
-                space: parseInt(apiUnit.Space) || 0,
-                standardGuests: parseInt(apiUnit.StandardGuests) || 1,
-                canSleepMax: parseInt(apiUnit.CanSleepMax) || 1,
-                noOfUnits: parseInt(apiUnit.NoOfUnits) || 1,
-                floor: parseInt(apiUnit.Floor) || 0,
-                
-                propertyType: {
-                  propertyTypeID: parseInt(apiUnit.PropertyTypeID),
-                  objectTypeID: parseInt(apiUnit.ObjectTypeID)
-                },
-                
-                pricing: {
-                  deposit: parseFloat(apiUnit.Deposit) || 0,
-                  securityDeposit: parseFloat(apiUnit.SecurityDeposit) || 0
-                },
-                
-                checkInOut: {
-                  checkInFrom: apiUnit.CheckInOut?.CheckInFrom,
-                  checkInTo: apiUnit.CheckInOut?.CheckInTo,
-                  checkOutUntil: apiUnit.CheckInOut?.CheckOutUntil,
-                  place: apiUnit.CheckInOut?.Place
-                },
-                
-                images: unitController.parseImages(apiUnit.Images?.Image),
-                amenities: unitController.parseAmenities(apiUnit.Amenities?.Amenity),
-                compositionRooms: unitController.parseCompositionRooms(apiUnit.CompositionRooms?.CompositionRoomID),
-                
-                lastSyncedAt: new Date(),
-                ruLastMod: new Date(apiUnit.LastMod)
-              },
-              { new: true, lean: true }
-            );
-            
-            unit = updatedUnit;
-          }
-        }
-        } catch (apiError) {
-          console.error('API error, using cached data:', apiError.message);
-        }
-      } else {
-        console.log(`Using cached data for unit: ${unit.ruPropertyId} (last synced: ${new Date(unit.lastSyncedAt).toLocaleString()})`);
-      }
+      console.log(`Using MongoDB data for unit: ${unit.ruPropertyId} (last synced: ${new Date(unit.lastSyncedAt).toLocaleString()})`);
       
       res.json({
         success: true,
@@ -208,52 +144,6 @@ class UnitController {
         error: error.message
       });
     }
-  }
-
-  // Helper method to parse images
-  parseImages(apiImages) {
-    if (!apiImages) return [];
-    
-    const imagesArray = Array.isArray(apiImages) ? apiImages : [apiImages];
-    
-    return imagesArray.map((img, index) => ({
-      imageTypeID: img['@_ImageTypeID'] || 1,
-      imageReferenceID: img['@_ImageReferenceID'] || index + 1,
-      url: img['#text'] || img,
-      isPrimary: index === 0
-    }));
-  }
-
-  // Helper method to parse amenities
-  parseAmenities(apiAmenities) {
-    if (!apiAmenities) return [];
-    
-    const amenitiesArray = Array.isArray(apiAmenities) ? apiAmenities : [apiAmenities];
-    
-    return amenitiesArray.map(amenity => ({
-      amenityID: parseInt(amenity['#text'] || amenity),
-      count: parseInt(amenity['@_Count']) || 1
-    }));
-  }
-
-  // Helper method to parse composition rooms
-  parseCompositionRooms(apiRooms) {
-    if (!apiRooms) return [];
-    
-    const roomsArray = Array.isArray(apiRooms) ? apiRooms : [apiRooms];
-    
-    return roomsArray.map(room => ({
-      compositionRoomID: parseInt(room['#text'] || room),
-      count: parseInt(room['@_Count']) || 1
-    }));
-  }
-
-  // Helper method to check if data is stale
-  isDataStale(lastSyncedAt, maxAgeMinutes = 10) {
-    if (!lastSyncedAt) return true;
-    
-    const maxAge = maxAgeMinutes * 60 * 1000; // Convert to milliseconds
-    return (Date.now() - new Date(lastSyncedAt).getTime()) > maxAge;
   }
 }
 

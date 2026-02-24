@@ -174,6 +174,62 @@ class RentalsUnitedClient {
 
         return await this.makeRequest(xmlBody);
     }
+
+    // 8. Get Property Availability Calendar (Pull_ListPropertyAvailabilityCalendar_RQ)
+    async pullListPropertyAvailabilityCalendar(propertyId, dateFrom, dateTo) {
+        const xmlBody = `<Pull_ListPropertyAvailabilityCalendar_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <PropertyID>${propertyId}</PropertyID>
+ <DateFrom>${dateFrom}</DateFrom>
+ <DateTo>${dateTo}</DateTo>
+</Pull_ListPropertyAvailabilityCalendar_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 9. Get Property Prices (Pull_ListPropertyPrices_RQ)
+    async pullListPropertyPrices(propertyId, dateFrom, dateTo, pricingModelMode = 0) {
+        const xmlBody = `<Pull_ListPropertyPrices_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <PropertyID>${propertyId}</PropertyID>
+ <DateFrom>${dateFrom}</DateFrom>
+ <DateTo>${dateTo}</DateTo>
+ <PricingModelMode>${pricingModelMode}</PricingModelMode>
+</Pull_ListPropertyPrices_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 10. Register Webhook URL (LNM_PutHandlerUrl_RQ)
+    async registerWebhook(handlerUrl) {
+        const xmlBody = `<LNM_PutHandlerUrl_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+ <HandlerUrl>${handlerUrl}</HandlerUrl>
+</LNM_PutHandlerUrl_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
+
+    // 11. Unregister Webhook (send without HandlerUrl)
+    async unregisterWebhook() {
+        const xmlBody = `<LNM_PutHandlerUrl_RQ>
+ <Authentication>
+   <UserName>${this.username}</UserName>
+   <Password>${this.password}</Password>
+ </Authentication>
+</LNM_PutHandlerUrl_RQ>`;
+
+        return await this.makeRequest(xmlBody);
+    }
 }
 
 module.exports = new RentalsUnitedClient();

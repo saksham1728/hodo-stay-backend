@@ -272,6 +272,105 @@ class BookingController {
       });
     }
   }
+
+  // List reservations from Rentals United by date range
+  async listReservationsFromRU(req, res) {
+    try {
+      const { dateFrom, dateTo, locationId } = req.query;
+
+      if (!dateFrom || !dateTo) {
+        return res.status(400).json({
+          success: false,
+          message: 'dateFrom and dateTo are required (format: YYYY-MM-DD)'
+        });
+      }
+
+      console.log(`📥 Fetching reservations from RU: ${dateFrom} to ${dateTo}`);
+
+      const response = await ruClient.pullListReservations(dateFrom, dateTo, locationId || 0);
+      const parsedResponse = xmlParser.parse(response);
+
+      const reservationsList = parsedResponse.Pull_ListReservations_RS?.Reservations?.Reservation;
+
+      if (!reservationsList) {
+        return res.json({
+          success: true,
+          data: { reservations: [] },
+          message: 'No reservations found for the specified date range'
+        });
+      }
+
+      const reservations = Array.isArray(reservationsList) ? reservationsList : [reservationsList];
+
+      const formattedReservations = reservations.map(res => ({
+        ruReservationId: res.ReservationID,
+        status: res.StatusID,
+        createdDate: res.CreatedDate,
+        propertyId: res.StayInfos?.StayInfo?.PropertyID,
+        dateFrom: res.StayInfos?.StayInfo?.DateFrom,
+        dateTo: res.StayInfos?.StayInfo?.DateTo,
+        numberOfGuests: res.StayInfos?.StayInfo?.NumberOfGuests,
+        clientPrice: res.StayInfos?.StayInfo?.Costs?.ClientPrice,
+        customerName: `${res.CustomerInfo?.Name || ''} ${res.CustomerInfo?.SurName || ''}`.trim(),
+        customerEmail: res.CustomerInfo?.Email
+      }));
+
+      res.json({
+        success: true,
+        data: { reservations: formattedReservations, count: formattedReservations.length },
+        message: `Found ${formattedReservations.length} reservations`
+      });
+
+    } catch (error) {
+      console.error('❌ Error listing reservations from RU:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to list reservations from Rentals United',
+        error: error.message
+      });
+    }
+  }
+
+  // Fetch specific booking from Rentals United
+  async fetchBookingFromRU(req, res) {
+    try {
+      const { ruReservationId } = req.params;
+
+      if (!ruReservationId) {
+        return res.status(400).json({
+          success: false,
+          message: 'RU Reservation ID is required'
+        });
+      }
+
+      console.log(`📥 Fetching booking from RU: ${ruReservationId}`);
+
+      const response = await ruClient.pullGetReservation(ruReservationId);
+      const parsedResponse = xmlParser.parse(response);
+
+      const reservation = parsedResponse.Pull_GetReservation_RS?.Reservation;
+
+      if (!reservation) {
+        return res.status(404).json({
+          success: false,
+          message: 'Reservation not found in Rentals United'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: { reservation }
+      });
+
+    } catch (error) {
+      console.error('❌ Error fetching booking from RU:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch booking from Rentals United',
+        error: error.message
+      });
+    }
+  }
 }
 
 const bookingController = new BookingController();

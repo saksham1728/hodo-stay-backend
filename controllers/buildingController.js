@@ -269,7 +269,7 @@ class BuildingController {
   }
 
   /**
-   * Get cheapest available unit for a unit type with live pricing
+   * Get cheapest available unit for a unit type using CACHE
    * Checks ALL units of the type and returns the cheapest available one
    */
   async getBestAvailableUnit(req, res) {
@@ -357,61 +357,57 @@ class BuildingController {
         });
       }
 
-      // Check pricing for ALL available units and find cheapest
+      // Check pricing for ALL available units using CACHE
+      const PropertyDailyCache = require('../models/PropertyDailyCache');
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+      const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      
       const unitsWithPricing = [];
 
       for (const unit of availableUnits) {
         try {
-          console.log(`💰 Checking pricing for unit ${unit.name} (RU ID: ${unit.ruPropertyId})`);
+          console.log(`💰 Checking cached pricing for unit ${unit.name}`);
           
-          // Call RU API directly
-          const response = await ruClient.pullGetPropertyAvbPrice(
-            unit.ruPropertyId,
-            checkIn,
-            checkOut,
-            null // No NOP parameter
-          );
-
-          const parsedResponse = xmlParser.parse(response);
-          const priceData = parsedResponse.Pull_GetPropertyAvbPrice_RS;
-          
-          // Check for error status (Status ID != 0 means error)
-          if (priceData && priceData.Status) {
-            const statusId = priceData.Status['@_ID'] || priceData.Status.ID;
-            
-            // Status ID 0 = Success, anything else is an error
-            if (statusId && statusId !== '0' && statusId !== 0) {
-              console.log(`  ✗ Not available (Status ${statusId})`);
-              continue;
+          // Query cache for date range
+          const cachedDays = await PropertyDailyCache.find({
+            unitId: unit._id,
+            date: {
+              $gte: checkInDate,
+              $lt: checkOutDate
             }
-          }
-          
-          // Parse PropertyPrices structure
-          if (priceData && priceData.PropertyPrices) {
-            const propertyPrices = priceData.PropertyPrices;
-            const propertyPrice = propertyPrices.PropertyPrice;
-            
-            if (propertyPrice) {
-              const price = parseFloat(propertyPrice['#text'] || propertyPrice || 0);
-              const currency = propertyPrices['@_Currency'] || 'USD';
-              const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+          }).sort({ date: 1 });
 
-              unitsWithPricing.push({
-                unit,
-                pricing: {
-                  propertyId: unit.ruPropertyId,
-                  price,
-                  available: true,
-                  currency,
-                  pricePerNight: price / nights,
-                  nights
-                }
-              });
-              console.log(`  ✓ Available at ${currency} ${price}`);
-            }
-          } else {
-            console.log(`  ✗ Not available in RU`);
+          // Check if we have data for all nights
+          if (cachedDays.length !== nights) {
+            console.log(`  ⚠️  Missing cache data (${cachedDays.length}/${nights} days)`);
+            continue;
           }
+
+          // Check if all days are available
+          const allAvailable = cachedDays.every(day => day.isAvailable);
+          
+          if (!allAvailable) {
+            console.log(`  ✗ Not available (some days blocked)`);
+            continue;
+          }
+
+          // Calculate total price from cache
+          const totalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+          const avgPricePerNight = totalPrice / nights;
+
+          unitsWithPricing.push({
+            unit,
+            pricing: {
+              propertyId: unit.ruPropertyId,
+              price: Math.round(totalPrice * 100) / 100,
+              available: true,
+              currency: 'USD',
+              pricePerNight: Math.round(avgPricePerNight * 100) / 100,
+              nights
+            }
+          });
+          console.log(`  ✓ Available at $${totalPrice.toFixed(2)} (cached)`);
         } catch (error) {
           console.error(`  ✗ Error checking unit ${unit.name}:`, error.message);
         }
@@ -420,7 +416,7 @@ class BuildingController {
       if (unitsWithPricing.length === 0) {
         return res.status(404).json({
           success: false,
-          message: 'No units available in Rentals United for selected dates',
+          message: 'No units available in cache for selected dates',
           unitType
         });
       }
@@ -429,7 +425,7 @@ class BuildingController {
       unitsWithPricing.sort((a, b) => a.pricing.price - b.pricing.price);
       const cheapest = unitsWithPricing[0];
 
-      console.log(`🎯 Cheapest unit: ${cheapest.unit.name} at ${cheapest.pricing.currency} ${cheapest.pricing.price}`);
+      console.log(`🎯 Cheapest unit: ${cheapest.unit.name} at ₹${cheapest.pricing.price} (from cache)`);
 
       return res.json({
         success: true,
@@ -447,6 +443,107 @@ class BuildingController {
       res.status(500).json({
         success: false,
         message: 'Failed to get available unit',
+        error: error.message
+      });
+    }
+  }
+  /**
+   * Create a new building
+   */
+  async createBuilding(req, res) {
+    try {
+      const buildingData = req.body;
+
+      // Create new building
+      const building = new Building(buildingData);
+      await building.save();
+
+      console.log('✅ Building created:', building.name);
+
+      res.status(201).json({
+        success: true,
+        data: { building },
+        message: 'Building created successfully'
+      });
+    } catch (error) {
+      console.error('Error creating building:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to create building',
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * Update an existing building
+   */
+  async updateBuilding(req, res) {
+    try {
+      const { buildingId } = req.params;
+      const updateData = req.body;
+
+      const building = await Building.findByIdAndUpdate(
+        buildingId,
+        updateData,
+        { new: true, runValidators: true }
+      );
+
+      if (!building) {
+        return res.status(404).json({
+          success: false,
+          message: 'Building not found'
+        });
+      }
+
+      console.log('✅ Building updated:', building.name);
+
+      res.json({
+        success: true,
+        data: { building },
+        message: 'Building updated successfully'
+      });
+    } catch (error) {
+      console.error('Error updating building:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to update building',
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * Soft delete a building (set isActive to false)
+   */
+  async deleteBuilding(req, res) {
+    try {
+      const { buildingId } = req.params;
+
+      const building = await Building.findByIdAndUpdate(
+        buildingId,
+        { isActive: false },
+        { new: true }
+      );
+
+      if (!building) {
+        return res.status(404).json({
+          success: false,
+          message: 'Building not found'
+        });
+      }
+
+      console.log('✅ Building deactivated:', building.name);
+
+      res.json({
+        success: true,
+        message: 'Building deactivated successfully'
+      });
+    } catch (error) {
+      console.error('Error deleting building:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to delete building',
         error: error.message
       });
     }

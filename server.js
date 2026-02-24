@@ -27,7 +27,7 @@ app.use('/api/', limiter);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://hodo-stay.onrender.com', 'https://www.hodostays.com', 'https://hodostays.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'https://hodo-stay.onrender.com', 'https://www.hodostays.com', 'https://hodostays.com'],
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://localhost:8080', 'https://hodo-stay.onrender.com', 'https://www.hodostays.com', 'https://hodostays.com'],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -45,9 +45,30 @@ mongoose.connect(process.env.MONGODB_URI, {
   socketTimeoutMS: 60000,
   connectTimeoutMS: 30000
 })
-.then(() => {
+.then(async () => {
   console.log('✅ MongoDB connected successfully');
   console.log(`📍 Database: ${mongoose.connection.name}`);
+  
+  // Check cache and warm if needed
+  const PropertyDailyCache = require('./models/PropertyDailyCache');
+  const cacheCount = await PropertyDailyCache.countDocuments();
+  
+  if (cacheCount === 0) {
+    console.log('🔥 Cache is empty. Running initial sync...');
+    const propertyCacheSync = require('./services/propertyCacheSync');
+    try {
+      await propertyCacheSync.syncAllUnits();
+      console.log('✅ Initial cache sync completed');
+    } catch (error) {
+      console.error('⚠️  Initial cache sync failed:', error.message);
+    }
+  } else {
+    console.log(`📊 Cache has ${cacheCount} records`);
+  }
+  
+  // Start daily cache sync job
+  const { startDailySyncJob } = require('./jobs/dailyCacheSync');
+  startDailySyncJob();
 })
 .catch((err) => {
   console.error('❌ MongoDB connection error:', err);
@@ -88,6 +109,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/pricing', require('./routes/pricing'));
 app.use('/api/payments', require('./routes/payments'));
+app.use('/api/webhooks', require('./routes/webhooks'));
 
 // 404 handler
 app.use('*', (req, res) => {

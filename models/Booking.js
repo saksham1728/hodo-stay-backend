@@ -9,7 +9,7 @@ const bookingSchema = new mongoose.Schema({
     index: true
   },
   ruReservationId: {
-    type: Number,
+    type: String,
     index: true
   },
 
@@ -150,6 +150,14 @@ const bookingSchema = new mongoose.Schema({
     index: true
   },
   ruStatus: String,
+
+  // Booking Source (where the booking came from)
+  bookingSource: {
+    type: String,
+    enum: ['direct', 'airbnb', 'booking.com', 'expedia', 'vrbo', 'external', 'other', 'unknown'],
+    default: 'direct',
+    index: true
+  },
 
   // Cancellation Info
   cancellation: {

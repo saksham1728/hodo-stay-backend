@@ -39,7 +39,7 @@ class PaymentController {
       // Generate unique receipt ID
       const receipt = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Create Razorpay order using service
+      // Create Razorpay order in USD (Razorpay will handle currency conversion)
       const result = await razorpayService.createOrder({
         amount: amount,
         currency: currency,
@@ -84,190 +84,235 @@ class PaymentController {
 
   // Verify payment and create booking
   async verifyPayment(req, res) {
-    try {
-      const {
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature,
-        bookingData
-      } = req.body;
-
-      // Validate required fields
-      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingData) {
-        return res.status(400).json({
-          success: false,
-          message: 'Missing required payment or booking data'
-        });
-      }
-
-      // Verify Razorpay signature using secure service
-      const isValid = razorpayService.verifyPaymentSignature({
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature
-      });
-
-      if (!isValid) {
-        console.error('❌ Payment signature verification failed');
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid payment signature. Payment verification failed.'
-        });
-      }
-
-      console.log('✅ Payment signature verified successfully');
-
-      // Get unit details
-      const unit = await Unit.findById(bookingData.unitId);
-      if (!unit) {
-        return res.status(404).json({
-          success: false,
-          message: 'Unit not found'
-        });
-      }
-
-      // Calculate nights
-      const checkInDate = new Date(bookingData.checkIn);
-      const checkOutDate = new Date(bookingData.checkOut);
-      const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-
-      // Create booking in MongoDB
-      const booking = new Booking({
-        unitId: bookingData.unitId,
-        buildingId: unit.buildingId,
-        ruPropertyId: unit.ruPropertyId,
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
-        nights: nights,
-        guestInfo: {
-          name: bookingData.guestInfo.name,
-          surname: bookingData.guestInfo.surname,
-          email: bookingData.guestInfo.email,
-          phone: bookingData.guestInfo.phone,
-          address: bookingData.guestInfo.address || '',
-          zipCode: bookingData.guestInfo.zipCode || ''
-        },
-        numberOfGuests: bookingData.numberOfGuests,
-        numberOfAdults: bookingData.numberOfAdults || bookingData.numberOfGuests,
-        numberOfChildren: bookingData.numberOfChildren || 0,
-        numberOfInfants: bookingData.numberOfInfants || 0,
-        pricing: {
-          ruPrice: bookingData.pricing.ruPrice,
-          clientPrice: bookingData.pricing.clientPrice,
-          alreadyPaid: bookingData.pricing.clientPrice,
-          currency: bookingData.pricing.currency || 'USD'
-        },
-        payment: {
-          paymentId: razorpay_payment_id,
-          orderId: razorpay_order_id,
-          signature: razorpay_signature,
-          status: 'completed',
-          method: 'razorpay',
-          paidAt: new Date()
-        },
-        status: 'pending', // Will be 'confirmed' after RU API call
-        specialRequests: bookingData.specialRequests || ''
-      });
-
-      await booking.save();
-
-      console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
-
-      // Create reservation in Rentals United
       try {
-        // Validate guest count against unit capacity
-        const maxGuests = unit.canSleepMax || unit.standardGuests || 1;
-        const actualGuests = Math.min(bookingData.numberOfGuests, maxGuests);
+        const {
+          razorpay_order_id,
+          razorpay_payment_id,
+          razorpay_signature,
+          bookingData
+        } = req.body;
 
-        if (bookingData.numberOfGuests > maxGuests) {
-          console.log(`⚠️  Guest count (${bookingData.numberOfGuests}) exceeds max capacity (${maxGuests}). Using ${actualGuests} for RU API.`);
+        // Validate required fields
+        if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingData) {
+          return res.status(400).json({
+            success: false,
+            message: 'Missing required payment or booking data'
+          });
         }
 
-        const ruReservationData = {
-          propertyId: unit.ruPropertyId,
-          dateFrom: checkInDate.toISOString().split('T')[0],
-          dateTo: checkOutDate.toISOString().split('T')[0],
-          numberOfGuests: actualGuests,
-          ruPrice: bookingData.pricing.ruPrice,
-          clientPrice: bookingData.pricing.clientPrice,
-          alreadyPaid: bookingData.pricing.clientPrice,
-          customerName: bookingData.guestInfo.name,
-          customerSurname: bookingData.guestInfo.surname,
-          customerEmail: bookingData.guestInfo.email,
-          customerPhone: bookingData.guestInfo.phone,
-          customerAddress: bookingData.guestInfo.address,
-          customerZipCode: bookingData.guestInfo.zipCode,
-          comments: bookingData.specialRequests || ''
-        };
+        // Verify Razorpay signature using secure service
+        const isValid = razorpayService.verifyPaymentSignature({
+          razorpay_order_id,
+          razorpay_payment_id,
+          razorpay_signature
+        });
 
-        const ruResponse = await ruClient.pushPutConfirmedReservationMulti(ruReservationData);
-        const parsedResponse = xmlParser.parse(ruResponse);
+        if (!isValid) {
+          console.error('❌ Payment signature verification failed');
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid payment signature. Payment verification failed.'
+          });
+        }
 
-        console.log('RU API Response:', parsedResponse);
+        console.log('✅ Payment signature verified successfully');
 
-        if (parsedResponse.Push_PutConfirmedReservationMulti_RS) {
-          const ruReservationId = parsedResponse.Push_PutConfirmedReservationMulti_RS.ReservationID;
-          const ruStatus = parsedResponse.Push_PutConfirmedReservationMulti_RS.Status;
+        // Get unit details
+        const unit = await Unit.findById(bookingData.unitId);
+        if (!unit) {
+          return res.status(404).json({
+            success: false,
+            message: 'Unit not found'
+          });
+        }
 
-          // Update booking with RU reservation ID
-          booking.ruReservationId = ruReservationId;
-          booking.ruStatus = ruStatus;
-          booking.status = 'confirmed';
+        // Calculate nights
+        const checkInDate = new Date(bookingData.checkIn);
+        const checkOutDate = new Date(bookingData.checkOut);
+        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+        // Create booking in MongoDB
+        const booking = new Booking({
+          unitId: bookingData.unitId,
+          buildingId: unit.buildingId,
+          ruPropertyId: unit.ruPropertyId,
+          checkIn: checkInDate,
+          checkOut: checkOutDate,
+          nights: nights,
+          guestInfo: {
+            name: bookingData.guestInfo.name,
+            surname: bookingData.guestInfo.surname,
+            email: bookingData.guestInfo.email,
+            phone: bookingData.guestInfo.phone,
+            address: bookingData.guestInfo.address || '',
+            zipCode: bookingData.guestInfo.zipCode || ''
+          },
+          numberOfGuests: bookingData.numberOfGuests,
+          numberOfAdults: bookingData.numberOfAdults || bookingData.numberOfGuests,
+          numberOfChildren: bookingData.numberOfChildren || 0,
+          numberOfInfants: bookingData.numberOfInfants || 0,
+          pricing: {
+            ruPrice: bookingData.pricing.ruPrice,
+            clientPrice: bookingData.pricing.clientPrice,
+            alreadyPaid: bookingData.pricing.clientPrice,
+            currency: 'USD'
+          },
+          payment: {
+            paymentId: razorpay_payment_id,
+            orderId: razorpay_order_id,
+            signature: razorpay_signature,
+            status: 'completed',
+            method: 'razorpay',
+            paidAt: new Date()
+          },
+          status: 'pending',
+          specialRequests: bookingData.specialRequests || ''
+        });
+
+        await booking.save();
+
+        console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
+
+        // Create reservation in Rentals United
+        try {
+          // Validate guest count against unit capacity
+          const maxGuests = unit.canSleepMax || unit.standardGuests || 1;
+          const actualGuests = Math.min(bookingData.numberOfGuests, maxGuests);
+
+          if (bookingData.numberOfGuests > maxGuests) {
+            console.log(`⚠️  Guest count (${bookingData.numberOfGuests}) exceeds max capacity (${maxGuests}). Using ${actualGuests} for RU API.`);
+          }
+
+          // Use the cached price from bookingData (already fetched from cache)
+          const ruPriceUSD = bookingData.pricing.ruPrice;
+          console.log(`💰 Using cached price for RU reservation: $${ruPriceUSD} USD`);
+
+          const ruReservationData = {
+            propertyId: unit.ruPropertyId,
+            dateFrom: checkInDate.toISOString().split('T')[0],
+            dateTo: checkOutDate.toISOString().split('T')[0],
+            numberOfGuests: actualGuests,
+            ruPrice: ruPriceUSD,
+            clientPrice: ruPriceUSD,
+            alreadyPaid: ruPriceUSD,
+            customerName: bookingData.guestInfo.name,
+            customerSurname: bookingData.guestInfo.surname,
+            customerEmail: bookingData.guestInfo.email,
+            customerPhone: bookingData.guestInfo.phone,
+            customerAddress: bookingData.guestInfo.address,
+            customerZipCode: bookingData.guestInfo.zipCode,
+            comments: bookingData.specialRequests || ''
+          };
+
+          console.log('📤 Pushing reservation to RU with cached USD price:', ruPriceUSD);
+
+          const ruResponse = await ruClient.pushPutConfirmedReservationMulti(ruReservationData);
+          const parsedResponse = xmlParser.parse(ruResponse);
+
+          console.log('RU API Response:', parsedResponse);
+
+          if (parsedResponse.Push_PutConfirmedReservationMulti_RS) {
+            const response = parsedResponse.Push_PutConfirmedReservationMulti_RS;
+
+            // Check if Status indicates an error (Status with ID attribute or error message)
+            const status = response.Status;
+            const statusId = status?.['@_ID'];
+            const statusText = typeof status === 'string' ? status : status?.['#text'];
+
+            // If status has an error ID or error message, throw error
+            if (statusId || (statusText && statusText.toLowerCase().includes('error'))) {
+              throw new Error(`RU reservation failed: ${statusText || 'Unknown error'}`);
+            }
+
+            const ruReservationId = response.ReservationID;
+
+            if (!ruReservationId) {
+              throw new Error('RU did not return a ReservationID');
+            }
+
+            // Update booking with RU reservation ID
+            booking.ruReservationId = ruReservationId;
+            booking.ruStatus = statusText || 'Confirmed';
+            booking.status = 'confirmed';
+            await booking.save();
+
+            console.log('✅ Reservation created in RU:', ruReservationId);
+
+            // Update cache to mark dates as unavailable
+            const PropertyDailyCache = require('../models/PropertyDailyCache');
+            await PropertyDailyCache.updateMany(
+              {
+                unitId: unit._id,
+                date: {
+                  $gte: checkInDate,
+                  $lt: checkOutDate
+                }
+              },
+              {
+                $set: {
+                  isAvailable: false,
+                  lastSynced: new Date()
+                }
+              }
+            );
+            console.log('✅ Cache updated - dates marked as unavailable');
+          } else {
+            throw new Error('Invalid RU API response structure');
+          }
+        } catch (ruError) {
+          console.error('❌ Error creating RU reservation:', ruError.message);
+          // Booking is still saved in our DB, but not in RU
+          // Admin can manually sync later
+          booking.ruStatus = `Error: ${ruError.message}`;
           await booking.save();
-
-          console.log('✅ Reservation created in RU:', ruReservationId);
         }
-      } catch (ruError) {
-        console.error('❌ Error creating RU reservation:', ruError);
-        // Booking is still saved in our DB, but not in RU
-        // Admin can manually sync later
-      }
 
-      // Populate unit details for response
-      await booking.populate('unitId');
-      await booking.populate('buildingId');
+        // Populate unit details for response
+        await booking.populate('unitId');
+        await booking.populate('buildingId');
 
-      // Send booking confirmation email with access token
-      try {
-        await emailService.sendBookingConfirmation(booking);
-        console.log('✅ Booking confirmation email sent to:', booking.guestInfo.email);
-      } catch (emailError) {
-        console.error('❌ Error sending confirmation email:', emailError);
-        // Don't fail the booking if email fails
-      }
+        // Send booking confirmation email with access token
+        try {
+          await emailService.sendBookingConfirmation(booking);
+          console.log('✅ Booking confirmation email sent to:', booking.guestInfo.email);
+        } catch (emailError) {
+          console.error('❌ Error sending confirmation email:', emailError);
+          // Don't fail the booking if email fails
+        }
 
-      res.json({
-        success: true,
-        message: 'Payment verified and booking confirmed',
-        data: {
-          booking: {
-            _id: booking._id,
-            bookingReference: booking.bookingReference,
-            ruReservationId: booking.ruReservationId,
-            status: booking.status,
-            checkIn: booking.checkIn,
-            checkOut: booking.checkOut,
-            nights: booking.nights,
-            guestInfo: booking.guestInfo,
-            pricing: booking.pricing,
-            accessToken: booking.accessToken,
-            unit: {
-              name: booking.unitId.name,
-              images: booking.unitId.images
+        res.json({
+          success: true,
+          message: 'Payment verified and booking confirmed',
+          data: {
+            booking: {
+              _id: booking._id,
+              bookingReference: booking.bookingReference,
+              ruReservationId: booking.ruReservationId,
+              status: booking.status,
+              checkIn: booking.checkIn,
+              checkOut: booking.checkOut,
+              nights: booking.nights,
+              guestInfo: booking.guestInfo,
+              pricing: booking.pricing,
+              accessToken: booking.accessToken,
+              unit: {
+                name: booking.unitId.name,
+                images: booking.unitId.images
+              }
             }
           }
-        }
-      });
+        });
 
-    } catch (error) {
-      console.error('Error verifying payment:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to verify payment and create booking',
-        error: error.message
-      });
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        res.status(500).json({
+          success: false,
+          message: 'Failed to verify payment and create booking',
+          error: error.message
+        });
+      }
     }
-  }
+
 
   // Handle Razorpay webhooks
   async handleWebhook(req, res) {
@@ -335,3 +380,4 @@ class PaymentController {
 
 const paymentController = new PaymentController();
 module.exports = paymentController;
+

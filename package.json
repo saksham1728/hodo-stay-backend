@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "echo 'Build complete'"
+    "build": "echo 'Build complete'",
+    "cache:warm": "node scripts/warm-cache.js",
+    "cache:test": "node test-cache-sync.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
@@ -19,6 +21,7 @@
     "fast-xml-parser": "^4.2.7",
     "helmet": "^7.0.0",
     "mongoose": "^7.5.0",
+    "node-cron": "^4.2.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^7.0.10",
     "razorpay": "^2.9.6"
