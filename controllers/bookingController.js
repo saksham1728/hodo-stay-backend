@@ -276,18 +276,29 @@ class BookingController {
   // List reservations from Rentals United by date range
   async listReservationsFromRU(req, res) {
     try {
-      const { dateFrom, dateTo, locationId } = req.query;
+      let { dateFrom, dateTo, locationId } = req.query;
 
       if (!dateFrom || !dateTo) {
         return res.status(400).json({
           success: false,
-          message: 'dateFrom and dateTo are required (format: YYYY-MM-DD)'
+          message: 'dateFrom and dateTo are required (format: YYYY-MM-DD or YYYY-MM-DD HH:mm:ss)'
         });
       }
 
-      console.log(`📥 Fetching reservations from RU: ${dateFrom} to ${dateTo}`);
+      // Ensure dates include time format (HH:mm:ss) as required by Rentals United API
+      if (!dateFrom.includes(':')) {
+        dateFrom = `${dateFrom} 00:00:00`;
+      }
+      if (!dateTo.includes(':')) {
+        dateTo = `${dateTo} 23:59:59`;
+      }
 
-      const response = await ruClient.pullListReservations(dateFrom, dateTo, locationId || 0);
+      // Default locationId to 41982 (HSR Layout) if not provided
+      const finalLocationId = locationId || 41982;
+
+      console.log(`📥 Fetching reservations from RU: ${dateFrom} to ${dateTo} (LocationID: ${finalLocationId})`);
+
+      const response = await ruClient.pullListReservations(dateFrom, dateTo, finalLocationId);
       const parsedResponse = xmlParser.parse(response);
 
       const reservationsList = parsedResponse.Pull_ListReservations_RS?.Reservations?.Reservation;
