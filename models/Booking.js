@@ -125,7 +125,21 @@ const bookingSchema = new mongoose.Schema({
     currency: {
       type: String,
       default: 'INR'
-    }
+    },
+    // Coupon discount tracking
+    originalPrice: Number, // Price before coupon
+    discountAmount: Number, // Amount discounted by coupon
+    finalPrice: Number // Price after coupon discount
+  },
+
+  // Coupon Information
+  appliedCoupon: {
+    type: String,
+    uppercase: true
+  },
+  couponId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coupon'
   },
 
   // Payment Information

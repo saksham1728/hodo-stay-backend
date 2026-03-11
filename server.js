@@ -110,6 +110,7 @@ app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/pricing', require('./routes/pricing'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/webhooks', require('./routes/webhooks'));
+app.use('/api/coupons', require('./routes/coupons'));
 
 // 404 handler
 app.use('*', (req, res) => {

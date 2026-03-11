@@ -1,7 +1,10 @@
 const { Booking, Unit } = require('../models');
+const Coupon = require('../models/Coupon');
+const couponService = require('../services/couponService');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 const emailService = require('../services/emailService');
+const mongoose = require('mongoose');
 const razorpayService = require('../services/razorpayService');
 
 const xmlParser = new XMLParser();
@@ -84,6 +87,9 @@ class PaymentController {
 
   // Verify payment and create booking
   async verifyPayment(req, res) {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+
       try {
         const {
           razorpay_order_id,
@@ -94,6 +100,7 @@ class PaymentController {
 
         // Validate required fields
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingData) {
+          await session.abortTransaction();
           return res.status(400).json({
             success: false,
             message: 'Missing required payment or booking data'
@@ -108,6 +115,7 @@ class PaymentController {
         });
 
         if (!isValid) {
+          await session.abortTransaction();
           console.error('❌ Payment signature verification failed');
           return res.status(400).json({
             success: false,
@@ -118,8 +126,9 @@ class PaymentController {
         console.log('✅ Payment signature verified successfully');
 
         // Get unit details
-        const unit = await Unit.findById(bookingData.unitId);
+        const unit = await Unit.findById(bookingData.unitId).session(session);
         if (!unit) {
+          await session.abortTransaction();
           return res.status(404).json({
             success: false,
             message: 'Unit not found'
@@ -130,6 +139,58 @@ class PaymentController {
         const checkInDate = new Date(bookingData.checkIn);
         const checkOutDate = new Date(bookingData.checkOut);
         const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+        // Handle coupon if provided
+        let couponDiscount = 0;
+        let originalPrice = bookingData.pricing.clientPrice;
+        let finalPrice = bookingData.pricing.clientPrice;
+        let appliedCouponCode = null;
+        let couponId = null;
+
+        if (bookingData.couponCode) {
+          try {
+            console.log('🎟️  Applying coupon:', bookingData.couponCode);
+
+            // Validate coupon
+            const validation = await couponService.validateCoupon(
+              bookingData.couponCode,
+              {
+                email: bookingData.guestInfo.email,
+                phone: bookingData.guestInfo.phone,
+                propertyId: bookingData.unitId,
+                city: unit.city,
+                bookingAmount: bookingData.pricing.clientPrice,
+                nights: nights
+              }
+            );
+
+            if (!validation.valid) {
+              await session.abortTransaction();
+              return res.status(400).json({
+                success: false,
+                message: validation.error
+              });
+            }
+
+            couponDiscount = validation.discount.amount;
+            finalPrice = validation.discount.finalPrice;
+            originalPrice = validation.discount.originalPrice; // Use original price from validation
+            appliedCouponCode = bookingData.couponCode.toUpperCase();
+
+            // Get coupon for reference
+            const coupon = await Coupon.findOne({ code: appliedCouponCode }).session(session);
+            couponId = coupon?._id;
+
+            console.log(`✅ Coupon validated: ${couponDiscount} discount, final price: ${finalPrice}`);
+          } catch (couponError) {
+            await session.abortTransaction();
+            console.error('❌ Coupon validation failed:', couponError.message);
+            return res.status(400).json({
+              success: false,
+              message: `Coupon error: ${couponError.message}`
+            });
+          }
+        }
 
         // Create booking in MongoDB
         const booking = new Booking({
@@ -154,9 +215,14 @@ class PaymentController {
           pricing: {
             ruPrice: bookingData.pricing.ruPrice,
             clientPrice: bookingData.pricing.clientPrice,
-            alreadyPaid: bookingData.pricing.clientPrice,
+            originalPrice: originalPrice,
+            discountAmount: couponDiscount,
+            finalPrice: finalPrice,
+            alreadyPaid: finalPrice,
             currency: 'USD'
           },
+          appliedCoupon: appliedCouponCode,
+          couponId: couponId,
           payment: {
             paymentId: razorpay_payment_id,
             orderId: razorpay_order_id,
@@ -169,9 +235,35 @@ class PaymentController {
           specialRequests: bookingData.specialRequests || ''
         });
 
-        await booking.save();
+        await booking.save({ session });
+
+        // Apply coupon usage tracking
+        if (appliedCouponCode) {
+          try {
+            await couponService.applyCoupon(
+              appliedCouponCode,
+              {
+                email: bookingData.guestInfo.email,
+                phone: bookingData.guestInfo.phone,
+                propertyId: bookingData.unitId,
+                city: unit.city,
+                bookingAmount: originalPrice,
+                nights: nights,
+                bookingId: booking._id
+              },
+              session
+            );
+            console.log('✅ Coupon usage recorded');
+          } catch (couponError) {
+            console.error('⚠️  Coupon usage tracking failed:', couponError.message);
+            // Don't fail booking if tracking fails
+          }
+        }
 
         console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
+
+        // Commit transaction before external RU API call
+        await session.commitTransaction();
 
         // Create reservation in Rentals United
         try {
@@ -183,9 +275,10 @@ class PaymentController {
             console.log(`⚠️  Guest count (${bookingData.numberOfGuests}) exceeds max capacity (${maxGuests}). Using ${actualGuests} for RU API.`);
           }
 
-          // Use the cached price from bookingData (already fetched from cache)
-          const ruPriceUSD = bookingData.pricing.ruPrice;
-          console.log(`💰 Using cached price for RU reservation: $${ruPriceUSD} USD`);
+          // Use the ORIGINAL price (before discount) for RU reservation
+          // Coupon discount is absorbed by Hodo, not by RU
+          const ruPriceUSD = originalPrice;
+          console.log(`💰 Using original price for RU reservation: ${ruPriceUSD} USD (discount absorbed by Hodo)`);
 
           const ruReservationData = {
             propertyId: unit.ruPropertyId,
@@ -294,6 +387,7 @@ class PaymentController {
               nights: booking.nights,
               guestInfo: booking.guestInfo,
               pricing: booking.pricing,
+              appliedCoupon: booking.appliedCoupon,
               accessToken: booking.accessToken,
               unit: {
                 name: booking.unitId.name,
@@ -304,14 +398,20 @@ class PaymentController {
         });
 
       } catch (error) {
+        if (session.inTransaction()) {
+          await session.abortTransaction();
+        }
         console.error('Error verifying payment:', error);
         res.status(500).json({
           success: false,
           message: 'Failed to verify payment and create booking',
           error: error.message
         });
+      } finally {
+        session.endSession();
       }
     }
+
 
 
   // Handle Razorpay webhooks
