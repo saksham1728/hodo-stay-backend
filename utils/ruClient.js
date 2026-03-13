@@ -119,7 +119,7 @@ class RentalsUnitedClient {
 
     // 5. Create Confirmed Reservation (Push_PutConfirmedReservationMulti_RQ)
     async pushPutConfirmedReservation(reservationData) {
-        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><Reservation><StayInfos><StayInfo><PropertyID>${reservationData.propertyId}</PropertyID><DateFrom>${reservationData.dateFrom}</DateFrom><DateTo>${reservationData.dateTo}</DateTo><NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests><Costs><RUPrice>${reservationData.ruPrice}</RUPrice><ClientPrice>${reservationData.clientPrice}</ClientPrice><AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid></Costs></StayInfo></StayInfos><CustomerInfo><Name>${reservationData.customerName}</Name><SurName>${reservationData.customerSurname}</SurName><Email>${reservationData.customerEmail}</Email><Phone>${reservationData.customerPhone || ''}</Phone></CustomerInfo><Comments>${reservationData.comments || ''}</Comments></Reservation></Push_PutConfirmedReservationMulti_RQ>`;
+        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><Reservation><StayInfos><StayInfo><PropertyID>${reservationData.propertyId}</PropertyID><DateFrom>${reservationData.dateFrom}</DateFrom><DateTo>${reservationData.dateTo}</DateTo><NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests><Costs><RUPrice>${reservationData.ruPrice}</RUPrice><ClientPrice>${reservationData.clientPrice}</ClientPrice><AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid></Costs></StayInfo></StayInfos><CustomerInfo><Name>${reservationData.customerName}</Name><SurName>${reservationData.customerSurname}</SurName><Email>${reservationData.customerEmail}</Email><Phone>${reservationData.customerPhone || ''}</Phone></CustomerInfo><Comments>${reservationData.comments || ''}</Comments></Reservation><QuoteModeId>2</QuoteModeId></Push_PutConfirmedReservationMulti_RQ>`;
 
         return await this.makeRequest(xmlBody);
     }
@@ -156,6 +156,7 @@ class RentalsUnitedClient {
    </CustomerInfo>
    ${reservationData.comments ? `<Comments>${reservationData.comments}</Comments>` : ''}
  </Reservation>
+ <QuoteModeId>2</QuoteModeId>
 </Push_PutConfirmedReservationMulti_RQ>`;
 
         return await this.makeRequest(xmlBody);
