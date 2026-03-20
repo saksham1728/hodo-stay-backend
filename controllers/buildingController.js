@@ -329,9 +329,10 @@ class BuildingController {
         const unitsBeforeGuestFilter = availableUnits.length;
         
         availableUnits = availableUnits.filter(unit => {
-          const canAccommodate = unit.standardGuests >= requestedGuests;
+          const maxCapacity = unit.canSleepMax || unit.standardGuests || 1;
+          const canAccommodate = maxCapacity >= requestedGuests;
           if (!canAccommodate) {
-            console.log(`  ✗ ${unit.name} can only accommodate ${unit.standardGuests} guests (requested: ${requestedGuests})`);
+            console.log(`  ✗ ${unit.name} can only accommodate ${maxCapacity} guests (requested: ${requestedGuests})`);
           }
           return canAccommodate;
         });
@@ -344,7 +345,7 @@ class BuildingController {
             message: `No units of type "${unitType}" can accommodate ${requestedGuests} guests. Please select a different unit type or reduce the number of guests.`,
             unitType,
             requestedGuests,
-            maxGuestsForType: Math.max(...units.map(u => u.standardGuests || 0))
+            maxGuestsForType: Math.max(...units.map(u => u.canSleepMax || u.standardGuests || 0))
           });
         }
       }
