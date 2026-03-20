@@ -402,7 +402,7 @@ class BuildingController {
               propertyId: unit.ruPropertyId,
               price: Math.round(totalPrice * 100) / 100,
               available: true,
-              currency: 'USD',
+              currency: 'INR',
               pricePerNight: Math.round(avgPricePerNight * 100) / 100,
               nights
             }

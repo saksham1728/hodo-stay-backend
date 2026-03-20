@@ -13,7 +13,7 @@ class PaymentController {
   // Create Razorpay order
   async createOrder(req, res) {
     try {
-      const { amount, currency = 'USD', bookingData } = req.body;
+      const { amount, currency = 'INR', bookingData } = req.body;
 
       // Validate required fields
       if (!amount || !bookingData) {
@@ -39,10 +39,47 @@ class PaymentController {
         });
       }
 
+      // CRITICAL: Final availability check before creating payment order
+      console.log('🔍 Backend: Performing final availability check before payment...');
+      const PropertyDailyCache = require('../models/PropertyDailyCache');
+      
+      const checkInDate = new Date(bookingData.checkIn);
+      const checkOutDate = new Date(bookingData.checkOut);
+      
+      const cachedDays = await PropertyDailyCache.find({
+        unitId: bookingData.unitId,
+        date: {
+          $gte: checkInDate,
+          $lt: checkOutDate
+        }
+      });
+
+      const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      
+      if (cachedDays.length !== nights) {
+        console.log('❌ Backend: Availability data incomplete');
+        return res.status(400).json({
+          success: false,
+          message: 'Unable to verify availability. Please refresh and try again.'
+        });
+      }
+
+      const allAvailable = cachedDays.every(day => day.isAvailable);
+      
+      if (!allAvailable) {
+        console.log('❌ Backend: Unit not available for selected dates');
+        return res.status(400).json({
+          success: false,
+          message: 'This unit is no longer available for the selected dates. It may have been booked by another guest.'
+        });
+      }
+
+      console.log('✅ Backend: Availability confirmed');
+
       // Generate unique receipt ID
       const receipt = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Create Razorpay order in USD (Razorpay will handle currency conversion)
+      // Create Razorpay order
       const result = await razorpayService.createOrder({
         amount: amount,
         currency: currency,
@@ -219,7 +256,7 @@ class PaymentController {
             discountAmount: couponDiscount,
             finalPrice: finalPrice,
             alreadyPaid: finalPrice,
-            currency: 'USD'
+            currency: 'INR'
           },
           appliedCoupon: appliedCouponCode,
           couponId: couponId,
@@ -277,17 +314,17 @@ class PaymentController {
 
           // Use the ORIGINAL price (before discount) for RU reservation
           // Coupon discount is absorbed by Hodo, not by RU
-          const ruPriceUSD = originalPrice;
-          console.log(`💰 Using original price for RU reservation: ${ruPriceUSD} USD (discount absorbed by Hodo)`);
+          const ruPriceINR = originalPrice;
+          console.log(`💰 Using original price for RU reservation: ${ruPriceINR} INR (discount absorbed by Hodo)`);
 
           const ruReservationData = {
             propertyId: unit.ruPropertyId,
             dateFrom: checkInDate.toISOString().split('T')[0],
             dateTo: checkOutDate.toISOString().split('T')[0],
             numberOfGuests: actualGuests,
-            ruPrice: ruPriceUSD,
-            clientPrice: ruPriceUSD,
-            alreadyPaid: ruPriceUSD,
+            ruPrice: ruPriceINR,
+            clientPrice: ruPriceINR,
+            alreadyPaid: ruPriceINR,
             customerName: bookingData.guestInfo.name,
             customerSurname: bookingData.guestInfo.surname,
             customerEmail: bookingData.guestInfo.email,
@@ -297,7 +334,7 @@ class PaymentController {
             comments: bookingData.specialRequests || ''
           };
 
-          console.log('📤 Pushing reservation to RU with cached USD price:', ruPriceUSD);
+          console.log('📤 Pushing reservation to RU with cached INR price:', ruPriceINR);
 
           const ruResponse = await ruClient.pushPutConfirmedReservationMulti(ruReservationData);
           const parsedResponse = xmlParser.parse(ruResponse);

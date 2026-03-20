@@ -88,7 +88,7 @@ exports.searchAvailableUnits = async (req, res) => {
         pricing: {
           totalPrice: Math.round(totalPrice * 100) / 100,
           pricePerNight: Math.round(avgPricePerNight * 100) / 100,
-          currency: 'USD',
+          currency: 'INR',
           nights: nights
         },
         checkIn: checkIn,
@@ -212,7 +212,7 @@ exports.getUnitPricing = async (req, res) => {
         pricing: {
           totalPrice: Math.round(totalPrice * 100) / 100,
           pricePerNight: Math.round(avgPricePerNight * 100) / 100,
-          currency: 'USD',
+          currency: 'INR',
           nights: nights,
           dailyBreakdown: dailyPrices
         },
@@ -262,6 +262,107 @@ exports.triggerSync = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to trigger sync',
+      details: error.message
+    });
+  }
+};
+
+/**
+ * Check availability for specific unit and dates (final check before payment)
+ * POST /api/pricing/check-availability
+ */
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { unitId, checkIn, checkOut } = req.body;
+
+    if (!unitId || !checkIn || !checkOut) {
+      return res.status(400).json({
+        success: false,
+        error: 'unitId, checkIn, and checkOut are required'
+      });
+    }
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    // Validate dates
+    if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid date format'
+      });
+    }
+
+    if (checkOutDate <= checkInDate) {
+      return res.status(400).json({
+        success: false,
+        error: 'Check-out date must be after check-in date'
+      });
+    }
+
+    // Get unit
+    const unit = await Unit.findById(unitId);
+    if (!unit) {
+      return res.status(404).json({
+        success: false,
+        available: false,
+        error: 'Unit not found'
+      });
+    }
+
+    // Query cache for all days in the date range
+    const cachedDays = await PropertyDailyCache.find({
+      unitId: unit._id,
+      date: {
+        $gte: checkInDate,
+        $lt: checkOutDate
+      }
+    }).sort({ date: 1 });
+
+    const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+    // Check if we have data for all nights
+    if (cachedDays.length !== nights) {
+      return res.status(200).json({
+        success: true,
+        available: false,
+        reason: 'Availability data not complete',
+        message: 'Unable to verify availability for selected dates'
+      });
+    }
+
+    // Check if all days are available
+    const allAvailable = cachedDays.every(day => day.isAvailable);
+
+    if (!allAvailable) {
+      // Find which dates are not available
+      const unavailableDates = cachedDays
+        .filter(day => !day.isAvailable)
+        .map(day => day.date.toISOString().split('T')[0]);
+
+      return res.status(200).json({
+        success: true,
+        available: false,
+        reason: 'Unit not available for selected dates',
+        message: 'This unit is no longer available for the selected dates. It may have been booked by another guest.',
+        unavailableDates
+      });
+    }
+
+    // All checks passed - unit is available
+    res.json({
+      success: true,
+      available: true,
+      message: 'Unit is available for selected dates',
+      nights
+    });
+
+  } catch (error) {
+    console.error('Error checking availability:', error);
+    res.status(500).json({
+      success: false,
+      available: false,
+      error: 'Failed to check availability',
       details: error.message
     });
   }

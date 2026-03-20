@@ -15,7 +15,7 @@ class RazorpayService {
    */
   async createOrder(orderData) {
     try {
-      const { amount, currency = 'USD', receipt, notes = {} } = orderData;
+      const { amount, currency = 'INR', receipt, notes = {} } = orderData;
 
       // Razorpay expects amount in smallest currency unit (paise for INR, cents for USD)
       const amountInSmallestUnit = Math.round(amount * 100);

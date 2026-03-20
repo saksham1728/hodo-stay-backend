@@ -152,7 +152,7 @@ class WebhookController {
           ruPrice: parseFloat(stayInfo.Costs.RUPrice),
           clientPrice: parseFloat(stayInfo.Costs.ClientPrice),
           alreadyPaid: parseFloat(stayInfo.Costs.AlreadyPaid),
-          currency: 'USD'
+          currency: 'INR'
         },
         payment: {
           status: 'completed',

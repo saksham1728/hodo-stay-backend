@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const { XMLParser, XMLBuilder } = require('fast-xml-parser');
 
 const RU_BASE_URL = 'https://rm.rentalsunited.com/api/Handler.ashx';
-const RU_USERNAME = process.env.RU_USERNAME || 'hello.dhilshadh@gmail.com';
-const RU_PASSWORD = process.env.RU_PASSWORD || 'HodoStays@12';
+const RU_ACCESS_KEY = process.env.RU_ACCESS_KEY;
+const RU_SECRET_KEY = process.env.RU_SECRET_KEY;
 
 const xmlParser = new XMLParser();
 const xmlBuilder = new XMLBuilder();
@@ -11,8 +11,8 @@ const xmlBuilder = new XMLBuilder();
 class RentalsUnitedClient {
     constructor() {
         this.baseUrl = RU_BASE_URL;
-        this.username = RU_USERNAME;
-        this.password = RU_PASSWORD;
+        this.accessKey = RU_ACCESS_KEY;
+        this.secretKey = RU_SECRET_KEY;
     }
 
     wrapXml(body) {
@@ -51,8 +51,8 @@ class RentalsUnitedClient {
     async pullListProp(locationId, includeNLA = false) {
         const xmlBody = `<Pull_ListProp_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <LocationID>${locationId}</LocationID>
  <IncludeNLA>${includeNLA}</IncludeNLA>
@@ -62,11 +62,11 @@ class RentalsUnitedClient {
     }
 
     // 2. Get Property Details (Pull_ListSpecProp_RQ)
-    async pullListSpecProp(propertyId, currency = 'USD') {
+    async pullListSpecProp(propertyId, currency = 'INR') {
         const xmlBody = `<Pull_ListSpecProp_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <PropertyID>${propertyId}</PropertyID>
  <Currency>${currency}</Currency>
@@ -76,11 +76,11 @@ class RentalsUnitedClient {
     }
 
     // 3. Get Availability & Price Quote (Pull_GetPropertyAvbPrice_RQ)
-    async pullGetPropertyAvbPrice(propertyId, dateFrom, dateTo, nop = null, currency = 'USD') {
+    async pullGetPropertyAvbPrice(propertyId, dateFrom, dateTo, nop = null, currency = 'INR') {
         let xmlBody = `<Pull_GetPropertyAvbPrice_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <PropertyID>${propertyId}</PropertyID>
  <DateFrom>${dateFrom}</DateFrom>
@@ -100,8 +100,8 @@ class RentalsUnitedClient {
     async pullListReservations(dateFrom, dateTo, locationId = 0) {
         const xmlBody = `<Pull_ListReservations_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <DateFrom>${dateFrom}</DateFrom>
  <DateTo>${dateTo}</DateTo>
@@ -119,7 +119,7 @@ class RentalsUnitedClient {
 
     // 5. Create Confirmed Reservation (Push_PutConfirmedReservationMulti_RQ)
     async pushPutConfirmedReservation(reservationData) {
-        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ><Authentication><UserName>${this.username}</UserName><Password>${this.password}</Password></Authentication><Reservation><StayInfos><StayInfo><PropertyID>${reservationData.propertyId}</PropertyID><DateFrom>${reservationData.dateFrom}</DateFrom><DateTo>${reservationData.dateTo}</DateTo><NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests><Costs><RUPrice>${reservationData.ruPrice}</RUPrice><ClientPrice>${reservationData.clientPrice}</ClientPrice><AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid></Costs></StayInfo></StayInfos><CustomerInfo><Name>${reservationData.customerName}</Name><SurName>${reservationData.customerSurname}</SurName><Email>${reservationData.customerEmail}</Email><Phone>${reservationData.customerPhone || ''}</Phone></CustomerInfo><Comments>${reservationData.comments || ''}</Comments></Reservation><QuoteModeId>2</QuoteModeId></Push_PutConfirmedReservationMulti_RQ>`;
+        const xmlBody = `<Push_PutConfirmedReservationMulti_RQ><Authentication><AccessKey>${this.accessKey}</AccessKey><SecretKey>${this.secretKey}</SecretKey></Authentication><Reservation><StayInfos><StayInfo><PropertyID>${reservationData.propertyId}</PropertyID><DateFrom>${reservationData.dateFrom}</DateFrom><DateTo>${reservationData.dateTo}</DateTo><NumberOfGuests>${reservationData.numberOfGuests}</NumberOfGuests><Costs><RUPrice>${reservationData.ruPrice}</RUPrice><ClientPrice>${reservationData.clientPrice}</ClientPrice><AlreadyPaid>${reservationData.alreadyPaid}</AlreadyPaid></Costs></StayInfo></StayInfos><CustomerInfo><Name>${reservationData.customerName}</Name><SurName>${reservationData.customerSurname}</SurName><Email>${reservationData.customerEmail}</Email><Phone>${reservationData.customerPhone || ''}</Phone></CustomerInfo><Comments>${reservationData.comments || ''}</Comments></Reservation><QuoteModeId>2</QuoteModeId></Push_PutConfirmedReservationMulti_RQ>`;
 
         return await this.makeRequest(xmlBody);
     }
@@ -128,8 +128,8 @@ class RentalsUnitedClient {
     async pushPutConfirmedReservationMulti(reservationData) {
         const xmlBody = `<Push_PutConfirmedReservationMulti_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <Reservation>
    <StayInfos>
@@ -166,8 +166,8 @@ class RentalsUnitedClient {
     async pushCancelReservation(reservationId, cancelTypeId = 2) {
         const xmlBody = `<Push_CancelReservation_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <ReservationID>${reservationId}</ReservationID>
  <CancelTypeID>${cancelTypeId}</CancelTypeID>
@@ -180,8 +180,8 @@ class RentalsUnitedClient {
     async pullListPropertyAvailabilityCalendar(propertyId, dateFrom, dateTo) {
         const xmlBody = `<Pull_ListPropertyAvailabilityCalendar_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <PropertyID>${propertyId}</PropertyID>
  <DateFrom>${dateFrom}</DateFrom>
@@ -195,8 +195,8 @@ class RentalsUnitedClient {
     async pullListPropertyPrices(propertyId, dateFrom, dateTo, pricingModelMode = 0) {
         const xmlBody = `<Pull_ListPropertyPrices_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <PropertyID>${propertyId}</PropertyID>
  <DateFrom>${dateFrom}</DateFrom>
@@ -211,8 +211,8 @@ class RentalsUnitedClient {
     async registerWebhook(handlerUrl) {
         const xmlBody = `<LNM_PutHandlerUrl_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
  <HandlerUrl>${handlerUrl}</HandlerUrl>
 </LNM_PutHandlerUrl_RQ>`;
@@ -224,8 +224,8 @@ class RentalsUnitedClient {
     async unregisterWebhook() {
         const xmlBody = `<LNM_PutHandlerUrl_RQ>
  <Authentication>
-   <UserName>${this.username}</UserName>
-   <Password>${this.password}</Password>
+   <AccessKey>${this.accessKey}</AccessKey>
+   <SecretKey>${this.secretKey}</SecretKey>
  </Authentication>
 </LNM_PutHandlerUrl_RQ>`;
 

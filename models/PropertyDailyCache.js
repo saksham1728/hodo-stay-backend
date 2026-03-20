@@ -33,6 +33,11 @@ const propertyDailyCacheSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
+  currency: {
+    type: String,
+    default: 'INR',
+    enum: ['INR']
+  },
   
   // Metadata
   lastSynced: {

@@ -52,7 +52,7 @@ class UnitController {
   async getUnitAvailabilityPrice(req, res) {
     try {
       const { unitId } = req.params;
-      const { dateFrom, dateTo, guests, currency = 'USD' } = req.query;
+      const { dateFrom, dateTo, guests, currency = 'INR' } = req.query;
       
       if (!dateFrom || !dateTo) {
         return res.status(400).json({

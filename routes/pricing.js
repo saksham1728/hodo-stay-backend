@@ -12,6 +12,10 @@ router.get('/search', pricingController.searchAvailableUnits);
 // GET /api/pricing/unit/:unitId?checkIn=2024-03-01&checkOut=2024-03-04
 router.get('/unit/:unitId', pricingController.getUnitPricing);
 
+// Check availability for specific unit and dates (final check before payment)
+// POST /api/pricing/check-availability
+router.post('/check-availability', pricingController.checkAvailability);
+
 // Trigger manual sync (admin)
 // POST /api/pricing/sync
 router.post('/sync', pricingController.triggerSync);

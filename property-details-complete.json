@@ -1,0 +1,5709 @@
+{
+  "fetchedAt": "2026-03-20T05:03:02.912Z",
+  "currency": "INR",
+  "hsrProperties": [
+    {
+      "propertyId": "3894210",
+      "puid": "1258016067986860829",
+      "name": "HSR0301-401 - Modern Smart 2BHK Aparthotel in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-11-24 19:37:26",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+917483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719866879578.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719801956606.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719807461581.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719814961765.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719819649220.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719824805592.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719832171768.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719837484410.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719844359440.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721402348839.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721385807641.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719848734504.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719855152505.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719860933885.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719872347982.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719877356180.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721382057504.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721394815124.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721415486163.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638654512494333584.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638654512552936392.jpeg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [
+        {
+          "languageId": "1",
+          "imageReferenceId": "20",
+          "caption": "Utility Area"
+        },
+        {
+          "languageId": "1",
+          "imageReferenceId": "21",
+          "caption": "Toiletries"
+        }
+      ],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "209",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "182",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \r\nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \r\nRelax in our rooftop community area, with concierge and caretaker services available. \r\nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\r\n\r\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience.",
+      "accessDescription": "Guests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \r\nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \r\nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.",
+      "interactionDescription": "Our friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \r\nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "spaceDescription": "Each apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \r\n\r\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \r\n\r\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894211",
+      "puid": "1261707340197886750",
+      "name": "HSR0301-201 - Cozy 2BHK Aparthotel with Fast WiFi in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-11-24 19:32:56",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "0",
+      "standardGuests": "6",
+      "canSleepMax": "6",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+917483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093089664549.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093150659067.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093211176219.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093269333506.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093321100410.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093372427480.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093376667014.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093450946726.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093529658541.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093607877444.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093712309510.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093750080362.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093830162822.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678094008772037.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678094072050686.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678094143699208.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678094273949504.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678094376079110.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678162226895410.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678162871064379.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "435",
+          "count": 1
+        },
+        {
+          "amenityId": "182",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "4",
+          "count": 1
+        },
+        {
+          "amenityId": "7",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "29",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "100",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "130",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1002",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1437",
+          "count": 1
+        },
+        {
+          "amenityId": "1838",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "600",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "725",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 2
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "Smoking - allowed",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894213",
+      "puid": "1261710981463601448",
+      "name": "HSR0301-501 - Luxury Cozy 3BHK with Courtyard in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-11-24 19:34:32",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "214",
+      "standardGuests": "1",
+      "canSleepMax": "8",
+      "floor": "5",
+      "numberOfFloors": "6",
+      "noOfUnits": "1",
+      "propertyTypeId": "4",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+917483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678127957756093.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678128702827097.JPG",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678128458670434.JPG",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129489729823.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129423642082.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678128491248615.JPG",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129672552010.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129721962580.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129825880430.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129932090783.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678129970396541.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130120940932.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130167851356.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130230976522.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130275731268.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130334743810.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130383742933.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130493106907.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130535799163.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130585681829.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130666469139.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "22",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130807305969.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "23",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678130911862198.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "24",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678151750705757.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "25",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678151791313149.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "26",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678151827677747.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "27",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678152052343129.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "28",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678152089258165.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "29",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678152174982571.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "324",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "115",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        },
+        {
+          "compositionRoomId": "53"
+        },
+        {
+          "compositionRoomId": "53"
+        },
+        {
+          "compositionRoomId": "53"
+        }
+      ],
+      "description": "Welcome to our spacious 3BHK apartment, located in  HSR Layout, Bangalore. \nThis elegant apartment features three well-appointed bedrooms, a cozy living area, and a private balcony to enjoy fresh air and city views. \nWith high-speed WiFi, a fully equipped kitchen, and modern amenities like TV, AC, and a washing machine, this apartment is perfect for both business and leisure travelers. \nEnjoy daily housekeeping, concierge service, and easy access to local tech hubs, restaurants, and shopping.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to the 3BHK apartment, including three bedrooms, the living area, a fully equipped kitchen, and bathrooms. \nYou’ll also enjoy the private balcony, perfect for relaxing or taking in the views. \nIn addition, guests can use the building’s rooftop community area, ground-level parking, and the lift for easy access. \nDaily housekeeping and concierge services are available to make your stay comfortable.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894214",
+      "puid": "1264630669983797883",
+      "name": "HSR0301-601 - Brand New| Luxury 2BHK penthouse",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-12-02 15:04:24",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9072557070358",
+        "longitude": "77.6416309539673"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "6",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678107112635403.JPG",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678105808615120.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106015501212.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106842153087.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678105877109809.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106911185083.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678105913555988.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678105995486013.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106208002550.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106379884559.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106453614477.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106536199132.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106606878346.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106661760521.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106098225491.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106731827272.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678106801644627.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678107029558717.JPG",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678107080733245.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678107122174231.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894214/638678156981643051.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Experience luxury at its finest in our exclusive 2BHK penthouse at Hodo Stay, located in the heart of HSR Layout, Bangalore. \nThis spacious, top-floor retreat offers stunning views from the private terrace, along with high-speed WiFi, a fully equipped kitchen, and modern amenities like TV, AC, and a washing machine. \nPerfect for business or leisure, enjoy daily housekeeping, concierge service, and easy access to local tech hubs, eateries, and shops. \nYour urban escape awaits!\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to the private 2BHK penthouse, including two bedrooms, a spacious living area, a fully equipped kitchen, and modern bathrooms. \nYou’ll also enjoy exclusive use of the penthouse's private terrace with stunning views. \nIn addition, guests can use the building’s rooftop community area, ground-level parking, and the lift for easy access. \nDaily housekeeping and concierge services are included to enhance your stay.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894215",
+      "puid": "1265214367088390355",
+      "name": "HSR0301-301 - Sustainable Eco-Friendly Smart 2BHK in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2025-09-09 08:55:00",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "6",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139318621474.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139131115696.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678138569154584.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139046524992.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139185689199.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139072008927.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139192572289.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678138913594800.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139295166778.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139376521784.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139422025143.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139450037854.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139508409497.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139550790722.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139600362431.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139654937082.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678138976925164.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139707515644.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139734249560.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139782854571.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894215/638678139839967552.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894216",
+      "puid": "1266642532271438097",
+      "name": "HSR0301-402 - Luxury 2BHK in HSR Layout - High Speed WiFi|AC",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-12-13 06:13:19",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "107",
+      "standardGuests": "1",
+      "canSleepMax": "6",
+      "floor": "0",
+      "numberOfFloors": "4",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779851954533.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779225615580.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779285985435.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779345949497.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779479980050.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779561619014.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779610644337.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779658024077.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779709590583.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779752440457.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779799881790.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779918889220.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779962539311.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779984587039.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679779992406278.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679780029757963.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894216/638679780096379177.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894217",
+      "puid": "1266675326608751939",
+      "name": "HSR0301-102 - New Smart 2BHK in HSR Layout – High Speed WiFi|AC",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2024-11-24 19:36:13",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "6",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+917483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069600057749.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069620731811.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678068986265193.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069169240758.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517393490745.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069289633534.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517415123480.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069358261143.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069414888729.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517448432597.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069460860412.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517467573037.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069504175203.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517475776786.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069578127158.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517489917589.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069677119937.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517492782094.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069698385459.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517505865116.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069797688784.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "22",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517535729914.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "23",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069838190406.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "24",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517540466769.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "25",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069740610381.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "26",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517549870196.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "27",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069885254682.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "28",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517554628488.jpeg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "29",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678069932325214.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "30",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638678070024637780.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "31",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894217/638654517565922609.jpeg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "434",
+          "count": 1
+        },
+        {
+          "amenityId": "395",
+          "count": 1
+        },
+        {
+          "amenityId": "395",
+          "count": 1
+        },
+        {
+          "amenityId": "434",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "182",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "4",
+          "count": 1
+        },
+        {
+          "amenityId": "7",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "100",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "733",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1002",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "Pets - not allowed\r\nSmoking - allowed",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3894219",
+      "puid": "1266700413210078272",
+      "name": "HSR0301-202 - New Premium 2BHK Aparthotel in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-10-25",
+      "lastMod": "2025-01-10 09:38:28",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9088871106577",
+        "longitude": "77.6415236656067"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755718192165.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755878591325.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755725857176.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755733211260.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755739478264.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755748597142.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755761575570.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755764700608.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755788507056.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755798366734.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755801960358.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755807741717.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894219/638679755815874428.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3904648",
+      "puid": "1287482702321061180",
+      "name": "HSR0301-101 - Modern 2BHK in HSR Layout",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-11-21",
+      "lastMod": "2025-10-15 07:57:11",
+      "isActive": true,
+      "location": {
+        "street": "17th Main Road, Sector 3",
+        "zipCode": "560102",
+        "latitude": "12.9064671146342",
+        "longitude": "77.6417022497376"
+      },
+      "space": "107",
+      "standardGuests": "4",
+      "canSleepMax": "5",
+      "floor": "1",
+      "numberOfFloors": "6",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [
+        {
+          "imageTypeId": "1",
+          "imageReferenceId": "1",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679704701211061.jpg",
+          "isPrimary": true
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "2",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709141042320.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "3",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709186406671.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "4",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709232410446.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "5",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709240241921.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "6",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709256321903.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "7",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709296231749.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "8",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709320872041.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "9",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709339309860.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "10",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709366713033.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "11",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709393611625.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "12",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709427180529.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "13",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709464167198.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "14",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679710792810820.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "15",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709533269197.JPG",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "16",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709540651215.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "17",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709609229588.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "18",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709662362331.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "19",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709695331423.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "20",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709725233292.jpg",
+          "isPrimary": false
+        },
+        {
+          "imageTypeId": "3",
+          "imageReferenceId": "21",
+          "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3904648/638679709781790529.jpg",
+          "isPrimary": false
+        }
+      ],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    },
+    {
+      "propertyId": "3905815",
+      "puid": "-1",
+      "name": "HSR0301-302 - New | Stylish 2BHK Aparthotel in HSR Layout ",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2024-11-24",
+      "lastMod": "2025-01-10 10:54:13",
+      "isActive": true,
+      "location": {
+        "street": "17th A Main Road",
+        "zipCode": "560102",
+        "latitude": "12.9073812",
+        "longitude": "77.6417597"
+      },
+      "space": "107",
+      "standardGuests": "1",
+      "canSleepMax": "4",
+      "floor": "3",
+      "numberOfFloors": "6",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "13:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 7483413235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "1866",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "8",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "174",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        },
+        {
+          "amenityId": "408",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern 2BHK apartments are perfect for both business and leisure travellers. \nEnjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping. \nRelax in our rooftop community area, with concierge and caretaker services available. \nWith ground-level parking, lift access, and proximity to tech hubs, Hodo Stays offers the perfect blend of comfort, convenience, and urban living.\n\nHodo stays is a premium apartment building in the vibrant HSR Layout, Bangalore, offering a range of modern 2BHK and 3BHK units, including a luxurious penthouse. Spread across six floors, our property is designed for both comfort and convenience. \n\nEach apartment includes well-furnished bedrooms, a cozy living area with a TV and WiFi, a fully equipped kitchen with a gas stove, a oven, a refrigerator,  a washing machine, and essential toiletries. You'll also find premium bed linens and bath towels provided. \n\nThe building features ground-level parking, a lift for easy access to all floors, and a community area on the terrace where guests can relax and enjoy the views. Guests also enjoy services like daily housekeeping, a concierge, and a caretaker.  \n\nHodo stays combines the ease of urban living with exceptional hospitality, making it ideal for both short and long-term stays. Every detail is designed to provide a comfortable and memorable stay.\n\nGuests have full access to their private 2BHK apartment, including the kitchen, living room, bedrooms, bathrooms, and utility area. \nYou are also welcome to use the rooftop community area, where you can relax and enjoy the views or socialize with other guests. \nGround-level parking is available for your convenience. The lift provides easy access to all floors of the building.\n\nOur friendly caretaker is on-site and available to assist with any immediate needs or requests during your stay. \nWe also offer concierge service to help with local recommendations, transportation, and any other queries you may have. Should you need further assistance, we are always just a phone call or message away to ensure your stay is as comfortable as possible.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": "",
+      "cancellationPolicy": {
+        "validFrom": "0",
+        "validTo": "1",
+        "percentage": "100.00"
+      }
+    }
+  ],
+  "jpnProperties": [
+    {
+      "propertyId": "4485194",
+      "puid": "1609277397026443460",
+      "name": "JPN0701-101 ",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 11:55:29",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8836148749555",
+        "longitude": "77.5852786665275"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Hodo: Sol is a professionally managed 2BHK aparthotel in JP Nagar, designed for travellers who value space, calm, and reliability. Whether you're here for work, family, or medical visits, you'll find a clean, thoughtfully designed apartment with everything you need for a comfortable extended stay.\nThis is not a homestay. It's a modern serviced apartment with consistent hospitality standards.\n\nThe Space\nA bright, well-planned two-bedroom apartment with a living room, fully equipped kitchen, and dedicated workspace. The interiors are minimal and calming. Clean lines, quality furnishings, and plenty of natural light.\nBoth bedrooms are spacious and private. The kitchen comes with essentials for self-catering. The living area is designed to double as a work or relaxation zone.\nEverything is maintained to aparthotel standards: fresh linens, regular housekeeping, and prompt service.\n\nLocation\nLocated in a quiet pocket of JP Nagar, near MS Ramaiah City Layout. You're close to hospitals, offices, and local conveniences, but far enough from the noise.\nEasy access to major business districts and transport links. Restaurants, pharmacies, and supermarkets are a short drive away.\n\nWho This Is For\nCorporate professionals on assignment or project work\nFamilies visiting for medical care or relocation\nLong-stay guests who need a functional, comfortable base\nAnyone looking for the reliability of a serviced apartment without hotel formality\n\nWhy Hodo\nHodo operates aparthotels, not homestays. That means professional management, consistent quality, and service you can count on. We design our spaces for real stays, not just photos.\nSol is part of our JP Nagar collection. Calm, capable, and ready when you are.\n\nHouse Rules:\nNo smoking indoors\nSuitable for infants and children\nQuiet hours after 10 PM\n\nYou'll have private access to the entire 2BHK apartment for the duration of your stay.\nEntry: Self check-in with a digital lock code or key handover at reception, depending on your arrival time. Instructions will be shared before arrival.\nCommon areas: You're welcome to use the parking area, lift, and building entrance. These are shared spaces with security cameras for your safety.\nOn-site support: Our reception team is available during business hours for any assistance. For urgent requests outside these hours, we're reachable by phone.\nThe apartment is yours to use as your own—cook, work, relax. We'll only enter for scheduled housekeeping or maintenance, with your prior consent.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485195",
+      "puid": "1611790224478459795",
+      "name": "JPN0701-401",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 11:54:48",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8836280968444",
+        "longitude": "77.5852484635629"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "11:00"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to a modern, fully serviced 2BHK aparthotel in Arekere, JP Nagar, designed for guests who value space, comfort, and reliability. Whether you're visiting Bangalore for work, medical appointments, relocation, or an extended stay, this home blends apartment-style living with hotel-level service.\n\nLocated in a calm residential pocket near Arekere, the property offers excellent connectivity while maintaining a quiet, private atmosphere.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485197",
+      "puid": "1618273498263356509",
+      "name": "JPN0701-301",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 11:56:11",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8836439796523",
+        "longitude": "77.5852659486572"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.\n\nAbout This Space:\nExperience modern comfort in this penthouse studio at JP Nagar 7th Phase, thoughtfully designed for business travelers, medical visitors, and extended stays in South Bangalore. Featuring a fully private terrace, dedicated workspace, and complete kitchen, this studio combines the independence of an apartment with the reliability of professional aparthotel management.\nStrategically located near major hospitals, institutions, and business hubs, it's an ideal base for both short visits and longer stays.\n\nThe Space:\nSpacious 2BHK with excellent natural light\nFully equipped kitchen for home cooking\nDedicated workspace with high-speed WiFi\nAir-conditioning for year-round comfort\nModern bathroom with quality amenities\nAmple storage for extended stays\n\nDesigned for guests who value independence, comfort, and tranquility.\n\nWhy Guests Choose This Stay:\nPeaceful residential setting in well-connected JP Nagar 7th Phase\nPerfect for remote work and medical stay requirements\nProfessionally managed under the trusted Hodo brand\nReliable housekeeping and responsive on-ground support\n\nThe Neighborhood:\nConveniently located with easy access to:\nFortis Hospital and Apollo Hospital\nIndian Institute of Management Bangalore (IIMB)\nWeWork and business centers\nBannerghatta Road\nIndian Music Experience Museum\n\nThe property is surrounded by cafes, supermarkets, and daily conveniences while nestled in a quiet residential area that ensures restful nights.\n\nPerfect For:\nMedical visitors and caregivers needing nearby hospital access\nSolo business travelers and remote workers\nProfessionals relocating to Bangalore\nCouples seeking privacy and modern amenities\nAnyone requiring a comfortable long-term base in South Bangalore\n\nYou'll have complete private access to the entire 2BHK apartment throughout your stay. The building entrance is secured, and you'll receive check-in instructions with access details prior to arrival.\n\nYou will also have access to:\n• Common building entrance and lobby areas\n• Common terrace (5th floor)\n• Designated parking (subject to availability)\n\nPlease note: The building has lift access up to the 4th floor.  Our team is available to assist with luggage if needed.\n\nOur on-ground support team is reachable 24/7 for any assistance, questions, or requests during your stay. While we respect your privacy, we're always just a call away when you need us.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485199",
+      "puid": "1618287152716244955",
+      "name": "JPN0701-102",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 12:00:51",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8833226149199",
+        "longitude": "77.5853343758263"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.\n\nAbout This Space:\nExperience modern comfort in this penthouse studio at JP Nagar 7th Phase, thoughtfully designed for business travelers, medical visitors, and extended stays in South Bangalore. Featuring a fully private terrace, dedicated workspace, and complete kitchen, this studio combines the independence of an apartment with the reliability of professional aparthotel management.\nStrategically located near major hospitals, institutions, and business hubs, it's an ideal base for both short visits and longer stays.\n\nThe Space:\nSpacious 2BHK with excellent natural light\nFully equipped kitchen for home cooking\nDedicated workspace with high-speed WiFi\nAir-conditioning for year-round comfort\nModern bathroom with quality amenities\nAmple storage for extended stays\n\nDesigned for guests who value independence, comfort, and tranquility.\n\nWhy Guests Choose This Stay:\nPeaceful residential setting in well-connected JP Nagar 7th Phase\nPerfect for remote work and medical stay requirements\nProfessionally managed under the trusted Hodo brand\nReliable housekeeping and responsive on-ground support\n\nThe Neighborhood:\nConveniently located with easy access to:\nFortis Hospital and Apollo Hospital\nIndian Institute of Management Bangalore (IIMB)\nWeWork and business centers\nBannerghatta Road\nIndian Music Experience Museum\n\nThe property is surrounded by cafes, supermarkets, and daily conveniences while nestled in a quiet residential area that ensures restful nights.\n\nPerfect For:\nMedical visitors and caregivers needing nearby hospital access\nSolo business travelers and remote workers\nProfessionals relocating to Bangalore\nCouples seeking privacy and modern amenities\nAnyone requiring a comfortable long-term base in South Bangalore\n\nYou'll have complete private access to the entire 2BHK apartment throughout your stay. The building entrance is secured, and you'll receive check-in instructions with access details prior to arrival.\n\nYou will also have access to:\n• Common building entrance and lobby areas\n• Common terrace (5th floor)\n• Designated parking (subject to availability)\n\nPlease note: The building has lift access up to the 4th floor.  Our team is available to assist with luggage if needed.\n\nOur on-ground support team is reachable 24/7 for any assistance, questions, or requests during your stay. While we respect your privacy, we're always just a call away when you need us.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485200",
+      "puid": "1620173160021352588",
+      "name": "JPN0701-201",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 12:01:31",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.883574769796",
+        "longitude": "77.5852845614619"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.\n\nAbout This Space:\nExperience modern comfort in this penthouse studio at JP Nagar 7th Phase, thoughtfully designed for business travelers, medical visitors, and extended stays in South Bangalore. Featuring a fully private terrace, dedicated workspace, and complete kitchen, this studio combines the independence of an apartment with the reliability of professional aparthotel management.\nStrategically located near major hospitals, institutions, and business hubs, it's an ideal base for both short visits and longer stays.\n\nThe Space:\nSpacious 2BHK with excellent natural light\nFully equipped kitchen for home cooking\nDedicated workspace with high-speed WiFi\nAir-conditioning for year-round comfort\nModern bathroom with quality amenities\nAmple storage for extended stays\n\nDesigned for guests who value independence, comfort, and tranquility.\n\nWhy Guests Choose This Stay:\nPeaceful residential setting in well-connected JP Nagar 7th Phase\nPerfect for remote work and medical stay requirements\nProfessionally managed under the trusted Hodo brand\nReliable housekeeping and responsive on-ground support\n\nThe Neighborhood:\nConveniently located with easy access to:\nFortis Hospital and Apollo Hospital\nIndian Institute of Management Bangalore (IIMB)\nWeWork and business centers\nBannerghatta Road\nIndian Music Experience Museum\n\nThe property is surrounded by cafes, supermarkets, and daily conveniences while nestled in a quiet residential area that ensures restful nights.\n\nPerfect For:\nMedical visitors and caregivers needing nearby hospital access\nSolo business travelers and remote workers\nProfessionals relocating to Bangalore\nCouples seeking privacy and modern amenities\nAnyone requiring a comfortable long-term base in South Bangalore\n\nYou'll have complete private access to the entire 2BHK apartment throughout your stay. The building entrance is secured, and you'll receive check-in instructions with access details prior to arrival.\n\nYou will also have access to:\n• Common building entrance and lobby areas\n• Common terrace (5th floor)\n• Designated parking (subject to availability)\n\nPlease note: The building has lift access up to the 4th floor.  Our team is available to assist with luggage if needed.\n\nOur on-ground support team is reachable 24/7 for any assistance, questions, or requests during your stay. While we respect your privacy, we're always just a call away when you need us.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485201",
+      "puid": "1620196661171642696",
+      "name": "JPN0701-202",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 12:03:11",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8835742520733",
+        "longitude": "77.585276675856"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485202",
+      "puid": "1620201201541603763",
+      "name": "JPN0701-302",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 12:04:02",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.8832925579541",
+        "longitude": "77.5853324836681"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.\n\nAbout This Space:\nExperience modern comfort in this penthouse studio at JP Nagar 7th Phase, thoughtfully designed for business travelers, medical visitors, and extended stays in South Bangalore. Featuring a fully private terrace, dedicated workspace, and complete kitchen, this studio combines the independence of an apartment with the reliability of professional aparthotel management.\nStrategically located near major hospitals, institutions, and business hubs, it's an ideal base for both short visits and longer stays.\n\nThe Space:\nSpacious 2BHK with excellent natural light\nFully equipped kitchen for home cooking\nDedicated workspace with high-speed WiFi\nAir-conditioning for year-round comfort\nModern bathroom with quality amenities\nAmple storage for extended stays\n\nDesigned for guests who value independence, comfort, and tranquility.\n\nWhy Guests Choose This Stay:\nPeaceful residential setting in well-connected JP Nagar 7th Phase\nPerfect for remote work and medical stay requirements\nProfessionally managed under the trusted Hodo brand\nReliable housekeeping and responsive on-ground support\n\nThe Neighborhood:\nConveniently located with easy access to:\nFortis Hospital and Apollo Hospital\nIndian Institute of Management Bangalore (IIMB)\nWeWork and business centers\nBannerghatta Road\nIndian Music Experience Museum\n\nThe property is surrounded by cafes, supermarkets, and daily conveniences while nestled in a quiet residential area that ensures restful nights.\n\nPerfect For:\nMedical visitors and caregivers needing nearby hospital access\nSolo business travelers and remote workers\nProfessionals relocating to Bangalore\nCouples seeking privacy and modern amenities\nAnyone requiring a comfortable long-term base in South Bangalore\n\nYou'll have complete private access to the entire 2BHK apartment throughout your stay. The building entrance is secured, and you'll receive check-in instructions with access details prior to arrival.\n\nYou will also have access to:\n• Common building entrance and lobby areas\n• Common terrace (5th floor)\n• Designated parking (subject to availability)\n\nPlease note: The building has lift access up to the 4th floor.  Our team is available to assist with luggage if needed.\n\nOur on-ground support team is reachable 24/7 for any assistance, questions, or requests during your stay. While we respect your privacy, we're always just a call away when you need us.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485203",
+      "puid": "1620203705076301342",
+      "name": "JPN0701-402",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 12:04:15",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203/206",
+        "zipCode": "560076",
+        "latitude": "12.883591685965",
+        "longitude": "77.5852359006483"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "5",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "3",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        },
+        {
+          "compositionRoomId": "249"
+        }
+      ],
+      "description": "Welcome to your Hodo home in JP Nagar 7th Phase. This modern 2BHK apartment is perfect for families, professionals, or extended stays in Bangalore.\nEnjoy two comfortable bedrooms, a fully equipped kitchen, and a bright living area. Professionally managed with high-speed WiFi, fresh linens, and 24/7 support. Lift access to 4th floor with one flight of stairs to reach the apartment.\nLocated in peaceful JP Nagar with restaurants, cafes, and supermarkets nearby. Ideal for both work and relaxation.\n\nAbout This Space:\nExperience modern comfort in this penthouse studio at JP Nagar 7th Phase, thoughtfully designed for business travelers, medical visitors, and extended stays in South Bangalore. Featuring a fully private terrace, dedicated workspace, and complete kitchen, this studio combines the independence of an apartment with the reliability of professional aparthotel management.\nStrategically located near major hospitals, institutions, and business hubs, it's an ideal base for both short visits and longer stays.\n\nThe Space:\nSpacious 2BHK with excellent natural light\nFully equipped kitchen for home cooking\nDedicated workspace with high-speed WiFi\nAir-conditioning for year-round comfort\nModern bathroom with quality amenities\nAmple storage for extended stays\n\nDesigned for guests who value independence, comfort, and tranquility.\n\nWhy Guests Choose This Stay:\nPeaceful residential setting in well-connected JP Nagar 7th Phase\nPerfect for remote work and medical stay requirements\nProfessionally managed under the trusted Hodo brand\nReliable housekeeping and responsive on-ground support\n\nThe Neighborhood:\nConveniently located with easy access to:\nFortis Hospital and Apollo Hospital\nIndian Institute of Management Bangalore (IIMB)\nWeWork and business centers\nBannerghatta Road\nIndian Music Experience Museum\n\nThe property is surrounded by cafes, supermarkets, and daily conveniences while nestled in a quiet residential area that ensures restful nights.\n\nPerfect For:\nMedical visitors and caregivers needing nearby hospital access\nSolo business travelers and remote workers\nProfessionals relocating to Bangalore\nCouples seeking privacy and modern amenities\nAnyone requiring a comfortable long-term base in South Bangalore\n\nYou'll have complete private access to the entire 2BHK apartment throughout your stay. The building entrance is secured, and you'll receive check-in instructions with access details prior to arrival.\n\nYou will also have access to:\n• Common building entrance and lobby areas\n• Common terrace (5th floor)\n• Designated parking (subject to availability)\n\nPlease note: The building has lift access up to the 4th floor.  Our team is available to assist with luggage if needed.\n\nOur on-ground support team is reachable 24/7 for any assistance, questions, or requests during your stay. While we respect your privacy, we're always just a call away when you need us.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    },
+    {
+      "propertyId": "4485196",
+      "puid": "1613685901769460655",
+      "name": "JPN0701-501 ",
+      "ownerId": "725503",
+      "detailedLocationId": "41982",
+      "dateCreated": "2026-02-13",
+      "lastMod": "2026-02-13 11:53:46",
+      "isActive": true,
+      "location": {
+        "street": "5th Main Road 203",
+        "zipCode": "560076",
+        "latitude": "12.88361783281",
+        "longitude": "77.5852874063293"
+      },
+      "space": "0",
+      "standardGuests": "1",
+      "canSleepMax": "2",
+      "floor": "0",
+      "noOfUnits": "1",
+      "propertyTypeId": "2",
+      "objectTypeId": "3",
+      "checkInOut": {
+        "checkInFrom": "14:00",
+        "checkInTo": "00:00",
+        "checkOutUntil": "23:59"
+      },
+      "pricing": {
+        "cleaningPrice": "0.0000",
+        "deposit": "0",
+        "securityDeposit": "0.00"
+      },
+      "contact": {
+        "email": "hello@hodostays.com",
+        "phone": "+91 74834 13235"
+      },
+      "images": [],
+      "imageCaptions": [],
+      "amenities": [
+        {
+          "amenityId": "485",
+          "count": 1
+        },
+        {
+          "amenityId": "497",
+          "count": 1
+        },
+        {
+          "amenityId": "499",
+          "count": 1
+        },
+        {
+          "amenityId": "589",
+          "count": 1
+        },
+        {
+          "amenityId": "590",
+          "count": 1
+        },
+        {
+          "amenityId": "661",
+          "count": 1
+        },
+        {
+          "amenityId": "689",
+          "count": 1
+        },
+        {
+          "amenityId": "702",
+          "count": 1
+        },
+        {
+          "amenityId": "792",
+          "count": 1
+        },
+        {
+          "amenityId": "798",
+          "count": 1
+        },
+        {
+          "amenityId": "829",
+          "count": 1
+        },
+        {
+          "amenityId": "941",
+          "count": 1
+        },
+        {
+          "amenityId": "955",
+          "count": 1
+        },
+        {
+          "amenityId": "973",
+          "count": 1
+        },
+        {
+          "amenityId": "978",
+          "count": 1
+        },
+        {
+          "amenityId": "1211",
+          "count": 1
+        },
+        {
+          "amenityId": "1276",
+          "count": 1
+        },
+        {
+          "amenityId": "1278",
+          "count": 1
+        },
+        {
+          "amenityId": "1319",
+          "count": 1
+        },
+        {
+          "amenityId": "1327",
+          "count": 1
+        },
+        {
+          "amenityId": "1352",
+          "count": 1
+        },
+        {
+          "amenityId": "1840",
+          "count": 1
+        },
+        {
+          "amenityId": "1841",
+          "count": 1
+        },
+        {
+          "amenityId": "1846",
+          "count": 1
+        },
+        {
+          "amenityId": "1849",
+          "count": 1
+        },
+        {
+          "amenityId": "1853",
+          "count": 1
+        },
+        {
+          "amenityId": "1856",
+          "count": 1
+        },
+        {
+          "amenityId": "3",
+          "count": 1
+        },
+        {
+          "amenityId": "11",
+          "count": 1
+        },
+        {
+          "amenityId": "17",
+          "count": 1
+        },
+        {
+          "amenityId": "74",
+          "count": 1
+        },
+        {
+          "amenityId": "101",
+          "count": 1
+        },
+        {
+          "amenityId": "124",
+          "count": 1
+        },
+        {
+          "amenityId": "131",
+          "count": 1
+        },
+        {
+          "amenityId": "180",
+          "count": 1
+        },
+        {
+          "amenityId": "234",
+          "count": 1
+        },
+        {
+          "amenityId": "250",
+          "count": 1
+        },
+        {
+          "amenityId": "258",
+          "count": 1
+        }
+      ],
+      "compositionRooms": [
+        {
+          "compositionRoomId": "81"
+        },
+        {
+          "compositionRoomId": "257"
+        },
+        {
+          "compositionRoomId": "101"
+        }
+      ],
+      "description": "Stay in a bright and private penthouse studio designed for comfortable short and extended stays. Located on the top floor, this modern space offers natural light, peaceful surroundings, and the flexibility of apartment-style living.\n\nIdeal for solo travellers, couples, and work-from-Bangalore guests who prefer more space and privacy than a typical hotel room.\n\nExperience elevated living at this modern penthouse studio in JP Nagar 7th Phase, designed for business travellers, medical visitors, and extended stays in South Bangalore. \nWith a fully private terrace, dedicated workspace, and a complete kitchen, this studio offers the privacy of an apartment with the reliability of a professionally managed aparthotel.\n\nLocated close to major hospitals, institutions, and work hubs, this is an ideal base for both short and long stays.\n\n\nThe space:\n\n• Spacious open-layout penthouse studio\n• Fully equipped kitchen for everyday cooking\n• Fully private terrace for relaxing mornings or evenings\n• Dedicated workspace with high-speed Wi-Fi\n• Air-conditioning\n• Modern bathroom with essential amenities\n• Ample storage suitable for longer stays\n\nThoughtfully designed for guests who want independence, comfort, and quiet.\n\n\nWhy guests choose this stay:\n\n• Top-floor privacy with excellent ventilation\n• Calm residential setting in JP Nagar 7th Phase\n• Ideal setup for work-from-Bangalore and medical stays\n• Professionally managed under the Hodo brand\n• Reliable housekeeping and on-ground support\n\n\n\nConveniently located with easy access to:\n\n• Fortis Hospital\n• Apollo Hospital\n• Indian Institute of Management Bangalore\n• WeWork\n• Bannerghatta Road\n• JP Nagar residential complexes\n• Indian Music Experience Museum\n\nSurrounded by cafés, supermarkets, and daily essentials while remaining tucked inside a peaceful residential neighbourhood.\n\n\nIdeal For:\n\n✔ Medical visitors and caregivers\n✔ Solo business travellers\n✔ Remote workers needing a proper workspace\n✔ Long-stay and relocation guests\n✔ Couples seeking privacy and comfort\n\nGuests will have exclusive access to the entire penthouse studio, including the fully private terrace. The space is completely self-contained, ensuring privacy and independence throughout your stay.\n\nYou will also have access to:\n\n• Lift access to the top floor (till 4th floor)\n• Common building entrance and lobby areas\n• Common terrace\n• Designated parking (subject to availability)\n\nThis is a professionally managed Hodo property, so while you enjoy full privacy inside the studio, our support team is available if you need assistance during your stay.\n\n• This is a professionally managed aparthotel under the Hodo brand. Valid government ID is required at check-in as per local regulations.\n• The penthouse studio is located on the 5th floor. Lift access is available up to the 4th floor, and guests will need to use one flight of stairs to reach the studio.\n• The terrace is fully private but we request guests to use it responsibly, especially during late hours, as this is a residential neighbourhood.\n• Quiet hours are observed to respect neighbours.\n• Housekeeping is provided based on booking duration. Additional cleaning can be arranged upon request.\n• The kitchen is equipped for regular cooking; guests are requested to leave it in a reasonable condition.\n• Early check-in and late check-out are subject to availability.",
+      "accessDescription": "",
+      "interactionDescription": "",
+      "spaceDescription": "",
+      "houseRules": ""
+    }
+  ]
+}
