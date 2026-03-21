@@ -8,6 +8,10 @@ require('dotenv').config();
 
 const app = express();
 
+// Trust proxy - Required for Render and other reverse proxies
+// This allows express-rate-limit to correctly identify users by IP
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
