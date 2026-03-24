@@ -410,3 +410,68 @@ exports.getSyncStatus = async (req, res) => {
     });
   }
 };
+
+/**
+ * Calculate GST for a booking
+ * POST /api/pricing/calculate-gst
+ * Body: { totalPrice, nights, couponDiscount }
+ */
+exports.calculateGST = async (req, res) => {
+  try {
+    const { totalPrice, nights, couponDiscount = 0 } = req.body;
+
+    if (!totalPrice || !nights) {
+      return res.status(400).json({
+        success: false,
+        error: 'totalPrice and nights are required'
+      });
+    }
+
+    if (totalPrice <= 0 || nights <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'totalPrice and nights must be greater than zero'
+      });
+    }
+
+    const gstCalculator = require('../utils/gstCalculator');
+
+    // Calculate price after coupon
+    const priceAfterCoupon = totalPrice - couponDiscount;
+
+    if (priceAfterCoupon <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Price after coupon must be greater than zero'
+      });
+    }
+
+    // Calculate GST
+    const gstCalculation = gstCalculator.calculateGST(priceAfterCoupon, nights);
+
+    res.json({
+      success: true,
+      data: {
+        originalPrice: totalPrice,
+        couponDiscount: couponDiscount,
+        priceAfterCoupon: priceAfterCoupon,
+        gst: {
+          priceBeforeGST: gstCalculation.priceBeforeGST,
+          pricePerNight: gstCalculation.pricePerNight,
+          gstRate: gstCalculation.gstRate,
+          gstAmount: gstCalculation.gstAmount,
+          finalPrice: gstCalculation.finalPrice
+        },
+        breakdown: gstCalculation.breakdown
+      }
+    });
+
+  } catch (error) {
+    console.error('Error calculating GST:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to calculate GST',
+      details: error.message
+    });
+  }
+};

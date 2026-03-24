@@ -110,26 +110,38 @@ const bookingSchema = new mongoose.Schema({
 
   // Pricing Information
   pricing: {
+    // Base pricing from property
     ruPrice: {
       type: Number,
-      required: true
+      required: true,
+      // Price sent to Rentals United (after coupon, before GST) - what property owner receives
     },
     clientPrice: {
       type: Number,
-      required: true
+      required: true,
+      // Final price paid by client (with GST) - sent to RU as ClientPrice
     },
     alreadyPaid: {
       type: Number,
-      default: 0
+      default: 0,
+      // Amount already paid by customer (same as clientPrice for full payment)
     },
     currency: {
       type: String,
       default: 'INR'
     },
+    
     // Coupon discount tracking
-    originalPrice: Number, // Price before coupon
+    originalPrice: Number, // Original price before any discounts
     discountAmount: Number, // Amount discounted by coupon
-    finalPrice: Number // Price after coupon discount
+    finalPrice: Number, // Price after coupon discount (same as priceBeforeGST)
+    
+    // GST tracking
+    priceBeforeGST: Number, // Price before GST (after coupon if applied) - base for GST calculation
+    gstRate: Number, // GST percentage applied (5 or 18)
+    gstAmount: Number, // GST amount in INR
+    finalPriceWithGST: Number, // Final price including GST (what customer actually pays)
+    pricePerNight: Number // Per night price used for GST calculation
   },
 
   // Coupon Information

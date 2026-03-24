@@ -72,7 +72,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   
   // Start daily cache sync job
   const { startDailySyncJob } = require('./jobs/dailyCacheSync');
-  startDailySyncJob();
+  global.cronJobInfo = startDailySyncJob();
 })
 .catch((err) => {
   console.error('❌ MongoDB connection error:', err);
@@ -88,6 +88,48 @@ app.get('/health', (req, res) => {
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     version: '2.0.0'
   });
+});
+
+// Cron job status route
+app.get('/api/cron-status', async (req, res) => {
+  try {
+    const PropertyDailyCache = require('./models/PropertyDailyCache');
+    
+    // Get most recent cache record
+    const latestCache = await PropertyDailyCache.findOne().sort({ lastSynced: -1 });
+    
+    // Get cache statistics
+    const totalRecords = await PropertyDailyCache.countDocuments();
+    const Unit = require('./models/Unit');
+    const activeUnits = await Unit.countDocuments({ isActive: true, ruPropertyId: { $exists: true, $ne: null } });
+    
+    const cronInfo = global.cronJobInfo || {};
+    
+    res.json({
+      success: true,
+      serverTime: new Date().toISOString(),
+      serverTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      cronJob: {
+        isRunning: cronInfo.isRunning ? cronInfo.isRunning() : 'unknown',
+        lastSyncTime: cronInfo.getLastSync ? cronInfo.getLastSync() : null,
+        lastSyncResult: cronInfo.getLastResult ? cronInfo.getLastResult() : null,
+        nextScheduledRun: cronInfo.getNextRun ? cronInfo.getNextRun() : null
+      },
+      cache: {
+        totalRecords,
+        activeUnits,
+        expectedRecords: activeUnits * 181,
+        coverage: activeUnits > 0 ? ((totalRecords / (activeUnits * 181)) * 100).toFixed(2) + '%' : '0%',
+        latestSync: latestCache ? latestCache.lastSynced : null,
+        latestSyncAge: latestCache ? Math.floor((Date.now() - latestCache.lastSynced.getTime()) / (1000 * 60 * 60)) + ' hours ago' : 'never'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 // Root route
@@ -115,6 +157,42 @@ app.use('/api/pricing', require('./routes/pricing'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/webhooks', require('./routes/webhooks'));
 app.use('/api/coupons', require('./routes/coupons'));
+
+// Manual cache sync trigger (for testing/admin)
+app.post('/api/admin/trigger-sync', async (req, res) => {
+  try {
+    console.log('🔄 Manual cache sync triggered');
+    const propertyCacheSync = require('./services/propertyCacheSync');
+    const startTime = Date.now();
+    
+    const result = await propertyCacheSync.syncAllUnits();
+    await propertyCacheSync.cleanupOldData();
+    
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    
+    // Update global cron info
+    if (global.cronJobInfo && global.cronJobInfo.getLastSync) {
+      // This will be updated by the cron job itself
+    }
+    
+    res.json({
+      success: true,
+      message: 'Cache sync completed successfully',
+      result: {
+        successCount: result.successCount,
+        errorCount: result.errorCount,
+        duration: duration + 's',
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('❌ Manual sync failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 // 404 handler
 app.use('*', (req, res) => {

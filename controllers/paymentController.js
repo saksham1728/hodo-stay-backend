@@ -6,6 +6,7 @@ const { XMLParser } = require('fast-xml-parser');
 const emailService = require('../services/emailService');
 const mongoose = require('mongoose');
 const razorpayService = require('../services/razorpayService');
+const gstCalculator = require('../utils/gstCalculator');
 
 const xmlParser = new XMLParser();
 
@@ -180,7 +181,7 @@ class PaymentController {
         // Handle coupon if provided
         let couponDiscount = 0;
         let originalPrice = bookingData.pricing.clientPrice;
-        let finalPrice = bookingData.pricing.clientPrice;
+        let priceAfterCoupon = bookingData.pricing.clientPrice;
         let appliedCouponCode = null;
         let couponId = null;
 
@@ -210,7 +211,7 @@ class PaymentController {
             }
 
             couponDiscount = validation.discount.amount;
-            finalPrice = validation.discount.finalPrice;
+            priceAfterCoupon = validation.discount.finalPrice;
             originalPrice = validation.discount.originalPrice; // Use original price from validation
             appliedCouponCode = bookingData.couponCode.toUpperCase();
 
@@ -218,7 +219,7 @@ class PaymentController {
             const coupon = await Coupon.findOne({ code: appliedCouponCode }).session(session);
             couponId = coupon?._id;
 
-            console.log(`✅ Coupon validated: ${couponDiscount} discount, final price: ${finalPrice}`);
+            console.log(`✅ Coupon validated: ${couponDiscount} discount, price after coupon: ${priceAfterCoupon}`);
           } catch (couponError) {
             await session.abortTransaction();
             console.error('❌ Coupon validation failed:', couponError.message);
@@ -228,6 +229,48 @@ class PaymentController {
             });
           }
         }
+
+        // CRITICAL: Calculate GST on server side (after coupon discount)
+        console.log('💰 Calculating GST on server...');
+        let gstCalculation;
+        try {
+          gstCalculation = gstCalculator.calculateGST(priceAfterCoupon, nights);
+          console.log(`✅ GST calculated: ${gstCalculation.gstRate}% = ₹${gstCalculation.gstAmount}`);
+          console.log(`   Price before GST: ₹${gstCalculation.priceBeforeGST}`);
+          console.log(`   Final price with GST: ₹${gstCalculation.finalPrice}`);
+        } catch (gstError) {
+          await session.abortTransaction();
+          console.error('❌ GST calculation failed:', gstError.message);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to calculate GST'
+          });
+        }
+
+        // SECURITY: Validate that client sent the correct amount including GST
+        if (bookingData.pricing.finalPriceWithGST) {
+          const validation = gstCalculator.validateGSTCalculation(
+            bookingData.pricing.finalPriceWithGST,
+            priceAfterCoupon,
+            nights
+          );
+
+          if (!validation.valid) {
+            await session.abortTransaction();
+            console.error('❌ GST validation failed:', validation.error);
+            return res.status(400).json({
+              success: false,
+              message: validation.error,
+              details: {
+                expected: validation.expected,
+                received: validation.received
+              }
+            });
+          }
+          console.log('✅ Client GST calculation validated');
+        }
+
+        const finalPriceWithGST = gstCalculation.finalPrice;
 
         // Create booking in MongoDB
         const booking = new Booking({
@@ -250,13 +293,23 @@ class PaymentController {
           numberOfChildren: bookingData.numberOfChildren || 0,
           numberOfInfants: bookingData.numberOfInfants || 0,
           pricing: {
-            ruPrice: bookingData.pricing.ruPrice,
-            clientPrice: bookingData.pricing.clientPrice,
-            originalPrice: originalPrice,
-            discountAmount: couponDiscount,
-            finalPrice: finalPrice,
-            alreadyPaid: finalPrice,
-            currency: 'INR'
+            // RU API fields
+            ruPrice: priceAfterCoupon,           // Price after coupon (before GST) - for property owner
+            clientPrice: finalPriceWithGST,      // Final price with GST - what customer paid
+            alreadyPaid: finalPriceWithGST,      // Full amount paid by customer
+            currency: 'INR',
+            
+            // Coupon tracking
+            originalPrice: originalPrice,         // Original price before coupon
+            discountAmount: couponDiscount,       // Coupon discount amount
+            finalPrice: priceAfterCoupon,         // Price after coupon (same as priceBeforeGST)
+            
+            // GST tracking
+            priceBeforeGST: gstCalculation.priceBeforeGST,  // Price before GST (after coupon)
+            gstRate: gstCalculation.gstRate,                 // GST percentage (5 or 18)
+            gstAmount: gstCalculation.gstAmount,             // GST amount
+            finalPriceWithGST: finalPriceWithGST,            // Final price with GST
+            pricePerNight: gstCalculation.pricePerNight      // Per night price for GST calculation
           },
           appliedCoupon: appliedCouponCode,
           couponId: couponId,
@@ -273,6 +326,16 @@ class PaymentController {
         });
 
         await booking.save({ session });
+
+        console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
+        console.log('📊 Pricing Summary:');
+        console.log(`   - Original Price: ₹${originalPrice}`);
+        console.log(`   - Coupon Discount: ₹${couponDiscount}`);
+        console.log(`   - Price After Coupon: ₹${priceAfterCoupon}`);
+        console.log(`   - GST (${gstCalculation.gstRate}%): ₹${gstCalculation.gstAmount}`);
+        console.log(`   - Final Price (with GST): ₹${finalPriceWithGST}`);
+        console.log(`   - RU Price (sent to property): ₹${priceAfterCoupon}`);
+        console.log(`   - Client Price (sent to RU): ₹${finalPriceWithGST}`);
 
         // Apply coupon usage tracking
         if (appliedCouponCode) {
@@ -312,19 +375,31 @@ class PaymentController {
             console.log(`⚠️  Guest count (${bookingData.numberOfGuests}) exceeds max capacity (${maxGuests}). Using ${actualGuests} for RU API.`);
           }
 
-          // Use the ORIGINAL price (before discount) for RU reservation
-          // Coupon discount is absorbed by Hodo, not by RU
-          const ruPriceINR = originalPrice;
-          console.log(`💰 Using original price for RU reservation: ${ruPriceINR} INR (discount absorbed by Hodo)`);
+          // PRICING FOR RENTALS UNITED:
+          // - RUPrice: Price after coupon (before GST) - what property owner receives
+          // - ClientPrice: Final price with GST - what customer actually paid
+          // - AlreadyPaid: Same as ClientPrice - customer has paid in full
+          
+          const ruPrice = priceAfterCoupon; // Price after coupon, before GST
+          const clientPrice = finalPriceWithGST; // Final price including GST
+          const alreadyPaid = finalPriceWithGST; // Customer paid full amount
+          
+          console.log(`💰 RU Pricing Breakdown:`);
+          console.log(`   - Original Price: ₹${originalPrice}`);
+          console.log(`   - Coupon Discount: ₹${couponDiscount}`);
+          console.log(`   - Price After Coupon (RUPrice): ₹${ruPrice}`);
+          console.log(`   - GST (${gstCalculation.gstRate}%): ₹${gstCalculation.gstAmount}`);
+          console.log(`   - Client Price (with GST): ₹${clientPrice}`);
+          console.log(`   - Already Paid: ₹${alreadyPaid}`);
 
           const ruReservationData = {
             propertyId: unit.ruPropertyId,
             dateFrom: checkInDate.toISOString().split('T')[0],
             dateTo: checkOutDate.toISOString().split('T')[0],
             numberOfGuests: actualGuests,
-            ruPrice: ruPriceINR,
-            clientPrice: ruPriceINR,
-            alreadyPaid: ruPriceINR,
+            ruPrice: ruPrice,           // Price after coupon (before GST) - for property owner
+            clientPrice: clientPrice,   // Final price with GST - what customer paid
+            alreadyPaid: alreadyPaid,   // Full amount paid by customer
             customerName: bookingData.guestInfo.name,
             customerSurname: bookingData.guestInfo.surname,
             customerEmail: bookingData.guestInfo.email,
@@ -334,7 +409,11 @@ class PaymentController {
             comments: bookingData.specialRequests || ''
           };
 
-          console.log('📤 Pushing reservation to RU with cached INR price:', ruPriceINR);
+          console.log('📤 Pushing reservation to RU with pricing:', {
+            ruPrice,
+            clientPrice,
+            alreadyPaid
+          });
 
           const ruResponse = await ruClient.pushPutConfirmedReservationMulti(ruReservationData);
           const parsedResponse = xmlParser.parse(ruResponse);

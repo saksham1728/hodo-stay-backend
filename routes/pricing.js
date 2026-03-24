@@ -16,6 +16,10 @@ router.get('/unit/:unitId', pricingController.getUnitPricing);
 // POST /api/pricing/check-availability
 router.post('/check-availability', pricingController.checkAvailability);
 
+// Calculate GST for a booking
+// POST /api/pricing/calculate-gst
+router.post('/calculate-gst', pricingController.calculateGST);
+
 // Trigger manual sync (admin)
 // POST /api/pricing/sync
 router.post('/sync', pricingController.triggerSync);
