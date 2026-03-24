@@ -81,6 +81,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Health check route
 app.get('/health', (req, res) => {
+  // Optional: Uncomment to see keep-alive pings in logs
+  console.log('💓 Health check ping');
+  
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
