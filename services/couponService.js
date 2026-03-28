@@ -124,7 +124,7 @@ class CouponService {
     if (bookingAmount < coupon.minBookingAmount) {
       return {
         valid: false,
-        error: `Minimum booking amount of $${coupon.minBookingAmount} required`
+        error: `Minimum booking amount of Rs ${coupon.minBookingAmount} required`
       };
     }
 

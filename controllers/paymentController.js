@@ -178,6 +178,12 @@ class PaymentController {
         const checkOutDate = new Date(bookingData.checkOut);
         const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
+        console.log('📊 Received booking data:');
+        console.log(`   Original price from client: ₹${bookingData.pricing.clientPrice}`);
+        console.log(`   Nights: ${nights}`);
+        console.log(`   Coupon code: ${bookingData.couponCode || 'None'}`);
+        console.log(`   Final price with GST from client: ₹${bookingData.pricing.finalPriceWithGST || 'Not provided'}`);
+
         // Handle coupon if provided
         let couponDiscount = 0;
         let originalPrice = bookingData.pricing.clientPrice;
