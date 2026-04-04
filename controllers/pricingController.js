@@ -1,6 +1,7 @@
 const PropertyDailyCache = require('../models/PropertyDailyCache');
 const Unit = require('../models/Unit');
 const propertyCacheSync = require('../services/propertyCacheSync');
+const pricingMarkup = require('../utils/pricingMarkup');
 
 /**
  * Search available units with cached pricing
@@ -72,9 +73,20 @@ exports.searchAvailableUnits = async (req, res) => {
         continue; // Skip unavailable units
       }
 
-      // Calculate total price
-      const totalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+      // Calculate total price from cache
+      const baseTotalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+      
+      // Apply 10% markup
+      const totalPrice = pricingMarkup.applyMarkup(baseTotalPrice);
       const avgPricePerNight = totalPrice / nights;
+      const markupAmount = pricingMarkup.calculateMarkupAmount(baseTotalPrice);
+
+      console.log(`💰 Pricing for Unit ${unit._id} (${unit.name}):`);
+      console.log(`   Base Total (from cache): ₹${baseTotalPrice}`);
+      console.log(`   Markup (${pricingMarkup.getMarkupPercentage()}%): ₹${markupAmount}`);
+      console.log(`   Final Total (with markup): ₹${totalPrice}`);
+      console.log(`   Nights: ${nights}`);
+      console.log(`   Avg per night: ₹${avgPricePerNight.toFixed(2)}`);
 
       availableUnits.push({
         unitId: unit._id,
@@ -86,6 +98,9 @@ exports.searchAvailableUnits = async (req, res) => {
           location: unit.buildingId.location
         } : null,
         pricing: {
+          basePrice: Math.round(baseTotalPrice * 100) / 100,
+          markup: markupAmount,
+          markupPercentage: pricingMarkup.getMarkupPercentage(),
           totalPrice: Math.round(totalPrice * 100) / 100,
           pricePerNight: Math.round(avgPricePerNight * 100) / 100,
           currency: 'INR',
@@ -191,14 +206,36 @@ exports.getUnitPricing = async (req, res) => {
     // Check if all days are available
     const allAvailable = cachedDays.every(day => day.isAvailable);
 
-    // Calculate pricing
-    const totalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+    // Calculate pricing from cache
+    const baseTotalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+    
+    console.log(`\n💰 PRICING CALCULATION FOR UNIT ${unitId}`);
+    console.log(`${'='.repeat(60)}`);
+    console.log(`📅 Check-in: ${checkIn}`);
+    console.log(`📅 Check-out: ${checkOut}`);
+    console.log(`🌙 Nights: ${nights}`);
+    console.log(`\n📊 Daily Breakdown (from cache):`);
+    cachedDays.forEach((day, index) => {
+      console.log(`   Day ${index + 1} (${day.date.toISOString().split('T')[0]}): ₹${day.pricePerNight}`);
+    });
+    console.log(`\n💵 Base Total (from cache): ₹${baseTotalPrice}`);
+    
+    // Apply 10% markup
+    const totalPrice = pricingMarkup.applyMarkup(baseTotalPrice);
     const avgPricePerNight = totalPrice / nights;
+    const markupAmount = pricingMarkup.calculateMarkupAmount(baseTotalPrice);
+    
+    console.log(`➕ Markup (${pricingMarkup.getMarkupPercentage()}%): ₹${markupAmount}`);
+    console.log(`✅ Final Total (with markup): ₹${totalPrice}`);
+    console.log(`📊 Avg per night (with markup): ₹${avgPricePerNight.toFixed(2)}`);
+    console.log(`${'='.repeat(60)}\n`);
 
-    // Build daily breakdown
+    // Build daily breakdown with markup
     const dailyPrices = cachedDays.map(day => ({
       date: day.date.toISOString().split('T')[0],
-      price: day.pricePerNight,
+      basePrice: day.pricePerNight,
+      price: pricingMarkup.applyMarkup(day.pricePerNight),
+      markup: pricingMarkup.calculateMarkupAmount(day.pricePerNight),
       available: day.isAvailable
     }));
 
@@ -210,6 +247,9 @@ exports.getUnitPricing = async (req, res) => {
         roomType: unit.roomType,
         available: allAvailable,
         pricing: {
+          basePrice: Math.round(baseTotalPrice * 100) / 100,
+          markup: markupAmount,
+          markupPercentage: pricingMarkup.getMarkupPercentage(),
           totalPrice: Math.round(totalPrice * 100) / 100,
           pricePerNight: Math.round(avgPricePerNight * 100) / 100,
           currency: 'INR',

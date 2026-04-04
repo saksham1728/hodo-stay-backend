@@ -360,6 +360,8 @@ class BuildingController {
 
       // Check pricing for ALL available units using CACHE
       const PropertyDailyCache = require('../models/PropertyDailyCache');
+      const { applyMarkup, calculateMarkupAmount, getMarkupPercentage } = require('../utils/pricingMarkup');
+      
       const checkInDate = new Date(checkIn);
       const checkOutDate = new Date(checkOut);
       const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
@@ -393,22 +395,39 @@ class BuildingController {
             continue;
           }
 
-          // Calculate total price from cache
-          const totalPrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+          // Calculate base price from cache
+          const basePrice = cachedDays.reduce((sum, day) => sum + day.pricePerNight, 0);
+          const basePriceRounded = Math.round(basePrice * 100) / 100;
+          
+          console.log(`  📊 Base price from cache: ₹${basePriceRounded} (${nights} nights)`);
+          
+          // Apply 10% markup
+          const markupAmount = calculateMarkupAmount(basePriceRounded);
+          const totalPrice = applyMarkup(basePriceRounded);
+          const markupPercentage = getMarkupPercentage();
+          
+          console.log(`  💵 Markup calculation:`);
+          console.log(`     Base Price: ₹${basePriceRounded}`);
+          console.log(`     Markup (${markupPercentage}%): ₹${markupAmount}`);
+          console.log(`     Final Price: ₹${totalPrice}`);
+          
           const avgPricePerNight = totalPrice / nights;
 
           unitsWithPricing.push({
             unit,
             pricing: {
               propertyId: unit.ruPropertyId,
-              price: Math.round(totalPrice * 100) / 100,
+              basePrice: basePriceRounded,
+              markup: markupAmount,
+              markupPercentage: markupPercentage,
+              price: totalPrice,
               available: true,
               currency: 'INR',
               pricePerNight: Math.round(avgPricePerNight * 100) / 100,
               nights
             }
           });
-          console.log(`  ✓ Available at $${totalPrice.toFixed(2)} (cached)`);
+          console.log(`  ✓ Available at ₹${totalPrice} (base: ₹${basePriceRounded} + markup: ₹${markupAmount})`);
         } catch (error) {
           console.error(`  ✗ Error checking unit ${unit.name}:`, error.message);
         }
@@ -426,7 +445,10 @@ class BuildingController {
       unitsWithPricing.sort((a, b) => a.pricing.price - b.pricing.price);
       const cheapest = unitsWithPricing[0];
 
-      console.log(`🎯 Cheapest unit: ${cheapest.unit.name} at ₹${cheapest.pricing.price} (from cache)`);
+      console.log(`🎯 Cheapest unit: ${cheapest.unit.name}`);
+      console.log(`   Base Price: ₹${cheapest.pricing.basePrice}`);
+      console.log(`   Markup (${cheapest.pricing.markupPercentage}%): ₹${cheapest.pricing.markup}`);
+      console.log(`   Final Price: ₹${cheapest.pricing.price}`);
 
       return res.json({
         success: true,
