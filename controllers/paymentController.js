@@ -4,6 +4,7 @@ const couponService = require('../services/couponService');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 const emailService = require('../services/emailService');
+const slackService = require('../services/slackService');
 const mongoose = require('mongoose');
 const razorpayService = require('../services/razorpayService');
 const gstCalculator = require('../utils/gstCalculator');
@@ -493,6 +494,15 @@ class PaymentController {
         } catch (emailError) {
           console.error('❌ Error sending confirmation email:', emailError);
           // Don't fail the booking if email fails
+        }
+
+        // Send Slack notification for new booking
+        try {
+          await slackService.sendBookingNotification(booking);
+          console.log('✅ Slack notification sent for booking:', booking.bookingReference);
+        } catch (slackError) {
+          console.error('❌ Error sending Slack notification:', slackError);
+          // Don't fail the booking if Slack notification fails
         }
 
         res.json({
