@@ -13,7 +13,7 @@ const webhookController = require('../controllers/webhookController');
  * - Leads
  */
 router.post('/rentals-united', 
-  express.text({ type: 'application/xml' }), // Parse XML as text
+  express.raw({ type: 'application/xml' }), // Parse XML as raw buffer
   webhookController.handleRUWebhook.bind(webhookController)
 );
 

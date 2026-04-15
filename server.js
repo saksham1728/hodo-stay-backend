@@ -38,6 +38,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Webhook route MUST come before body parsers (needs raw XML)
+app.use('/api/webhooks', require('./routes/webhooks'));
+
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -158,7 +161,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/pricing', require('./routes/pricing'));
 app.use('/api/payments', require('./routes/payments'));
-app.use('/api/webhooks', require('./routes/webhooks'));
+// Webhooks route moved above (before body parsers)
 app.use('/api/coupons', require('./routes/coupons'));
 
 // Manual cache sync trigger (for testing/admin)
