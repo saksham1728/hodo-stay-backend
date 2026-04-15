@@ -137,10 +137,10 @@ class WebhookController {
         checkOut: checkOutDate,
         nights: nights,
         guestInfo: {
-          name: customerInfo.Name,
-          surname: customerInfo.SurName,
-          email: customerInfo.Email || '',
-          phone: customerInfo.Phone || '',
+          name: customerInfo.Name || 'Guest',
+          surname: customerInfo.SurName || 'User',
+          email: customerInfo.Email || `noemail-${reservation.ReservationID}@hodostays.com`,
+          phone: customerInfo.Phone || 'N/A',
           address: customerInfo.Address || '',
           zipCode: customerInfo.ZipCode || ''
         },
