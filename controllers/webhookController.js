@@ -190,7 +190,7 @@ class WebhookController {
         status: 'confirmed',
         ruStatus: 'Confirmed via webhook',
         bookingSource: this.getBookingSource(reservation.Creator),
-        specialRequests: reservation.Comments || ''
+        specialRequests: (reservation.Comments || '').substring(0, 500) // Truncate to 500 chars
       });
 
       await booking.save();
