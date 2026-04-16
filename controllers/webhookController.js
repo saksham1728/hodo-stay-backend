@@ -91,11 +91,35 @@ class WebhookController {
   async handleConfirmedReservation(data) {
     try {
       const reservation = data.Reservation;
-      const stayInfo = reservation.StayInfos.StayInfo;
       const customerInfo = reservation.CustomerInfo;
       const guestDetails = reservation.GuestDetailsInfo;
 
       console.log('📋 Processing confirmed reservation:', reservation.ReservationID);
+
+      // Handle both single StayInfo and array of StayInfo (multi-property bookings)
+      const stayInfos = Array.isArray(reservation.StayInfos.StayInfo) 
+        ? reservation.StayInfos.StayInfo 
+        : [reservation.StayInfos.StayInfo];
+
+      console.log(`📦 Processing ${stayInfos.length} property/properties in this reservation`);
+
+      // Process each property in the reservation
+      for (const stayInfo of stayInfos) {
+        await this.processStayInfo(stayInfo, reservation, customerInfo, guestDetails);
+      }
+
+    } catch (error) {
+      console.error('❌ Error processing confirmed reservation:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Process individual StayInfo (property booking)
+   */
+  async processStayInfo(stayInfo, reservation, customerInfo, guestDetails) {
+    try {
+      console.log(`🏠 Processing PropertyID: ${stayInfo.PropertyID}`);
 
       // Find unit by RU PropertyID
       const unit = await Unit.findOne({ ruPropertyId: stayInfo.PropertyID });
@@ -112,8 +136,11 @@ class WebhookController {
       const checkOutDate = new Date(stayInfo.DateTo);
       const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
-      // Check if booking already exists
-      const existingBooking = await Booking.findOne({ ruReservationId: reservation.ReservationID });
+      // Check if booking already exists for this specific property
+      const existingBooking = await Booking.findOne({ 
+        ruReservationId: reservation.ReservationID,
+        ruPropertyId: stayInfo.PropertyID
+      });
       
       if (existingBooking) {
         console.log('ℹ️  Booking already exists, updating...');
@@ -140,7 +167,7 @@ class WebhookController {
           name: customerInfo.Name || 'Guest',
           surname: customerInfo.SurName || 'User',
           email: customerInfo.Email || `noemail-${reservation.ReservationID}@hodostays.com`,
-          phone: customerInfo.Phone || 'N/A',
+          phone: customerInfo.Phone || customerInfo.MobilePhone || 'N/A',
           address: customerInfo.Address || '',
           zipCode: customerInfo.ZipCode || ''
         },
@@ -188,8 +215,8 @@ class WebhookController {
       console.log(`✅ Cache updated - ${nights} days marked unavailable for unit ${unit.name}`);
 
     } catch (error) {
-      console.error('❌ Error processing confirmed reservation:', error);
-      throw error;
+      console.error(`❌ Error processing StayInfo for PropertyID ${stayInfo?.PropertyID}:`, error);
+      // Don't throw - continue processing other properties
     }
   }
 
