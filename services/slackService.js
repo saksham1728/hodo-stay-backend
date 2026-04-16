@@ -60,16 +60,34 @@ class SlackService {
       pricingText += `• GST (${booking.pricing.gstRate}%): +₹${gstAmount.toLocaleString('en-IN')}\n`;
       pricingText += `• *Total Paid: ₹${finalPrice.toLocaleString('en-IN')}*`;
 
+      // Determine booking source emoji and text
+      const sourceEmoji = {
+        'direct': '🌐',
+        'airbnb': '🏠',
+        'booking.com': '🏨',
+        'expedia': '✈️',
+        'vrbo': '🏡',
+        'external': '🔗',
+        'other': '📱',
+        'unknown': '❓'
+      };
+      
+      const bookingSourceText = booking.bookingSource || 'direct';
+      const sourceIcon = sourceEmoji[bookingSourceText] || '📱';
+      const headerText = bookingSourceText === 'direct' 
+        ? '🎉 New Direct Booking Confirmed!' 
+        : `${sourceIcon} New ${bookingSourceText.charAt(0).toUpperCase() + bookingSourceText.slice(1)} Booking!`;
+
       // Create rich message with blocks
       const message = {
         channel: this.channelId,
-        text: `🎉 New Booking Confirmed! ${booking.bookingReference}`,
+        text: `${headerText} ${booking.bookingReference}`,
         blocks: [
           {
             type: 'header',
             text: {
               type: 'plain_text',
-              text: '🎉 New Booking Confirmed!',
+              text: headerText,
               emoji: true
             }
           },
@@ -82,7 +100,15 @@ class SlackService {
               },
               {
                 type: 'mrkdwn',
+                text: `*Source:*\n${sourceIcon} ${bookingSourceText.toUpperCase()}`
+              },
+              {
+                type: 'mrkdwn',
                 text: `*RU Reservation ID:*\n${booking.ruReservationId || 'Pending'}`
+              },
+              {
+                type: 'mrkdwn',
+                text: `*Status:*\n✅ ${booking.status.toUpperCase()}`
               }
             ]
           },
@@ -130,7 +156,7 @@ class SlackService {
               },
               {
                 type: 'mrkdwn',
-                text: `*Status:*\n✅ ${booking.status.toUpperCase()}`
+                text: `*Total Guests:*\n${booking.numberOfGuests}`
               }
             ]
           },

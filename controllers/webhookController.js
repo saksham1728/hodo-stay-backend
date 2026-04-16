@@ -1,6 +1,7 @@
 const { Booking, Unit } = require('../models');
 const PropertyDailyCache = require('../models/PropertyDailyCache');
 const { XMLParser } = require('fast-xml-parser');
+const slackService = require('../services/slackService');
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -194,6 +195,19 @@ class WebhookController {
 
       await booking.save();
       console.log('✅ Booking created:', booking.bookingReference);
+
+      // Send Slack notification for webhook booking
+      try {
+        // Populate unit and building for Slack notification
+        await booking.populate('unitId');
+        await booking.populate('buildingId');
+        
+        await slackService.sendBookingNotification(booking);
+        console.log('✅ Slack notification sent for webhook booking:', booking.bookingReference);
+      } catch (slackError) {
+        console.error('❌ Error sending Slack notification:', slackError.message);
+        // Don't fail the booking if Slack fails
+      }
 
       // Update cache - mark dates as unavailable
       await PropertyDailyCache.updateMany(
