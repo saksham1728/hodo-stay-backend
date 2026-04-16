@@ -43,21 +43,28 @@ class SlackService {
       });
 
       // Format pricing information
-      const originalPrice = booking.pricing.originalPrice || booking.pricing.priceBeforeGST;
+      // Webhook bookings only have ruPrice and clientPrice
+      // Direct bookings have full breakdown with originalPrice, priceBeforeGST, gstAmount, etc.
+      const originalPrice = booking.pricing.originalPrice || booking.pricing.priceBeforeGST || booking.pricing.ruPrice || 0;
       const discountAmount = booking.pricing.discountAmount || 0;
       const gstAmount = booking.pricing.gstAmount || 0;
-      const finalPrice = booking.pricing.finalPriceWithGST || booking.pricing.clientPrice;
+      const finalPrice = booking.pricing.finalPriceWithGST || booking.pricing.clientPrice || 0;
+      const gstRate = booking.pricing.gstRate || 0;
+      const priceAfterDiscount = booking.pricing.priceBeforeGST || booking.pricing.ruPrice || originalPrice;
 
       // Build pricing details text
       let pricingText = `*Pricing Breakdown:*\n`;
       pricingText += `• Original Price: ₹${originalPrice.toLocaleString('en-IN')}\n`;
       
-      if (discountAmount > 0) {
+      if (discountAmount > 0 && booking.appliedCoupon) {
         pricingText += `• Discount (${booking.appliedCoupon}): -₹${discountAmount.toLocaleString('en-IN')}\n`;
-        pricingText += `• Price After Discount: ₹${booking.pricing.priceBeforeGST.toLocaleString('en-IN')}\n`;
+        pricingText += `• Price After Discount: ₹${priceAfterDiscount.toLocaleString('en-IN')}\n`;
       }
       
-      pricingText += `• GST (${booking.pricing.gstRate}%): +₹${gstAmount.toLocaleString('en-IN')}\n`;
+      if (gstRate > 0 && gstAmount > 0) {
+        pricingText += `• GST (${gstRate}%): +₹${gstAmount.toLocaleString('en-IN')}\n`;
+      }
+      
       pricingText += `• *Total Paid: ₹${finalPrice.toLocaleString('en-IN')}*`;
 
       // Determine booking source emoji and text
