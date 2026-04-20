@@ -1,17 +1,35 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Building = require('../models/Building');
-const Unit = require('../models/Unit');
+
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongooseBuilding = require('../models/Building');
+const MongooseUnit = require('../models/Unit');
+
+// Supabase repositories (new)
+const buildingRepository = require('../repositories/buildingRepository');
+const unitRepository = require('../repositories/unitRepository');
+
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
+
+// Adapters to use either MongoDB or Supabase
+const Building = USE_SUPABASE ? buildingRepository : MongooseBuilding;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 const xmlParser = new XMLParser();
 
 async function syncUnits(buildingId, locationId = 41982) {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB');
+    // Connect to database
+    if (!USE_SUPABASE) {
+      await mongoose.connect(process.env.MONGODB_URI);
+      console.log('✅ Connected to MongoDB');
+    } else {
+      console.log('✅ Using Supabase');
+    }
     
     // Verify building exists
     const building = await Building.findById(buildingId);
@@ -125,11 +143,22 @@ async function syncUnits(buildingId, locationId = 41982) {
         }
         
         // Upsert unit
-        const unit = await Unit.findOneAndUpdate(
-          { ruPropertyId: unitData.ruPropertyId },
-          unitData,
-          { upsert: true, new: true }
-        );
+        let unit;
+        if (USE_SUPABASE) {
+          // For Supabase, check if unit exists first
+          const existingUnit = await Unit.findOne({ ruPropertyId: unitData.ruPropertyId });
+          if (existingUnit) {
+            unit = await Unit.findByIdAndUpdate(existingUnit.id || existingUnit._id, unitData, { new: true });
+          } else {
+            unit = await Unit.create(unitData);
+          }
+        } else {
+          unit = await Unit.findOneAndUpdate(
+            { ruPropertyId: unitData.ruPropertyId },
+            unitData,
+            { upsert: true, new: true }
+          );
+        }
         
         console.log(`  ✓ Saved: ${unit.name}`);
         savedCount++;
@@ -142,7 +171,14 @@ async function syncUnits(buildingId, locationId = 41982) {
     }
     
     // Update building's total units count
-    const totalUnits = await Unit.countDocuments({ buildingId, isActive: true, isArchived: false });
+    let totalUnits;
+    if (USE_SUPABASE) {
+      const units = await Unit.find({ buildingId, isActive: true, isArchived: false });
+      totalUnits = units.length;
+    } else {
+      totalUnits = await Unit.countDocuments({ buildingId, isActive: true, isArchived: false });
+    }
+    
     await Building.findByIdAndUpdate(buildingId, { totalUnits });
     
     console.log(`\n✅ Successfully synced ${savedCount} units`);

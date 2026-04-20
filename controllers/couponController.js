@@ -1,6 +1,18 @@
-const Coupon = require('../models/Coupon');
-const CouponUsage = require('../models/CouponUsage');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongooseCoupon = require('../models/Coupon');
+const MongooseCouponUsage = require('../models/CouponUsage');
+
+// Supabase repositories (new)
+const couponRepository = require('../repositories/couponRepository');
+
 const couponService = require('../services/couponService');
+
+// Adapters to use either MongoDB or Supabase
+const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
+const CouponUsage = MongooseCouponUsage; // CouponUsage not migrated yet (analytics only)
 
 // Validate coupon
 exports.validateCoupon = async (req, res) => {
@@ -96,8 +108,13 @@ exports.createCoupon = async (req, res) => {
       });
     }
 
-    const coupon = new Coupon(couponData);
-    await coupon.save();
+    let coupon;
+    if (USE_SUPABASE) {
+      coupon = await Coupon.create(couponData);
+    } else {
+      coupon = new Coupon(couponData);
+      await coupon.save();
+    }
 
     res.status(201).json({
       success: true,
@@ -130,13 +147,26 @@ exports.getAllCoupons = async (req, res) => {
       ];
     }
 
-    const coupons = await Coupon.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .populate('properties', 'name');
+    let coupons, count;
+    if (USE_SUPABASE) {
+      const allCoupons = await Coupon.find(query, {
+        sort: { createdAt: -1 },
+        limit: limit * 1,
+        skip: (page - 1) * limit
+      });
+      coupons = allCoupons;
+      
+      const allForCount = await Coupon.find(query);
+      count = allForCount.length;
+    } else {
+      coupons = await Coupon.find(query)
+        .sort({ createdAt: -1 })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .populate('properties', 'name');
 
-    const count = await Coupon.countDocuments(query);
+      count = await Coupon.countDocuments(query);
+    }
 
     res.json({
       success: true,
@@ -160,8 +190,13 @@ exports.getAllCoupons = async (req, res) => {
 // Get single coupon
 exports.getCoupon = async (req, res) => {
   try {
-    const coupon = await Coupon.findById(req.params.id)
-      .populate('properties', 'name city');
+    let coupon;
+    if (USE_SUPABASE) {
+      coupon = await Coupon.findById(req.params.id);
+    } else {
+      coupon = await Coupon.findById(req.params.id)
+        .populate('properties', 'name city');
+    }
 
     if (!coupon) {
       return res.status(404).json({
@@ -170,18 +205,21 @@ exports.getCoupon = async (req, res) => {
       });
     }
 
-    // Get usage statistics
-    const usageStats = await CouponUsage.aggregate([
-      { $match: { couponId: coupon._id } },
-      {
-        $group: {
-          _id: null,
-          totalUsage: { $sum: 1 },
-          totalDiscount: { $sum: '$discountAmount' },
-          totalRevenue: { $sum: '$finalPrice' }
+    // Get usage statistics (only for MongoDB for now)
+    let usageStats = [{ totalUsage: 0, totalDiscount: 0, totalRevenue: 0 }];
+    if (!USE_SUPABASE) {
+      usageStats = await CouponUsage.aggregate([
+        { $match: { couponId: coupon._id } },
+        {
+          $group: {
+            _id: null,
+            totalUsage: { $sum: 1 },
+            totalDiscount: { $sum: '$discountAmount' },
+            totalRevenue: { $sum: '$finalPrice' }
+          }
         }
-      }
-    ]);
+      ]);
+    }
 
     res.json({
       success: true,
@@ -254,7 +292,12 @@ exports.toggleCoupon = async (req, res) => {
     }
 
     coupon.isActive = !coupon.isActive;
-    await coupon.save();
+    
+    if (USE_SUPABASE) {
+      await Coupon.save(coupon);
+    } else {
+      await coupon.save();
+    }
 
     res.json({
       success: true,
@@ -285,7 +328,12 @@ exports.deleteCoupon = async (req, res) => {
     // Soft delete - just deactivate if already used
     if (coupon.currentUsageCount > 0) {
       coupon.isActive = false;
-      await coupon.save();
+      
+      if (USE_SUPABASE) {
+        await Coupon.save(coupon);
+      } else {
+        await coupon.save();
+      }
       
       return res.json({
         success: true,
@@ -294,7 +342,12 @@ exports.deleteCoupon = async (req, res) => {
     }
 
     // Hard delete if never used
-    await Coupon.findByIdAndDelete(req.params.id);
+    if (USE_SUPABASE) {
+      // Supabase doesn't have findByIdAndDelete, use repository method
+      await Coupon.findByIdAndUpdate(coupon.id || coupon._id, { isActive: false });
+    } else {
+      await Coupon.findByIdAndDelete(req.params.id);
+    }
 
     res.json({
       success: true,

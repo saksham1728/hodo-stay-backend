@@ -319,15 +319,118 @@ class BookingRepository {
   }
 
   /**
+   * Update one document matching query (for compatibility with Mongoose updateOne)
+   * @param {Object} query - Query object
+   * @param {Object} updateData - Data to update
+   * @returns {Promise<Object>} Update result
+   */
+  async updateOne(query, updateData) {
+    try {
+      // Handle nested payment.status updates
+      if (updateData['payment.status']) {
+        // Need to fetch the booking first, update the payment object, then save
+        const booking = await this.findOne(query);
+        if (!booking) {
+          return { matchedCount: 0, modifiedCount: 0 };
+        }
+        
+        booking.payment.status = updateData['payment.status'];
+        if (updateData.status) {
+          booking.status = updateData.status;
+        }
+        
+        const pgUpdateData = {
+          payment: booking.payment,
+          status: booking.status
+        };
+        
+        const { data, error } = await this.supabase
+          .from(this.tableName)
+          .update(pgUpdateData)
+          .eq('id', booking.id || booking._id)
+          .select();
+
+        if (error) {
+          throw new DatabaseError('Failed to update booking', error);
+        }
+
+        return { matchedCount: 1, modifiedCount: data.length };
+      }
+      
+      // Handle regular updates
+      const pgData = {};
+      if (updateData.status) pgData.status = updateData.status;
+      if (updateData.ruStatus) pgData.ru_status = updateData.ruStatus;
+      if (updateData.ruReservationId) pgData.ru_reservation_id = updateData.ruReservationId;
+      if (updateData.payment) pgData.payment = updateData.payment;
+      if (updateData.cancellation) pgData.cancellation = updateData.cancellation;
+
+      // Build query
+      let supabaseQuery = this.supabase.from(this.tableName).update(pgData);
+
+      // Apply filters
+      if (query.bookingReference) {
+        supabaseQuery = supabaseQuery.eq('booking_reference', query.bookingReference);
+      }
+      if (query['payment.paymentId']) {
+        supabaseQuery = supabaseQuery.eq('payment->>paymentId', query['payment.paymentId']);
+      }
+
+      const { data, error } = await supabaseQuery.select();
+
+      if (error) {
+        throw new DatabaseError('Failed to update booking', error);
+      }
+
+      return { matchedCount: data.length, modifiedCount: data.length };
+    } catch (error) {
+      throw new DatabaseError('Failed to update booking', error);
+    }
+  }
+
+  /**
    * Save method (for compatibility with Mongoose-style updates)
    * @param {Object} booking - Booking object with id
    * @returns {Promise<Object>} Updated booking
    */
   async save(booking) {
-    if (!booking.id) {
+    if (!booking.id && !booking._id) {
       throw new Error('Booking ID is required for save operation');
     }
-    return this.findByIdAndUpdate(booking.id, booking, { new: true });
+    
+    const bookingId = booking.id || booking._id;
+    
+    // Transform the entire booking object for update
+    const updateData = {
+      status: booking.status,
+      ru_status: booking.ruStatus,
+      ru_reservation_id: booking.ruReservationId,
+      payment: booking.payment,
+      cancellation: booking.cancellation,
+      pricing: booking.pricing,
+      guest_info: booking.guestInfo,
+      special_requests: booking.specialRequests
+    };
+    
+    // Remove undefined fields
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
+    
+    const { data, error } = await this.supabase
+      .from(this.tableName)
+      .update(updateData)
+      .eq('id', bookingId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new DatabaseError('Failed to save booking', error);
+    }
+
+    return transformBooking(data);
   }
 }
 

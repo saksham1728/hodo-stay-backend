@@ -1,19 +1,36 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const ruClient = require('../utils/ruClient');
-const Building = require('../models/Building');
-const Unit = require('../models/Unit');
 const { XMLParser } = require('fast-xml-parser');
+
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongooseBuilding = require('../models/Building');
+const MongooseUnit = require('../models/Unit');
+
+// Supabase repositories (new)
+const buildingRepository = require('../repositories/buildingRepository');
+const unitRepository = require('../repositories/unitRepository');
+
+// Adapters to use either MongoDB or Supabase
+const Building = USE_SUPABASE ? buildingRepository : MongooseBuilding;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 const xmlParser = new XMLParser();
 
-// Connect to MongoDB
+// Connect to database
 async function connectDB() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ Connected to MongoDB');
+        if (!USE_SUPABASE) {
+            await mongoose.connect(process.env.MONGODB_URI);
+            console.log('✅ Connected to MongoDB');
+        } else {
+            console.log('✅ Using Supabase');
+        }
     } catch (error) {
-        console.error('❌ MongoDB connection error:', error);
+        console.error('❌ Database connection error:', error);
         throw error;
     }
 }
@@ -146,6 +163,8 @@ async function syncAllProperties() {
             console.log('✅ Found existing building: Hodo Stay HSR Layout');
         }
 
+        const buildingId = building._id || building.id;
+
         // Save each property as a unit
         let savedCount = 0;
         let updatedCount = 0;
@@ -193,7 +212,7 @@ async function syncAllProperties() {
             const unitData = {
                 ruPropertyId: basicInfo.ID,
                 ruOwnerID: prop.OwnerID || basicInfo.OwnerID,
-                buildingId: building._id,
+                buildingId: buildingId,
                 name: prop.Name || basicInfo.Name,
                 description: prop.Description || '',
                 unitType: 'To Be Classified', // User will classify later
@@ -231,7 +250,8 @@ async function syncAllProperties() {
             const existingUnit = await Unit.findOne({ ruPropertyId: basicInfo.ID });
             
             if (existingUnit) {
-                await Unit.findByIdAndUpdate(existingUnit._id, unitData, { new: true });
+                const unitId = existingUnit._id || existingUnit.id;
+                await Unit.findByIdAndUpdate(unitId, unitData, { new: true });
                 console.log(`✅ Updated unit: ${basicInfo.ID} - ${prop.Name}`);
                 updatedCount++;
             } else {
@@ -240,13 +260,21 @@ async function syncAllProperties() {
                     console.log(`✅ Created unit: ${basicInfo.ID} - ${prop.Name}`);
                     savedCount++;
                 } catch (createError) {
-                    if (createError.code === 11000) {
+                    if (createError.code === 11000 || createError.message?.includes('duplicate')) {
                         // Duplicate key error, try to update instead
-                        const updated = await Unit.findOneAndUpdate(
-                            { ruPropertyId: basicInfo.ID },
-                            unitData,
-                            { new: true, upsert: true }
-                        );
+                        if (USE_SUPABASE) {
+                            const existing = await Unit.findOne({ ruPropertyId: basicInfo.ID });
+                            if (existing) {
+                              const unitId = existing._id || existing.id;
+                              await Unit.findByIdAndUpdate(unitId, unitData, { new: true });
+                            }
+                        } else {
+                            await Unit.findOneAndUpdate(
+                                { ruPropertyId: basicInfo.ID },
+                                unitData,
+                                { new: true, upsert: true }
+                            );
+                        }
                         console.log(`✅ Updated (via upsert) unit: ${basicInfo.ID} - ${prop.Name}`);
                         updatedCount++;
                     } else {
@@ -267,8 +295,10 @@ async function syncAllProperties() {
         console.error('❌ Error syncing properties:', error);
         throw error;
     } finally {
-        await mongoose.connection.close();
-        console.log('✅ Database connection closed');
+        if (!USE_SUPABASE) {
+            await mongoose.connection.close();
+            console.log('✅ Database connection closed');
+        }
     }
 }
 

@@ -1,9 +1,21 @@
-const { Booking, Unit } = require('../models');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const { Booking: MongooseBooking, Unit: MongooseUnit } = require('../models');
+
+// Supabase repositories (new)
+const bookingRepository = require('../repositories/bookingRepository');
+
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 const emailService = require('../services/emailService');
+const { transformBooking } = require('../utils/responseTransformers');
 
 const xmlParser = new XMLParser();
+
+// Adapter to use either MongoDB or Supabase
+const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
 
 class BookingController {
   // Get booking by reference
@@ -11,9 +23,20 @@ class BookingController {
     try {
       const { bookingReference } = req.params;
 
-      const booking = await Booking.findOne({ bookingReference })
-        .populate('unitId')
-        .populate('buildingId');
+      let booking;
+      
+      if (USE_SUPABASE) {
+        // Supabase query
+        booking = await Booking.findOne(
+          { bookingReference },
+          { populate: ['unitId', 'buildingId'] }
+        );
+      } else {
+        // MongoDB query
+        booking = await Booking.findOne({ bookingReference })
+          .populate('unitId')
+          .populate('buildingId');
+      }
 
       if (!booking) {
         return res.status(404).json({
@@ -50,9 +73,18 @@ class BookingController {
       }
 
       // Find booking by token
-      const booking = await Booking.findOne({ accessToken: token })
-        .populate('unitId')
-        .populate('buildingId');
+      let booking;
+      
+      if (USE_SUPABASE) {
+        booking = await Booking.findOne(
+          { accessToken: token },
+          { populate: ['unitId', 'buildingId'] }
+        );
+      } else {
+        booking = await Booking.findOne({ accessToken: token })
+          .populate('unitId')
+          .populate('buildingId');
+      }
 
       if (!booking) {
         return res.status(404).json({
@@ -62,7 +94,7 @@ class BookingController {
       }
 
       // Check if token is expired
-      if (new Date() > booking.tokenExpiresAt) {
+      if (new Date() > new Date(booking.tokenExpiresAt)) {
         return res.status(401).json({
           success: false,
           message: 'Access token has expired'
@@ -70,10 +102,19 @@ class BookingController {
       }
 
       // Get all bookings for this email
-      const allBookings = await Booking.find({ 'guestInfo.email': booking.guestInfo.email })
-        .populate('unitId')
-        .populate('buildingId')
-        .sort({ createdAt: -1 });
+      let allBookings;
+      
+      if (USE_SUPABASE) {
+        allBookings = await Booking.find(
+          { 'guestInfo.email': booking.guestInfo.email },
+          { populate: ['unitId', 'buildingId'], sort: { createdAt: -1 } }
+        );
+      } else {
+        allBookings = await Booking.find({ 'guestInfo.email': booking.guestInfo.email })
+          .populate('unitId')
+          .populate('buildingId')
+          .sort({ createdAt: -1 });
+      }
 
       res.json({
         success: true,
@@ -106,10 +147,19 @@ class BookingController {
       }
 
       // Find all bookings for this email
-      const bookings = await Booking.find({ 'guestInfo.email': email })
-        .populate('unitId')
-        .populate('buildingId')
-        .sort({ createdAt: -1 });
+      let bookings;
+      
+      if (USE_SUPABASE) {
+        bookings = await Booking.find(
+          { 'guestInfo.email': email },
+          { populate: ['unitId', 'buildingId'], sort: { createdAt: -1 } }
+        );
+      } else {
+        bookings = await Booking.find({ 'guestInfo.email': email })
+          .populate('unitId')
+          .populate('buildingId')
+          .sort({ createdAt: -1 });
+      }
 
       if (bookings.length === 0) {
         return res.status(404).json({
@@ -154,7 +204,13 @@ class BookingController {
       const { bookingReference } = req.params;
       const { reason, cancelledBy = 'guest' } = req.body;
 
-      const booking = await Booking.findOne({ bookingReference });
+      let booking;
+      
+      if (USE_SUPABASE) {
+        booking = await Booking.findOne({ bookingReference });
+      } else {
+        booking = await Booking.findOne({ bookingReference });
+      }
 
       if (!booking) {
         return res.status(404).json({
@@ -188,20 +244,39 @@ class BookingController {
       }
 
       // Update booking status
-      booking.status = 'cancelled';
-      booking.cancellation = {
-        cancelledAt: new Date(),
-        cancelledBy: cancelledBy,
-        reason: reason || '',
-        refundAmount: 0, // Calculate based on cancellation policy
-        refundStatus: 'pending'
-      };
-
-      await booking.save();
-
-      // Populate for email
-      await booking.populate('unitId');
-      await booking.populate('buildingId');
+      if (USE_SUPABASE) {
+        // For Supabase, update the booking object and save
+        booking.status = 'cancelled';
+        booking.cancellation = {
+          cancelledAt: new Date(),
+          cancelledBy: cancelledBy,
+          reason: reason || '',
+          refundAmount: 0, // Calculate based on cancellation policy
+          refundStatus: 'pending'
+        };
+        booking = await Booking.save(booking);
+        
+        // Populate for email
+        booking = await Booking.findOne(
+          { bookingReference },
+          { populate: ['unitId', 'buildingId'] }
+        );
+      } else {
+        // For MongoDB
+        booking.status = 'cancelled';
+        booking.cancellation = {
+          cancelledAt: new Date(),
+          cancelledBy: cancelledBy,
+          reason: reason || '',
+          refundAmount: 0, // Calculate based on cancellation policy
+          refundStatus: 'pending'
+        };
+        await booking.save();
+        
+        // Populate for email
+        await booking.populate('unitId');
+        await booking.populate('buildingId');
+      }
 
       // Send cancellation confirmation email
       try {
@@ -240,14 +315,27 @@ class BookingController {
 
       const skip = (page - 1) * limit;
 
-      const bookings = await Booking.find(query)
-        .populate('unitId')
-        .populate('buildingId')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit));
+      let bookings, totalBookings;
+      
+      if (USE_SUPABASE) {
+        bookings = await Booking.find(query, {
+          populate: ['unitId', 'buildingId'],
+          sort: { createdAt: -1 },
+          skip: skip,
+          limit: parseInt(limit)
+        });
+        
+        totalBookings = await Booking.countDocuments(query);
+      } else {
+        bookings = await Booking.find(query)
+          .populate('unitId')
+          .populate('buildingId')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(parseInt(limit));
 
-      const totalBookings = await Booking.countDocuments(query);
+        totalBookings = await Booking.countDocuments(query);
+      }
 
       res.json({
         success: true,

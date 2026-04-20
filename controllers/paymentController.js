@@ -1,5 +1,15 @@
-const { Booking, Unit } = require('../models');
-const Coupon = require('../models/Coupon');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const { Booking: MongooseBooking, Unit: MongooseUnit } = require('../models');
+const MongooseCoupon = require('../models/Coupon');
+
+// Supabase repositories (new)
+const bookingRepository = require('../repositories/bookingRepository');
+const unitRepository = require('../repositories/unitRepository');
+const couponRepository = require('../repositories/couponRepository');
+
 const couponService = require('../services/couponService');
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
@@ -10,6 +20,11 @@ const razorpayService = require('../services/razorpayService');
 const gstCalculator = require('../utils/gstCalculator');
 
 const xmlParser = new XMLParser();
+
+// Adapters to use either MongoDB or Supabase
+const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
+const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
 
 class PaymentController {
   // Create Razorpay order
@@ -126,8 +141,12 @@ class PaymentController {
 
   // Verify payment and create booking
   async verifyPayment(req, res) {
-      const session = await mongoose.startSession();
-      session.startTransaction();
+      // Only use MongoDB sessions if using MongoDB
+      let session = null;
+      if (!USE_SUPABASE) {
+        session = await mongoose.startSession();
+        session.startTransaction();
+      }
 
       try {
         const {
@@ -139,7 +158,7 @@ class PaymentController {
 
         // Validate required fields
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingData) {
-          await session.abortTransaction();
+          if (session) await session.abortTransaction();
           return res.status(400).json({
             success: false,
             message: 'Missing required payment or booking data'
@@ -154,7 +173,7 @@ class PaymentController {
         });
 
         if (!isValid) {
-          await session.abortTransaction();
+          if (session) await session.abortTransaction();
           console.error('❌ Payment signature verification failed');
           return res.status(400).json({
             success: false,
@@ -165,9 +184,15 @@ class PaymentController {
         console.log('✅ Payment signature verified successfully');
 
         // Get unit details
-        const unit = await Unit.findById(bookingData.unitId).session(session);
+        let unit;
+        if (USE_SUPABASE) {
+          unit = await Unit.findById(bookingData.unitId);
+        } else {
+          unit = await Unit.findById(bookingData.unitId).session(session);
+        }
+        
         if (!unit) {
-          await session.abortTransaction();
+          if (session) await session.abortTransaction();
           return res.status(404).json({
             success: false,
             message: 'Unit not found'
@@ -210,7 +235,7 @@ class PaymentController {
             );
 
             if (!validation.valid) {
-              await session.abortTransaction();
+              if (session) await session.abortTransaction();
               return res.status(400).json({
                 success: false,
                 message: validation.error
@@ -223,12 +248,17 @@ class PaymentController {
             appliedCouponCode = bookingData.couponCode.toUpperCase();
 
             // Get coupon for reference
-            const coupon = await Coupon.findOne({ code: appliedCouponCode }).session(session);
-            couponId = coupon?._id;
+            let coupon;
+            if (USE_SUPABASE) {
+              coupon = await Coupon.findOne({ code: appliedCouponCode });
+            } else {
+              coupon = await Coupon.findOne({ code: appliedCouponCode }).session(session);
+            }
+            couponId = coupon?._id || coupon?.id;
 
             console.log(`✅ Coupon validated: ${couponDiscount} discount, price after coupon: ${priceAfterCoupon}`);
           } catch (couponError) {
-            await session.abortTransaction();
+            if (session) await session.abortTransaction();
             console.error('❌ Coupon validation failed:', couponError.message);
             return res.status(400).json({
               success: false,
@@ -246,7 +276,7 @@ class PaymentController {
           console.log(`   Price before GST: ₹${gstCalculation.priceBeforeGST}`);
           console.log(`   Final price with GST: ₹${gstCalculation.finalPrice}`);
         } catch (gstError) {
-          await session.abortTransaction();
+          if (session) await session.abortTransaction();
           console.error('❌ GST calculation failed:', gstError.message);
           return res.status(500).json({
             success: false,
@@ -263,7 +293,7 @@ class PaymentController {
           );
 
           if (!validation.valid) {
-            await session.abortTransaction();
+            if (session) await session.abortTransaction();
             console.error('❌ GST validation failed:', validation.error);
             return res.status(400).json({
               success: false,
@@ -279,62 +309,119 @@ class PaymentController {
 
         const finalPriceWithGST = gstCalculation.finalPrice;
 
-        // Create booking in MongoDB
-        const booking = new Booking({
-          unitId: bookingData.unitId,
-          buildingId: unit.buildingId,
-          ruPropertyId: unit.ruPropertyId,
-          checkIn: checkInDate,
-          checkOut: checkOutDate,
-          nights: nights,
-          guestInfo: {
-            name: bookingData.guestInfo.name,
-            surname: bookingData.guestInfo.surname,
-            email: bookingData.guestInfo.email,
-            phone: bookingData.guestInfo.phone,
-            address: bookingData.guestInfo.address || '',
-            zipCode: bookingData.guestInfo.zipCode || ''
-          },
-          numberOfGuests: bookingData.numberOfGuests,
-          numberOfAdults: bookingData.numberOfAdults || bookingData.numberOfGuests,
-          numberOfChildren: bookingData.numberOfChildren || 0,
-          numberOfInfants: bookingData.numberOfInfants || 0,
-          pricing: {
-            // RU API fields
-            ruPrice: priceAfterCoupon,           // Price after coupon (before GST) - for property owner
-            clientPrice: finalPriceWithGST,      // Final price with GST - what customer paid
-            alreadyPaid: finalPriceWithGST,      // Full amount paid by customer
-            currency: 'INR',
-            
-            // Coupon tracking
-            originalPrice: originalPrice,         // Original price before coupon
-            discountAmount: couponDiscount,       // Coupon discount amount
-            finalPrice: priceAfterCoupon,         // Price after coupon (same as priceBeforeGST)
-            
-            // GST tracking
-            priceBeforeGST: gstCalculation.priceBeforeGST,  // Price before GST (after coupon)
-            gstRate: gstCalculation.gstRate,                 // GST percentage (5 or 18)
-            gstAmount: gstCalculation.gstAmount,             // GST amount
-            finalPriceWithGST: finalPriceWithGST,            // Final price with GST
-            pricePerNight: gstCalculation.pricePerNight      // Per night price for GST calculation
-          },
-          appliedCoupon: appliedCouponCode,
-          couponId: couponId,
-          payment: {
-            paymentId: razorpay_payment_id,
-            orderId: razorpay_order_id,
-            signature: razorpay_signature,
-            status: 'completed',
-            method: 'razorpay',
-            paidAt: new Date()
-          },
-          status: 'pending',
-          specialRequests: bookingData.specialRequests || ''
-        });
+        // Create booking
+        let booking;
+        if (USE_SUPABASE) {
+          // Supabase: Use repository create method
+          booking = await Booking.create({
+            unitId: bookingData.unitId,
+            buildingId: unit.buildingId || unit.building_id,
+            ruPropertyId: unit.ruPropertyId || unit.ru_property_id,
+            checkIn: checkInDate,
+            checkOut: checkOutDate,
+            nights: nights,
+            guestInfo: {
+              name: bookingData.guestInfo.name,
+              surname: bookingData.guestInfo.surname,
+              email: bookingData.guestInfo.email,
+              phone: bookingData.guestInfo.phone,
+              address: bookingData.guestInfo.address || '',
+              zipCode: bookingData.guestInfo.zipCode || ''
+            },
+            numberOfGuests: bookingData.numberOfGuests,
+            numberOfAdults: bookingData.numberOfAdults || bookingData.numberOfGuests,
+            numberOfChildren: bookingData.numberOfChildren || 0,
+            numberOfInfants: bookingData.numberOfInfants || 0,
+            pricing: {
+              // RU API fields
+              ruPrice: priceAfterCoupon,           // Price after coupon (before GST) - for property owner
+              clientPrice: finalPriceWithGST,      // Final price with GST - what customer paid
+              alreadyPaid: finalPriceWithGST,      // Full amount paid by customer
+              currency: 'INR',
+              
+              // Coupon tracking
+              originalPrice: originalPrice,         // Original price before coupon
+              discountAmount: couponDiscount,       // Coupon discount amount
+              finalPrice: priceAfterCoupon,         // Price after coupon (same as priceBeforeGST)
+              
+              // GST tracking
+              priceBeforeGST: gstCalculation.priceBeforeGST,  // Price before GST (after coupon)
+              gstRate: gstCalculation.gstRate,                 // GST percentage (5 or 18)
+              gstAmount: gstCalculation.gstAmount,             // GST amount
+              finalPriceWithGST: finalPriceWithGST,            // Final price with GST
+              pricePerNight: gstCalculation.pricePerNight      // Per night price for GST calculation
+            },
+            appliedCoupon: appliedCouponCode,
+            couponId: couponId,
+            payment: {
+              paymentId: razorpay_payment_id,
+              orderId: razorpay_order_id,
+              signature: razorpay_signature,
+              status: 'completed',
+              method: 'razorpay',
+              paidAt: new Date()
+            },
+            status: 'pending',
+            specialRequests: bookingData.specialRequests || ''
+          });
+        } else {
+          // MongoDB: Use Mongoose model
+          booking = new Booking({
+            unitId: bookingData.unitId,
+            buildingId: unit.buildingId,
+            ruPropertyId: unit.ruPropertyId,
+            checkIn: checkInDate,
+            checkOut: checkOutDate,
+            nights: nights,
+            guestInfo: {
+              name: bookingData.guestInfo.name,
+              surname: bookingData.guestInfo.surname,
+              email: bookingData.guestInfo.email,
+              phone: bookingData.guestInfo.phone,
+              address: bookingData.guestInfo.address || '',
+              zipCode: bookingData.guestInfo.zipCode || ''
+            },
+            numberOfGuests: bookingData.numberOfGuests,
+            numberOfAdults: bookingData.numberOfAdults || bookingData.numberOfGuests,
+            numberOfChildren: bookingData.numberOfChildren || 0,
+            numberOfInfants: bookingData.numberOfInfants || 0,
+            pricing: {
+              // RU API fields
+              ruPrice: priceAfterCoupon,           // Price after coupon (before GST) - for property owner
+              clientPrice: finalPriceWithGST,      // Final price with GST - what customer paid
+              alreadyPaid: finalPriceWithGST,      // Full amount paid by customer
+              currency: 'INR',
+              
+              // Coupon tracking
+              originalPrice: originalPrice,         // Original price before coupon
+              discountAmount: couponDiscount,       // Coupon discount amount
+              finalPrice: priceAfterCoupon,         // Price after coupon (same as priceBeforeGST)
+              
+              // GST tracking
+              priceBeforeGST: gstCalculation.priceBeforeGST,  // Price before GST (after coupon)
+              gstRate: gstCalculation.gstRate,                 // GST percentage (5 or 18)
+              gstAmount: gstCalculation.gstAmount,             // GST amount
+              finalPriceWithGST: finalPriceWithGST,            // Final price with GST
+              pricePerNight: gstCalculation.pricePerNight      // Per night price for GST calculation
+            },
+            appliedCoupon: appliedCouponCode,
+            couponId: couponId,
+            payment: {
+              paymentId: razorpay_payment_id,
+              orderId: razorpay_order_id,
+              signature: razorpay_signature,
+              status: 'completed',
+              method: 'razorpay',
+              paidAt: new Date()
+            },
+            status: 'pending',
+            specialRequests: bookingData.specialRequests || ''
+          });
 
-        await booking.save({ session });
+          await booking.save({ session });
+        }
 
-        console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
+        console.log('✅ Booking saved:', booking.bookingReference);
         console.log('📊 Pricing Summary:');
         console.log(`   - Original Price: ₹${originalPrice}`);
         console.log(`   - Coupon Discount: ₹${couponDiscount}`);
@@ -356,7 +443,7 @@ class PaymentController {
                 city: unit.city,
                 bookingAmount: originalPrice,
                 nights: nights,
-                bookingId: booking._id
+                bookingId: booking._id || booking.id
               },
               session
             );
@@ -367,10 +454,10 @@ class PaymentController {
           }
         }
 
-        console.log('✅ Booking saved to MongoDB:', booking.bookingReference);
-
-        // Commit transaction before external RU API call
-        await session.commitTransaction();
+        // Commit transaction before external RU API call (MongoDB only)
+        if (session) {
+          await session.commitTransaction();
+        }
 
         // Create reservation in Rentals United
         try {
@@ -447,10 +534,17 @@ class PaymentController {
             }
 
             // Update booking with RU reservation ID
-            booking.ruReservationId = ruReservationId;
-            booking.ruStatus = statusText || 'Confirmed';
-            booking.status = 'confirmed';
-            await booking.save();
+            if (USE_SUPABASE) {
+              booking.ruReservationId = ruReservationId;
+              booking.ruStatus = statusText || 'Confirmed';
+              booking.status = 'confirmed';
+              await Booking.save(booking);
+            } else {
+              booking.ruReservationId = ruReservationId;
+              booking.ruStatus = statusText || 'Confirmed';
+              booking.status = 'confirmed';
+              await booking.save();
+            }
 
             console.log('✅ Reservation created in RU:', ruReservationId);
 
@@ -479,13 +573,26 @@ class PaymentController {
           console.error('❌ Error creating RU reservation:', ruError.message);
           // Booking is still saved in our DB, but not in RU
           // Admin can manually sync later
-          booking.ruStatus = `Error: ${ruError.message}`;
-          await booking.save();
+          if (USE_SUPABASE) {
+            booking.ruStatus = `Error: ${ruError.message}`;
+            await Booking.save(booking);
+          } else {
+            booking.ruStatus = `Error: ${ruError.message}`;
+            await booking.save();
+          }
         }
 
         // Populate unit details for response
-        await booking.populate('unitId');
-        await booking.populate('buildingId');
+        if (USE_SUPABASE) {
+          // For Supabase, fetch related data manually
+          const populatedBooking = await Booking.findById(booking.id || booking._id, { populate: ['unitId'] });
+          if (populatedBooking) {
+            booking = populatedBooking;
+          }
+        } else {
+          await booking.populate('unitId');
+          await booking.populate('buildingId');
+        }
 
         // Send booking confirmation email with access token
         try {
@@ -510,7 +617,7 @@ class PaymentController {
           message: 'Payment verified and booking confirmed',
           data: {
             booking: {
-              _id: booking._id,
+              _id: booking._id || booking.id,
               bookingReference: booking.bookingReference,
               ruReservationId: booking.ruReservationId,
               status: booking.status,
@@ -522,15 +629,15 @@ class PaymentController {
               appliedCoupon: booking.appliedCoupon,
               accessToken: booking.accessToken,
               unit: {
-                name: booking.unitId.name,
-                images: booking.unitId.images
+                name: booking.unitId?.name,
+                images: booking.unitId?.images
               }
             }
           }
         });
 
       } catch (error) {
-        if (session.inTransaction()) {
+        if (session && session.inTransaction()) {
           await session.abortTransaction();
         }
         console.error('Error verifying payment:', error);
@@ -540,7 +647,9 @@ class PaymentController {
           error: error.message
         });
       } finally {
-        session.endSession();
+        if (session) {
+          session.endSession();
+        }
       }
     }
 
@@ -579,13 +688,24 @@ class PaymentController {
           // Payment failed
           console.log('Payment failed:', payload.payment.entity.id);
           // Update booking status if exists
-          await Booking.updateOne(
-            { 'payment.paymentId': payload.payment.entity.id },
-            {
-              'payment.status': 'failed',
-              status: 'cancelled'
+          if (USE_SUPABASE) {
+            const failedBooking = await Booking.findOne({ 
+              'payment.paymentId': payload.payment.entity.id 
+            });
+            if (failedBooking) {
+              failedBooking.payment.status = 'failed';
+              failedBooking.status = 'cancelled';
+              await Booking.save(failedBooking);
             }
-          );
+          } else {
+            await Booking.updateOne(
+              { 'payment.paymentId': payload.payment.entity.id },
+              {
+                'payment.status': 'failed',
+                status: 'cancelled'
+              }
+            );
+          }
           break;
 
         case 'refund.created':

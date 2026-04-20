@@ -1,8 +1,23 @@
-const { Building, Unit, Booking } = require('../models');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const { Building: MongooseBuilding, Unit: MongooseUnit, Booking: MongooseBooking } = require('../models');
+
+// Supabase repositories (new)
+const buildingRepository = require('../repositories/buildingRepository');
+const unitRepository = require('../repositories/unitRepository');
+const bookingRepository = require('../repositories/bookingRepository');
+
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 
 const xmlParser = new XMLParser();
+
+// Adapters to use either MongoDB or Supabase
+const Building = USE_SUPABASE ? buildingRepository : MongooseBuilding;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
+const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
 
 class BuildingController {
   /**
@@ -10,11 +25,17 @@ class BuildingController {
    */
   async getAllBuildings(req, res) {
     try {
-      const buildings = await Building.find({ isActive: true });
+      let buildings;
+      
+      if (USE_SUPABASE) {
+        buildings = await Building.find({ isActive: true });
+      } else {
+        buildings = await Building.find({ isActive: true });
+      }
       
       // Format buildings for frontend compatibility
       const formattedBuildings = buildings.map(building => ({
-        _id: building._id,
+        _id: building._id || building.id,
         name: building.name,
         title: building.title || building.name,
         subTitle: building.subTitle,
@@ -76,7 +97,12 @@ class BuildingController {
     try {
       const { buildingId } = req.params;
       
-      const building = await Building.findById(buildingId);
+      let building;
+      if (USE_SUPABASE) {
+        building = await Building.findById(buildingId);
+      } else {
+        building = await Building.findById(buildingId);
+      }
       
       if (!building) {
         return res.status(404).json({
@@ -86,11 +112,16 @@ class BuildingController {
       }
 
       // Get all units for this building
-      const units = await Unit.find({ buildingId, isActive: true, isArchived: false });
+      let units;
+      if (USE_SUPABASE) {
+        units = await Unit.find({ buildingId, isActive: true, isArchived: false });
+      } else {
+        units = await Unit.find({ buildingId, isActive: true, isArchived: false });
+      }
 
       // Format building data for frontend
       const formattedBuilding = {
-        _id: building._id,
+        _id: building._id || building.id,
         name: building.name,
         title: building.title || building.name,
         subTitle: building.subTitle,
@@ -158,7 +189,13 @@ class BuildingController {
     try {
       const { buildingId } = req.params;
 
-      const building = await Building.findById(buildingId);
+      let building;
+      if (USE_SUPABASE) {
+        building = await Building.findById(buildingId);
+      } else {
+        building = await Building.findById(buildingId);
+      }
+      
       if (!building) {
         return res.status(404).json({
           success: false,
@@ -167,11 +204,20 @@ class BuildingController {
       }
 
       // Get all active units
-      const allUnits = await Unit.find({ 
-        buildingId,
-        isActive: true,
-        isArchived: false
-      });
+      let allUnits;
+      if (USE_SUPABASE) {
+        allUnits = await Unit.find({ 
+          buildingId,
+          isActive: true,
+          isArchived: false
+        });
+      } else {
+        allUnits = await Unit.find({ 
+          buildingId,
+          isActive: true,
+          isArchived: false
+        });
+      }
 
       // Group by unitType
       const unitTypesMap = {};
@@ -193,7 +239,7 @@ class BuildingController {
         // Use representative unit, or first unit as fallback
         if (unit.isRepresentative || !unitTypesMap[type].representativeUnit) {
           unitTypesMap[type].representativeUnit = {
-            _id: unit._id,
+            _id: unit._id || unit.id,
             name: unit.name,
             description: unit.description,
             images: unit.images,
@@ -209,7 +255,7 @@ class BuildingController {
 
       // Format building data for frontend
       const formattedBuilding = {
-        _id: building._id,
+        _id: building._id || building.id,
         name: building.name,
         title: building.title || building.name,
         subTitle: building.subTitle,
@@ -286,12 +332,22 @@ class BuildingController {
       }
 
       // Get all units of this type
-      const units = await Unit.find({
-        buildingId,
-        unitType,
-        isActive: true,
-        isArchived: false
-      });
+      let units;
+      if (USE_SUPABASE) {
+        units = await Unit.find({
+          buildingId,
+          unitType,
+          isActive: true,
+          isArchived: false
+        });
+      } else {
+        units = await Unit.find({
+          buildingId,
+          unitType,
+          isActive: true,
+          isArchived: false
+        });
+      }
 
       console.log(`📊 Found ${units.length} units of type "${unitType}"`);
 
@@ -303,23 +359,35 @@ class BuildingController {
       }
 
       // Check which units are already booked locally
-      const bookedUnitIds = await Booking.find({
-        buildingId,
-        status: { $in: ['confirmed', 'pending'] },
-        $or: [
-          {
-            checkInDate: { $lt: new Date(checkOut) },
-            checkOutDate: { $gt: new Date(checkIn) }
-          }
-        ]
-      }).distinct('unitId');
+      let bookedUnitIds;
+      if (USE_SUPABASE) {
+        const bookings = await Booking.find({
+          buildingId,
+          status: { $in: ['confirmed', 'pending'] },
+          checkInDate: { $lt: new Date(checkOut) },
+          checkOutDate: { $gt: new Date(checkIn) }
+        });
+        bookedUnitIds = bookings.map(b => b.unitId);
+      } else {
+        bookedUnitIds = await Booking.find({
+          buildingId,
+          status: { $in: ['confirmed', 'pending'] },
+          $or: [
+            {
+              checkInDate: { $lt: new Date(checkOut) },
+              checkOutDate: { $gt: new Date(checkIn) }
+            }
+          ]
+        }).distinct('unitId');
+      }
 
       console.log(`🔒 ${bookedUnitIds.length} units already booked locally`);
 
       // Filter out booked units
-      let availableUnits = units.filter(unit => 
-        !bookedUnitIds.some(bookedId => bookedId.toString() === unit._id.toString())
-      );
+      let availableUnits = units.filter(unit => {
+        const unitId = unit._id || unit.id;
+        return !bookedUnitIds.some(bookedId => bookedId.toString() === unitId.toString());
+      });
 
       console.log(`✅ ${availableUnits.length} units available locally`);
 
@@ -370,11 +438,12 @@ class BuildingController {
 
       for (const unit of availableUnits) {
         try {
+          const unitId = unit._id || unit.id;
           console.log(`💰 Checking cached pricing for unit ${unit.name}`);
           
           // Query cache for date range
           const cachedDays = await PropertyDailyCache.find({
-            unitId: unit._id,
+            unitId: unitId,
             date: {
               $gte: checkInDate,
               $lt: checkOutDate
@@ -478,8 +547,13 @@ class BuildingController {
       const buildingData = req.body;
 
       // Create new building
-      const building = new Building(buildingData);
-      await building.save();
+      let building;
+      if (USE_SUPABASE) {
+        building = await Building.create(buildingData);
+      } else {
+        building = new Building(buildingData);
+        await building.save();
+      }
 
       console.log('✅ Building created:', building.name);
 
@@ -506,11 +580,16 @@ class BuildingController {
       const { buildingId } = req.params;
       const updateData = req.body;
 
-      const building = await Building.findByIdAndUpdate(
-        buildingId,
-        updateData,
-        { new: true, runValidators: true }
-      );
+      let building;
+      if (USE_SUPABASE) {
+        building = await Building.findByIdAndUpdate(buildingId, updateData);
+      } else {
+        building = await Building.findByIdAndUpdate(
+          buildingId,
+          updateData,
+          { new: true, runValidators: true }
+        );
+      }
 
       if (!building) {
         return res.status(404).json({
@@ -543,11 +622,16 @@ class BuildingController {
     try {
       const { buildingId } = req.params;
 
-      const building = await Building.findByIdAndUpdate(
-        buildingId,
-        { isActive: false },
-        { new: true }
-      );
+      let building;
+      if (USE_SUPABASE) {
+        building = await Building.findByIdAndUpdate(buildingId, { isActive: false });
+      } else {
+        building = await Building.findByIdAndUpdate(
+          buildingId,
+          { isActive: false },
+          { new: true }
+        );
+      }
 
       if (!building) {
         return res.status(404).json({
