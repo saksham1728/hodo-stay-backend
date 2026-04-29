@@ -1,6 +1,20 @@
-const Coupon = require('../models/Coupon');
-const Booking = require('../models/Booking');
-const CouponUsage = require('../models/CouponUsage');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongooseCoupon = require('../models/Coupon');
+const MongooseBooking = require('../models/Booking');
+const MongooseCouponUsage = require('../models/CouponUsage');
+
+// Supabase repositories (new)
+const couponRepository = require('../repositories/couponRepository');
+const bookingRepository = require('../repositories/bookingRepository');
+const couponUsageRepository = require('../repositories/couponUsageRepository');
+
+// Adapters to use either MongoDB or Supabase
+const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
+const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
+const CouponUsage = USE_SUPABASE ? couponUsageRepository : MongooseCouponUsage;
 
 class CouponService {
   /**
@@ -10,7 +24,13 @@ class CouponService {
     const { email, phone, propertyId, city, bookingAmount, nights } = bookingData;
 
     // 1. Find coupon
-    const coupon = await Coupon.findValidCoupon(couponCode);
+    let coupon;
+    if (USE_SUPABASE) {
+      coupon = await Coupon.findValidCoupon(couponCode);
+    } else {
+      coupon = await Coupon.findValidCoupon(couponCode);
+    }
+    
     if (!coupon) {
       return {
         valid: false,
@@ -27,7 +47,9 @@ class CouponService {
     }
 
     // 3. Check expiry
-    if (coupon.isExpired) {
+    const now = new Date();
+    const isExpired = now < new Date(coupon.validFrom) || now > new Date(coupon.validUntil);
+    if (isExpired) {
       return {
         valid: false,
         error: 'This coupon has expired'
@@ -46,13 +68,26 @@ class CouponService {
 
     // 5. Check user eligibility - New users only
     if (coupon.newUsersOnly) {
-      const existingBookings = await Booking.countDocuments({
-        $or: [
-          { 'guestInfo.email': email?.toLowerCase() },
-          { 'guestInfo.phone': phone }
-        ],
-        status: { $in: ['confirmed', 'completed'] }
-      });
+      let existingBookings;
+      if (USE_SUPABASE) {
+        const bookings = await Booking.find({
+          'guestInfo.email': email?.toLowerCase(),
+          status: { $in: ['confirmed', 'completed'] }
+        });
+        const bookings2 = await Booking.find({
+          'guestInfo.phone': phone,
+          status: { $in: ['confirmed', 'completed'] }
+        });
+        existingBookings = bookings.length + bookings2.length;
+      } else {
+        existingBookings = await Booking.countDocuments({
+          $or: [
+            { 'guestInfo.email': email?.toLowerCase() },
+            { 'guestInfo.phone': phone }
+          ],
+          status: { $in: ['confirmed', 'completed'] }
+        });
+      }
 
       if (existingBookings > 0) {
         return {
@@ -92,8 +127,13 @@ class CouponService {
 
     // 8. Check per-user usage limit
     if (coupon.usageType === 'limited_per_user') {
-      const userUsage = coupon.getUserUsage(email, phone);
-      if (userUsage >= coupon.maxUsagePerUser) {
+      // Get user usage from usedBy array
+      const userUsage = coupon.usedBy?.find(u => 
+        u.email === email?.toLowerCase() || u.phone === phone
+      );
+      const usageCount = userUsage ? userUsage.usageCount : 0;
+      
+      if (usageCount >= coupon.maxUsagePerUser) {
         return {
           valid: false,
           error: `You have already used this coupon ${coupon.maxUsagePerUser} time(s)`
@@ -142,7 +182,7 @@ class CouponService {
     return {
       valid: true,
       coupon: {
-        id: coupon._id,
+        id: coupon._id || coupon.id,
         code: coupon.code,
         description: coupon.description,
         discountType: coupon.discountType,
@@ -185,7 +225,7 @@ class CouponService {
    * Apply coupon to booking (called during booking creation)
    */
   async applyCoupon(couponCode, bookingData, session = null) {
-    const { email, phone, propertyId, city, bookingAmount, nights, bookingId } = bookingData;
+    const { email, phone, propertyId, propertyName, city, bookingAmount, nights, checkIn, checkOut, bookingId } = bookingData;
 
     // Validate again (never trust client)
     const validation = await this.validateCoupon(couponCode, {
@@ -201,12 +241,21 @@ class CouponService {
       throw new Error(validation.error);
     }
 
-    const coupon = await Coupon.findById(validation.coupon.id).session(session);
+    let coupon;
+    if (USE_SUPABASE) {
+      coupon = await Coupon.findById(validation.coupon.id);
+    } else {
+      coupon = await Coupon.findById(validation.coupon.id).session(session);
+    }
 
     // Update coupon usage with atomic operation
-    const userIndex = coupon.usedBy.findIndex(u => 
+    const userIndex = coupon.usedBy?.findIndex(u => 
       u.email === email?.toLowerCase() || u.phone === phone
-    );
+    ) ?? -1;
+
+    if (!coupon.usedBy) {
+      coupon.usedBy = [];
+    }
 
     if (userIndex >= 0) {
       // User exists, increment count
@@ -226,24 +275,67 @@ class CouponService {
 
     // Increment total usage
     coupon.currentUsageCount += 1;
-    await coupon.save({ session });
+    
+    if (USE_SUPABASE) {
+      await Coupon.save(coupon);
+    } else {
+      await coupon.save({ session });
+    }
 
     // Create usage record for analytics
-    const usage = new CouponUsage({
-      couponId: coupon._id,
-      couponCode: coupon.code,
-      bookingId,
-      userEmail: email?.toLowerCase(),
-      userPhone: phone,
-      originalPrice: bookingAmount,
-      discountAmount: validation.discount.amount,
-      finalPrice: validation.discount.finalPrice,
-      propertyId,
-      city,
-      nights
-    });
+    if (USE_SUPABASE) {
+      console.log('📝 Creating coupon usage record with data:', {
+        couponId: coupon.id || coupon._id,
+        couponCode: coupon.code,
+        bookingId,
+        userEmail: email?.toLowerCase(),
+        userPhone: phone,
+        originalPrice: bookingAmount,
+        discountAmount: validation.discount.amount,
+        finalPrice: validation.discount.finalPrice,
+        propertyId,
+        propertyName,
+        city,
+        checkIn,
+        checkOut,
+        nights
+      });
+      
+      await CouponUsage.create({
+        couponId: coupon.id || coupon._id,
+        couponCode: coupon.code,
+        bookingId,
+        userEmail: email?.toLowerCase(),
+        userPhone: phone,
+        originalPrice: bookingAmount,
+        discountAmount: validation.discount.amount,
+        finalPrice: validation.discount.finalPrice,
+        propertyId,
+        propertyName,
+        city,
+        checkIn,
+        checkOut,
+        nights
+      });
+      
+      console.log('✅ Coupon usage record created successfully');
+    } else {
+      const usage = new CouponUsage({
+        couponId: coupon._id,
+        couponCode: coupon.code,
+        bookingId,
+        userEmail: email?.toLowerCase(),
+        userPhone: phone,
+        originalPrice: bookingAmount,
+        discountAmount: validation.discount.amount,
+        finalPrice: validation.discount.finalPrice,
+        propertyId,
+        city,
+        nights
+      });
 
-    await usage.save({ session });
+      await usage.save({ session });
+    }
 
     return {
       discountAmount: validation.discount.amount,
@@ -258,19 +350,58 @@ class CouponService {
   async getAvailableCoupons(email, phone) {
     const now = new Date();
     
-    const coupons = await Coupon.find({
-      isActive: true,
-      validFrom: { $lte: now },
-      validUntil: { $gte: now },
-      $or: [
-        { specificUsers: { $size: 0 } },
-        { specificUsers: email?.toLowerCase() },
-        { specificUsers: phone }
-      ],
-      excludedUsers: { 
-        $nin: [email?.toLowerCase(), phone] 
-      }
-    }).select('code description discountType discountValue maxDiscountAmount validUntil minBookingAmount');
+    let coupons;
+    if (USE_SUPABASE) {
+      // For Supabase, we need to handle the query differently
+      // Get all active coupons and filter in memory
+      const allCoupons = await Coupon.find({
+        isActive: true,
+        validFrom: { $lte: now },
+        validUntil: { $gte: now }
+      });
+      
+      // Filter based on specific users and excluded users
+      coupons = allCoupons.filter(coupon => {
+        // Check if specificUsers is empty or includes the user
+        const hasSpecificUsers = coupon.specificUsers && coupon.specificUsers.length > 0;
+        const isSpecificUser = hasSpecificUsers && coupon.specificUsers.some(user => 
+          user === email?.toLowerCase() || user === phone
+        );
+        
+        // Check if user is excluded
+        const isExcluded = coupon.excludedUsers && coupon.excludedUsers.some(user => 
+          user === email?.toLowerCase() || user === phone
+        );
+        
+        // Include if: (no specific users OR is specific user) AND not excluded
+        return (!hasSpecificUsers || isSpecificUser) && !isExcluded;
+      });
+      
+      // Map to return only needed fields
+      coupons = coupons.map(c => ({
+        code: c.code,
+        description: c.description,
+        discountType: c.discountType,
+        discountValue: c.discountValue,
+        maxDiscountAmount: c.maxDiscountAmount,
+        validUntil: c.validUntil,
+        minBookingAmount: c.minBookingAmount
+      }));
+    } else {
+      coupons = await Coupon.find({
+        isActive: true,
+        validFrom: { $lte: now },
+        validUntil: { $gte: now },
+        $or: [
+          { specificUsers: { $size: 0 } },
+          { specificUsers: email?.toLowerCase() },
+          { specificUsers: phone }
+        ],
+        excludedUsers: { 
+          $nin: [email?.toLowerCase(), phone] 
+        }
+      }).select('code description discountType discountValue maxDiscountAmount validUntil minBookingAmount');
+    }
 
     return coupons;
   }

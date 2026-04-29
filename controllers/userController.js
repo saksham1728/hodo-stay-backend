@@ -1,4 +1,14 @@
-const { User } = require('../models');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const { User: MongooseUser } = require('../models');
+
+// Supabase repositories (new)
+const userRepository = require('../repositories/userRepository');
+
+// Adapter to use either MongoDB or Supabase
+const User = USE_SUPABASE ? userRepository : MongooseUser;
 
 class UserController {
   // Create or get user
@@ -31,15 +41,25 @@ class UserController {
         );
       } else {
         // Create new user
-        user = new User({
-          firstName,
-          lastName,
-          email: email.toLowerCase(),
-          phone,
-          address
-        });
-        
-        await user.save();
+        if (USE_SUPABASE) {
+          user = await User.create({
+            firstName,
+            lastName,
+            email: email.toLowerCase(),
+            phone,
+            address
+          });
+        } else {
+          user = new User({
+            firstName,
+            lastName,
+            email: email.toLowerCase(),
+            phone,
+            address
+          });
+          
+          await user.save();
+        }
       }
       
       res.json({

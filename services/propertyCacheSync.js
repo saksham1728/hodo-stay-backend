@@ -1,7 +1,20 @@
-const PropertyDailyCache = require('../models/PropertyDailyCache');
-const Unit = require('../models/Unit');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongoosePropertyDailyCache = require('../models/PropertyDailyCache');
+const MongooseUnit = require('../models/Unit');
+
+// Supabase repositories (new)
+const propertyDailyCacheRepository = require('../repositories/propertyDailyCacheRepository');
+const unitRepository = require('../repositories/unitRepository');
+
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
+
+// Adapters to use either MongoDB or Supabase
+const PropertyDailyCache = USE_SUPABASE ? propertyDailyCacheRepository : MongoosePropertyDailyCache;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -19,10 +32,18 @@ class PropertyCacheSyncService {
     
     try {
       // Get all active units with RU property IDs
-      const units = await Unit.find({ 
-        isActive: true,
-        ruPropertyId: { $exists: true, $ne: null }
-      });
+      let units;
+      if (USE_SUPABASE) {
+        units = await Unit.find({ 
+          isActive: true,
+          ruPropertyId: { $ne: null }
+        });
+      } else {
+        units = await Unit.find({ 
+          isActive: true,
+          ruPropertyId: { $exists: true, $ne: null }
+        });
+      }
 
       console.log(`📋 Found ${units.length} units to sync`);
 
@@ -33,10 +54,10 @@ class PropertyCacheSyncService {
         try {
           await this.syncUnit(unit);
           successCount++;
-          console.log(`✅ Synced unit ${unit._id} (${unit.ruPropertyId})`);
+          console.log(`✅ Synced unit ${unit._id || unit.id} (${unit.ruPropertyId})`);
         } catch (error) {
           errorCount++;
-          console.error(`❌ Failed to sync unit ${unit._id} (${unit.name}) - RU Property ID: ${unit.ruPropertyId}`);
+          console.error(`❌ Failed to sync unit ${unit._id || unit.id} (${unit.name}) - RU Property ID: ${unit.ruPropertyId}`);
           console.error(`   Error: ${error.message}`);
         }
       }
@@ -188,6 +209,8 @@ class PropertyCacheSyncService {
    * Upsert cache data to database with seasonal pricing per day
    */
   async upsertCacheData(unit, availabilityData, getPriceForDate) {
+    const unitId = unit._id || unit.id;
+    
     const bulkOps = availabilityData
       .map(day => {
         // Parse date string (YYYY-MM-DD format)
@@ -204,7 +227,7 @@ class PropertyCacheSyncService {
         return {
           updateOne: {
             filter: { 
-              unitId: unit._id, 
+              unitId: unitId, 
               date: dateObj
             },
             update: {

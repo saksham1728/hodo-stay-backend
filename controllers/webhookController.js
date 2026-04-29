@@ -1,7 +1,23 @@
-const { Booking, Unit } = require('../models');
-const PropertyDailyCache = require('../models/PropertyDailyCache');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongooseBooking = require('../models/Booking');
+const MongooseUnit = require('../models/Unit');
+const MongoosePropertyDailyCache = require('../models/PropertyDailyCache');
+
+// Supabase repositories (new)
+const bookingRepository = require('../repositories/bookingRepository');
+const unitRepository = require('../repositories/unitRepository');
+const propertyDailyCacheRepository = require('../repositories/propertyDailyCacheRepository');
+
 const { XMLParser } = require('fast-xml-parser');
 const slackService = require('../services/slackService');
+
+// Adapters to use either MongoDB or Supabase
+const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
+const PropertyDailyCache = USE_SUPABASE ? propertyDailyCacheRepository : MongoosePropertyDailyCache;
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -149,17 +165,22 @@ class WebhookController {
         // Update existing booking
         existingBooking.status = 'confirmed';
         existingBooking.ruStatus = 'Confirmed via webhook';
-        await existingBooking.save();
+        
+        if (USE_SUPABASE) {
+          await Booking.save(existingBooking);
+        } else {
+          await existingBooking.save();
+        }
         
         console.log('✅ Booking updated:', existingBooking.bookingReference);
         return;
       }
 
       // Create new booking
-      const booking = new Booking({
-        unitId: unit._id,
-        buildingId: unit.buildingId,
-        ruPropertyId: unit.ruPropertyId,
+      const bookingData = {
+        unitId: unit._id || unit.id,
+        buildingId: unit.buildingId || unit.building_id,
+        ruPropertyId: unit.ruPropertyId || unit.ru_property_id,
         ruReservationId: reservation.ReservationID,
         checkIn: checkInDate,
         checkOut: checkOutDate,
@@ -191,16 +212,30 @@ class WebhookController {
         ruStatus: 'Confirmed via webhook',
         bookingSource: this.getBookingSource(reservation.Creator),
         specialRequests: (reservation.Comments || '').substring(0, 500) // Truncate to 500 chars
-      });
+      };
 
-      await booking.save();
+      let booking;
+      if (USE_SUPABASE) {
+        booking = await Booking.create(bookingData);
+      } else {
+        booking = new Booking(bookingData);
+        await booking.save();
+      }
+      
       console.log('✅ Booking created:', booking.bookingReference);
 
       // Send Slack notification for webhook booking
       try {
         // Populate unit and building for Slack notification
-        await booking.populate('unitId');
-        await booking.populate('buildingId');
+        if (USE_SUPABASE) {
+          const populatedBooking = await Booking.findById(booking.id || booking._id, { populate: ['unitId'] });
+          if (populatedBooking) {
+            booking = populatedBooking;
+          }
+        } else {
+          await booking.populate('unitId');
+          await booking.populate('buildingId');
+        }
         
         await slackService.sendBookingNotification(booking);
         console.log('✅ Slack notification sent for webhook booking:', booking.bookingReference);
@@ -212,7 +247,7 @@ class WebhookController {
       // Update cache - mark dates as unavailable
       await PropertyDailyCache.updateMany(
         {
-          unitId: unit._id,
+          unitId: unit._id || unit.id,
           date: {
             $gte: checkInDate,
             $lt: checkOutDate
@@ -255,7 +290,12 @@ class WebhookController {
       // Update booking status
       booking.status = 'cancelled';
       booking.ruStatus = 'Cancelled via webhook';
-      await booking.save();
+      
+      if (USE_SUPABASE) {
+        await Booking.save(booking);
+      } else {
+        await booking.save();
+      }
 
       console.log('✅ Booking cancelled:', booking.bookingReference);
 

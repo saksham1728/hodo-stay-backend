@@ -1,7 +1,20 @@
-const PropertyDailyCache = require('../models/PropertyDailyCache');
-const Unit = require('../models/Unit');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongoosePropertyDailyCache = require('../models/PropertyDailyCache');
+const MongooseUnit = require('../models/Unit');
+
+// Supabase repositories (new)
+const propertyDailyCacheRepository = require('../repositories/propertyDailyCacheRepository');
+const unitRepository = require('../repositories/unitRepository');
+
 const propertyCacheSync = require('../services/propertyCacheSync');
 const pricingMarkup = require('../utils/pricingMarkup');
+
+// Adapters to use either MongoDB or Supabase
+const PropertyDailyCache = USE_SUPABASE ? propertyDailyCacheRepository : MongoosePropertyDailyCache;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 /**
  * Search available units with cached pricing
@@ -42,7 +55,12 @@ exports.searchAvailableUnits = async (req, res) => {
     if (roomType) unitQuery.roomType = roomType;
 
     // Get all matching units
-    const units = await Unit.find(unitQuery).populate('buildingId');
+    let units;
+    if (USE_SUPABASE) {
+      units = await Unit.find(unitQuery);
+    } else {
+      units = await Unit.find(unitQuery).populate('buildingId');
+    }
 
     // For each unit, check availability and get pricing from cache
     const availableUnits = [];
@@ -50,12 +68,12 @@ exports.searchAvailableUnits = async (req, res) => {
     for (const unit of units) {
       // Query cache for all days in the date range
       const cachedDays = await PropertyDailyCache.find({
-        unitId: unit._id,
+        unitId: unit._id || unit.id,
         date: {
           $gte: checkInDate,
           $lt: checkOutDate
         }
-      }).sort({ date: 1 });
+      }, { sort: { date: 1 } });
 
       // Calculate number of nights
       const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
@@ -175,7 +193,13 @@ exports.getUnitPricing = async (req, res) => {
     }
 
     // Get unit
-    const unit = await Unit.findById(unitId).populate('buildingId');
+    let unit;
+    if (USE_SUPABASE) {
+      unit = await Unit.findById(unitId);
+    } else {
+      unit = await Unit.findById(unitId).populate('buildingId');
+    }
+    
     if (!unit) {
       return res.status(404).json({
         success: false,
@@ -185,12 +209,12 @@ exports.getUnitPricing = async (req, res) => {
 
     // Query cache for all days in the date range
     const cachedDays = await PropertyDailyCache.find({
-      unitId: unit._id,
+      unitId: unit._id || unit.id,
       date: {
         $gte: checkInDate,
         $lt: checkOutDate
       }
-    }).sort({ date: 1 });
+    }, { sort: { date: 1 } });
 
     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
@@ -352,12 +376,12 @@ exports.checkAvailability = async (req, res) => {
 
     // Query cache for all days in the date range
     const cachedDays = await PropertyDailyCache.find({
-      unitId: unit._id,
+      unitId: unit._id || unit.id,
       date: {
         $gte: checkInDate,
         $lt: checkOutDate
       }
-    }).sort({ date: 1 });
+    }, { sort: { date: 1 } });
 
     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
@@ -414,16 +438,36 @@ exports.checkAvailability = async (req, res) => {
  */
 exports.getSyncStatus = async (req, res) => {
   try {
-    const totalRecords = await PropertyDailyCache.countDocuments();
+    let totalRecords, lastRecord, activeUnits;
     
-    // Get last sync time (most recent record)
-    const lastRecord = await PropertyDailyCache.findOne().sort({ lastSynced: -1 });
-    
-    // Get active units count
-    const activeUnits = await Unit.countDocuments({ 
-      isActive: true, 
-      ruPropertyId: { $exists: true, $ne: null } 
-    });
+    if (USE_SUPABASE) {
+      const records = await PropertyDailyCache.find({});
+      totalRecords = records.length;
+      
+      // Get last sync time (most recent record)
+      const sortedRecords = records.sort((a, b) => 
+        new Date(b.lastSynced) - new Date(a.lastSynced)
+      );
+      lastRecord = sortedRecords[0];
+      
+      // Get active units count
+      const units = await Unit.find({ 
+        isActive: true, 
+        ruPropertyId: { $ne: null } 
+      });
+      activeUnits = units.length;
+    } else {
+      totalRecords = await PropertyDailyCache.countDocuments();
+      
+      // Get last sync time (most recent record)
+      lastRecord = await PropertyDailyCache.findOne().sort({ lastSynced: -1 });
+      
+      // Get active units count
+      activeUnits = await Unit.countDocuments({ 
+        isActive: true, 
+        ruPropertyId: { $exists: true, $ne: null } 
+      });
+    }
 
     // Expected records (181 days per unit)
     const expectedRecords = activeUnits * 181;

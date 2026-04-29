@@ -57,7 +57,7 @@ function formatDate(date) {
 function transformBooking(pgBooking) {
   if (!pgBooking) return null;
 
-  return {
+  const booking = {
     id: pgBooking.id,
     _id: pgBooking.id, // For backward compatibility
     bookingReference: pgBooking.booking_reference,
@@ -110,6 +110,18 @@ function transformBooking(pgBooking) {
     createdAt: formatDate(pgBooking.created_at),
     updatedAt: formatDate(pgBooking.updated_at)
   };
+
+  // Add populated unit data if present
+  if (pgBooking.ho_units) {
+    booking.unit = transformUnit(pgBooking.ho_units);
+  }
+
+  // Add populated building data if present
+  if (pgBooking.ho_buildings) {
+    booking.building = transformBuilding(pgBooking.ho_buildings);
+  }
+
+  return booking;
 }
 
 /**

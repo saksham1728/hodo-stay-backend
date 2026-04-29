@@ -1,0 +1,106 @@
+{
+  "importDate": "2026-04-23T05:08:49.809Z",
+  "duration": "7.48s",
+  "results": [
+    {
+      "collection": "buildings",
+      "table": "ho_buildings",
+      "imported": 2,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "collection": "units",
+      "table": "ho_units",
+      "imported": 19,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "collection": "users",
+      "imported": 0,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "collection": "coupons",
+      "table": "ho_coupons",
+      "imported": 10,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "collection": "bookings",
+      "table": "ho_bookings",
+      "imported": 30,
+      "failed": 100,
+      "errors": [
+        {
+          "batch": 1,
+          "error": "value too long for type character varying(50)",
+          "records": 100
+        }
+      ]
+    },
+    {
+      "collection": "property_daily_cache",
+      "table": "ho_property_daily_cache",
+      "imported": 4009,
+      "failed": 0,
+      "errors": []
+    }
+  ],
+  "totalImported": 4070,
+  "totalFailed": 100,
+  "validations": {
+    "recordCounts": [
+      {
+        "table": "ho_buildings",
+        "expected": 2,
+        "actual": 2,
+        "match": true
+      },
+      {
+        "table": "ho_units",
+        "expected": 19,
+        "actual": 19,
+        "match": true
+      },
+      {
+        "table": "ho_coupons",
+        "expected": 10,
+        "actual": 10,
+        "match": true
+      },
+      {
+        "table": "ho_bookings",
+        "expected": 30,
+        "actual": 30,
+        "match": true
+      },
+      {
+        "table": "ho_property_daily_cache",
+        "expected": 4009,
+        "actual": 4009,
+        "match": true
+      }
+    ],
+    "foreignKeys": [
+      {
+        "check": "ho_bookings.unit_id → ho_units.id",
+        "valid": true,
+        "orphaned": 0
+      },
+      {
+        "check": "ho_bookings.building_id → ho_buildings.id",
+        "valid": true,
+        "orphaned": 0
+      },
+      {
+        "check": "ho_units.building_id → ho_buildings.id",
+        "valid": true,
+        "orphaned": 0
+      }
+    ]
+  }
+}

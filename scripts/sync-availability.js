@@ -1,13 +1,26 @@
 const mongoose = require('mongoose');
-const PropertyDailyCache = require('../models/PropertyDailyCache');
-const Unit = require('../models/Unit');
 const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
 
 // Load environment variables from the correct path
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const MongoosePropertyDailyCache = require('../models/PropertyDailyCache');
+const MongooseUnit = require('../models/Unit');
+
+// Supabase repositories (new)
+const propertyDailyCacheRepository = require('../repositories/propertyDailyCacheRepository');
+const unitRepository = require('../repositories/unitRepository');
+
 const ruClient = require('../utils/ruClient');
+
+// Adapters to use either MongoDB or Supabase
+const PropertyDailyCache = USE_SUPABASE ? propertyDailyCacheRepository : MongoosePropertyDailyCache;
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -32,13 +45,22 @@ async function syncAvailability() {
     }
     console.log('✅ RU API credentials loaded');
 
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB');
+    // Connect to database
+    if (!USE_SUPABASE) {
+      await mongoose.connect(process.env.MONGODB_URI);
+      console.log('✅ Connected to MongoDB');
+    } else {
+      console.log('✅ Using Supabase');
+    }
 
     // Get all active units
     console.log('\n📋 Fetching all active units...');
-    const units = await Unit.find({ isActive: true }).select('ruPropertyId unitNumber building');
+    let units;
+    if (USE_SUPABASE) {
+      units = await Unit.find({ isActive: true });
+    } else {
+      units = await Unit.find({ isActive: true }).select('ruPropertyId unitNumber building');
+    }
     console.log(`✅ Found ${units.length} active units`);
 
     if (units.length === 0) {
@@ -117,22 +139,50 @@ async function syncAvailability() {
                 const isAvailable = !isBlocked && (units > reservations);
                 
                 // Update the cache entry
-                const result = await PropertyDailyCache.findOneAndUpdate(
-                  {
+                let result;
+                if (USE_SUPABASE) {
+                  // For Supabase, find and update
+                  const cacheEntries = await PropertyDailyCache.find({
                     ruPropertyId: unit.ruPropertyId,
-                    date: date
-                  },
-                  {
-                    isAvailable: isAvailable,
-                    lastSynced: new Date()
-                  },
-                  { new: true }
-                );
-                
-                if (result) {
-                  unitUpdated++;
+                    date: { $gte: date, $lt: new Date(date.getTime() + 86400000) }
+                  });
+                  
+                  if (cacheEntries.length > 0) {
+                    await PropertyDailyCache.updateMany(
+                      {
+                        ruPropertyId: unit.ruPropertyId,
+                        date: { $gte: date, $lt: new Date(date.getTime() + 86400000) }
+                      },
+                      {
+                        $set: {
+                          isAvailable: isAvailable,
+                          lastSynced: new Date()
+                        }
+                      }
+                    );
+                    result = cacheEntries[0];
+                    unitUpdated++;
+                  } else {
+                    console.error(`    ⚠️  No cache entry found for ${dateStr}`);
+                  }
                 } else {
-                  console.error(`    ⚠️  No cache entry found for ${dateStr}`);
+                  result = await PropertyDailyCache.findOneAndUpdate(
+                    {
+                      ruPropertyId: unit.ruPropertyId,
+                      date: date
+                    },
+                    {
+                      isAvailable: isAvailable,
+                      lastSynced: new Date()
+                    },
+                    { new: true }
+                  );
+                  
+                  if (result) {
+                    unitUpdated++;
+                  } else {
+                    console.error(`    ⚠️  No cache entry found for ${dateStr}`);
+                  }
                 }
               } catch (err) {
                 console.error(`    ❌ Error updating availability: ${err.message}`);
@@ -173,8 +223,10 @@ async function syncAvailability() {
     console.error('\n❌ Fatal error:', error);
     process.exit(1);
   } finally {
-    await mongoose.connection.close();
-    console.log('\n👋 Database connection closed');
+    if (!USE_SUPABASE) {
+      await mongoose.connection.close();
+      console.log('\n👋 Database connection closed');
+    }
     process.exit(0);
   }
 }

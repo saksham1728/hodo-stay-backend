@@ -1,8 +1,19 @@
-const { Unit } = require('../models');
+// Use environment variable to switch between MongoDB and Supabase
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+// MongoDB models (legacy)
+const { Unit: MongooseUnit } = require('../models');
+
+// Supabase repositories (new)
+const unitRepository = require('../repositories/unitRepository');
+
 const ruClient = require('../utils/ruClient');
 const { XMLParser } = require('fast-xml-parser');
 
 const xmlParser = new XMLParser();
+
+// Adapter to use either MongoDB or Supabase
+const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 
 class UnitController {
   // Get unit details with full information from MongoDB (NO RU API calls)
@@ -12,15 +23,28 @@ class UnitController {
       
       console.log(`Fetching unit details for: ${unitId}`);
       
-      // Find unit by MongoDB ID or RU Property ID
-      let query = {};
-      if (unitId.match(/^[0-9a-fA-F]{24}$/)) {
-        query = { $or: [{ _id: unitId }, { ruPropertyId: parseInt(unitId) }] };
-      } else {
-        query = { ruPropertyId: parseInt(unitId) };
-      }
+      let unit;
       
-      const unit = await Unit.findOne(query).populate('buildingId', 'name').lean();
+      if (USE_SUPABASE) {
+        // Supabase: Try to find by UUID first, then by ruPropertyId
+        unit = await Unit.findById(unitId);
+        
+        if (!unit && !isNaN(parseInt(unitId))) {
+          // If not found by UUID and unitId is numeric, try ruPropertyId
+          const units = await Unit.find({ ruPropertyId: parseInt(unitId) });
+          unit = units[0] || null;
+        }
+      } else {
+        // MongoDB: Find by MongoDB ID or RU Property ID
+        let query = {};
+        if (unitId.match(/^[0-9a-fA-F]{24}$/)) {
+          query = { $or: [{ _id: unitId }, { ruPropertyId: parseInt(unitId) }] };
+        } else {
+          query = { ruPropertyId: parseInt(unitId) };
+        }
+        
+        unit = await Unit.findOne(query).populate('buildingId', 'name').lean();
+      }
       
       if (!unit) {
         return res.status(404).json({
@@ -29,7 +53,7 @@ class UnitController {
         });
       }
       
-      console.log(`Using MongoDB data for unit: ${unit.ruPropertyId} (last synced: ${new Date(unit.lastSyncedAt).toLocaleString()})`);
+      console.log(`Using ${USE_SUPABASE ? 'Supabase' : 'MongoDB'} data for unit: ${unit.ruPropertyId} (last synced: ${new Date(unit.lastSyncedAt).toLocaleString()})`);
       
       res.json({
         success: true,
@@ -63,15 +87,28 @@ class UnitController {
       
       console.log(`Getting availability and price for unit: ${unitId}, dates: ${dateFrom} to ${dateTo}`);
       
-      // Find unit
-      let query = {};
-      if (unitId.match(/^[0-9a-fA-F]{24}$/)) {
-        query = { $or: [{ _id: unitId }, { ruPropertyId: parseInt(unitId) }] };
-      } else {
-        query = { ruPropertyId: parseInt(unitId) };
-      }
+      let unit;
       
-      const unit = await Unit.findOne(query).lean();
+      if (USE_SUPABASE) {
+        // Supabase: Try to find by UUID first, then by ruPropertyId
+        unit = await Unit.findById(unitId);
+        
+        if (!unit && !isNaN(parseInt(unitId))) {
+          // If not found by UUID and unitId is numeric, try ruPropertyId
+          const units = await Unit.find({ ruPropertyId: parseInt(unitId) });
+          unit = units[0] || null;
+        }
+      } else {
+        // MongoDB: Find by MongoDB ID or RU Property ID
+        let query = {};
+        if (unitId.match(/^[0-9a-fA-F]{24}$/)) {
+          query = { $or: [{ _id: unitId }, { ruPropertyId: parseInt(unitId) }] };
+        } else {
+          query = { ruPropertyId: parseInt(unitId) };
+        }
+        
+        unit = await Unit.findOne(query).lean();
+      }
       
       if (!unit) {
         return res.status(404).json({
@@ -112,7 +149,7 @@ class UnitController {
           success: true,
           data: {
             unit: {
-              id: unit._id,
+              id: unit._id || unit.id,
               name: unit.name,
               ruPropertyId: unit.ruPropertyId
             },
