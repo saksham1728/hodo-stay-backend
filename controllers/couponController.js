@@ -7,12 +7,13 @@ const MongooseCouponUsage = require('../models/CouponUsage');
 
 // Supabase repositories (new)
 const couponRepository = require('../repositories/couponRepository');
+const couponUsageRepository = require('../repositories/couponUsageRepository');
 
 const couponService = require('../services/couponService');
 
 // Adapters to use either MongoDB or Supabase
 const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
-const CouponUsage = MongooseCouponUsage; // CouponUsage not migrated yet (analytics only)
+const CouponUsage = USE_SUPABASE ? couponUsageRepository : MongooseCouponUsage;
 
 // Validate coupon
 exports.validateCoupon = async (req, res) => {
@@ -205,10 +206,23 @@ exports.getCoupon = async (req, res) => {
       });
     }
 
-    // Get usage statistics (only for MongoDB for now)
-    let usageStats = [{ totalUsage: 0, totalDiscount: 0, totalRevenue: 0 }];
-    if (!USE_SUPABASE) {
-      usageStats = await CouponUsage.aggregate([
+    // Get usage statistics
+    let stats = { totalUsage: 0, totalDiscount: 0, totalRevenue: 0 };
+    
+    if (USE_SUPABASE) {
+      const couponStats = await CouponUsage.getCouponStats(coupon.id || coupon._id);
+      const usages = await CouponUsage.find({ couponId: coupon.id || coupon._id });
+      const totalRevenue = usages.reduce((sum, u) => sum + parseFloat(u.finalPrice), 0);
+      
+      stats = {
+        totalUsage: couponStats.totalUsage,
+        totalDiscount: couponStats.totalDiscount,
+        totalRevenue: totalRevenue,
+        uniqueUsers: couponStats.uniqueUsers,
+        avgDiscount: couponStats.averageDiscount
+      };
+    } else {
+      const usageStats = await CouponUsage.aggregate([
         { $match: { couponId: coupon._id } },
         {
           $group: {
@@ -219,13 +233,14 @@ exports.getCoupon = async (req, res) => {
           }
         }
       ]);
+      stats = usageStats[0] || stats;
     }
 
     res.json({
       success: true,
       data: {
         coupon,
-        stats: usageStats[0] || { totalUsage: 0, totalDiscount: 0, totalRevenue: 0 }
+        stats
       }
     });
   } catch (error) {
@@ -368,43 +383,98 @@ exports.getCouponAnalytics = async (req, res) => {
   try {
     const { couponId, startDate, endDate } = req.query;
 
-    const matchStage = {};
-    if (couponId) matchStage.couponId = mongoose.Types.ObjectId(couponId);
-    if (startDate || endDate) {
-      matchStage.appliedAt = {};
-      if (startDate) matchStage.appliedAt.$gte = new Date(startDate);
-      if (endDate) matchStage.appliedAt.$lte = new Date(endDate);
+    if (USE_SUPABASE) {
+      // Build query for Supabase
+      const query = {};
+      if (couponId) query.couponId = couponId;
+      if (startDate || endDate) {
+        query.appliedAt = {};
+        if (startDate) query.appliedAt.$gte = new Date(startDate);
+        if (endDate) query.appliedAt.$lte = new Date(endDate);
+      }
+
+      // Get all usage records
+      const usages = await CouponUsage.find(query);
+
+      // Group by coupon code
+      const analyticsMap = {};
+      usages.forEach(usage => {
+        const code = usage.couponCode;
+        if (!analyticsMap[code]) {
+          analyticsMap[code] = {
+            couponCode: code,
+            totalUsage: 0,
+            totalDiscount: 0,
+            totalRevenue: 0,
+            discounts: [],
+            uniqueUsers: new Set()
+          };
+        }
+        
+        analyticsMap[code].totalUsage++;
+        analyticsMap[code].totalDiscount += parseFloat(usage.discountAmount);
+        analyticsMap[code].totalRevenue += parseFloat(usage.finalPrice);
+        analyticsMap[code].discounts.push(parseFloat(usage.discountAmount));
+        analyticsMap[code].uniqueUsers.add(usage.userEmail);
+      });
+
+      // Convert to array and calculate averages
+      const analytics = Object.values(analyticsMap).map(item => ({
+        couponCode: item.couponCode,
+        totalUsage: item.totalUsage,
+        totalDiscount: item.totalDiscount,
+        totalRevenue: item.totalRevenue,
+        avgDiscount: item.discounts.reduce((a, b) => a + b, 0) / item.discounts.length,
+        uniqueUsers: item.uniqueUsers.size
+      }));
+
+      // Sort by total usage
+      analytics.sort((a, b) => b.totalUsage - a.totalUsage);
+
+      res.json({
+        success: true,
+        data: analytics
+      });
+    } else {
+      // MongoDB aggregation
+      const matchStage = {};
+      if (couponId) matchStage.couponId = mongoose.Types.ObjectId(couponId);
+      if (startDate || endDate) {
+        matchStage.appliedAt = {};
+        if (startDate) matchStage.appliedAt.$gte = new Date(startDate);
+        if (endDate) matchStage.appliedAt.$lte = new Date(endDate);
+      }
+
+      const analytics = await CouponUsage.aggregate([
+        { $match: matchStage },
+        {
+          $group: {
+            _id: '$couponCode',
+            totalUsage: { $sum: 1 },
+            totalDiscount: { $sum: '$discountAmount' },
+            totalRevenue: { $sum: '$finalPrice' },
+            avgDiscount: { $avg: '$discountAmount' },
+            uniqueUsers: { $addToSet: '$userEmail' }
+          }
+        },
+        {
+          $project: {
+            couponCode: '$_id',
+            totalUsage: 1,
+            totalDiscount: 1,
+            totalRevenue: 1,
+            avgDiscount: 1,
+            uniqueUsers: { $size: '$uniqueUsers' }
+          }
+        },
+        { $sort: { totalUsage: -1 } }
+      ]);
+
+      res.json({
+        success: true,
+        data: analytics
+      });
     }
-
-    const analytics = await CouponUsage.aggregate([
-      { $match: matchStage },
-      {
-        $group: {
-          _id: '$couponCode',
-          totalUsage: { $sum: 1 },
-          totalDiscount: { $sum: '$discountAmount' },
-          totalRevenue: { $sum: '$finalPrice' },
-          avgDiscount: { $avg: '$discountAmount' },
-          uniqueUsers: { $addToSet: '$userEmail' }
-        }
-      },
-      {
-        $project: {
-          couponCode: '$_id',
-          totalUsage: 1,
-          totalDiscount: 1,
-          totalRevenue: 1,
-          avgDiscount: 1,
-          uniqueUsers: { $size: '$uniqueUsers' }
-        }
-      },
-      { $sort: { totalUsage: -1 } }
-    ]);
-
-    res.json({
-      success: true,
-      data: analytics
-    });
   } catch (error) {
     console.error('Get coupon analytics error:', error);
     res.status(500).json({

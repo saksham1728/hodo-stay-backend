@@ -9,10 +9,12 @@ const MongooseCouponUsage = require('../models/CouponUsage');
 // Supabase repositories (new)
 const couponRepository = require('../repositories/couponRepository');
 const bookingRepository = require('../repositories/bookingRepository');
+const couponUsageRepository = require('../repositories/couponUsageRepository');
 
 // Adapters to use either MongoDB or Supabase
 const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
 const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
+const CouponUsage = USE_SUPABASE ? couponUsageRepository : MongooseCouponUsage;
 
 class CouponService {
   /**
@@ -223,7 +225,7 @@ class CouponService {
    * Apply coupon to booking (called during booking creation)
    */
   async applyCoupon(couponCode, bookingData, session = null) {
-    const { email, phone, propertyId, city, bookingAmount, nights, bookingId } = bookingData;
+    const { email, phone, propertyId, propertyName, city, bookingAmount, nights, checkIn, checkOut, bookingId } = bookingData;
 
     // Validate again (never trust client)
     const validation = await this.validateCoupon(couponCode, {
@@ -280,9 +282,44 @@ class CouponService {
       await coupon.save({ session });
     }
 
-    // Create usage record for analytics (only for MongoDB for now)
-    if (!USE_SUPABASE) {
-      const CouponUsage = MongooseCouponUsage;
+    // Create usage record for analytics
+    if (USE_SUPABASE) {
+      console.log('📝 Creating coupon usage record with data:', {
+        couponId: coupon.id || coupon._id,
+        couponCode: coupon.code,
+        bookingId,
+        userEmail: email?.toLowerCase(),
+        userPhone: phone,
+        originalPrice: bookingAmount,
+        discountAmount: validation.discount.amount,
+        finalPrice: validation.discount.finalPrice,
+        propertyId,
+        propertyName,
+        city,
+        checkIn,
+        checkOut,
+        nights
+      });
+      
+      await CouponUsage.create({
+        couponId: coupon.id || coupon._id,
+        couponCode: coupon.code,
+        bookingId,
+        userEmail: email?.toLowerCase(),
+        userPhone: phone,
+        originalPrice: bookingAmount,
+        discountAmount: validation.discount.amount,
+        finalPrice: validation.discount.finalPrice,
+        propertyId,
+        propertyName,
+        city,
+        checkIn,
+        checkOut,
+        nights
+      });
+      
+      console.log('✅ Coupon usage record created successfully');
+    } else {
       const usage = new CouponUsage({
         couponId: coupon._id,
         couponCode: coupon.code,

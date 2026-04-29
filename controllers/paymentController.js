@@ -9,6 +9,7 @@ const MongooseCoupon = require('../models/Coupon');
 const bookingRepository = require('../repositories/bookingRepository');
 const unitRepository = require('../repositories/unitRepository');
 const couponRepository = require('../repositories/couponRepository');
+const propertyDailyCacheRepository = require('../repositories/propertyDailyCacheRepository');
 
 const couponService = require('../services/couponService');
 const ruClient = require('../utils/ruClient');
@@ -25,6 +26,7 @@ const xmlParser = new XMLParser();
 const Booking = USE_SUPABASE ? bookingRepository : MongooseBooking;
 const Unit = USE_SUPABASE ? unitRepository : MongooseUnit;
 const Coupon = USE_SUPABASE ? couponRepository : MongooseCoupon;
+const PropertyDailyCache = USE_SUPABASE ? propertyDailyCacheRepository : require('../models/PropertyDailyCache');
 
 class PaymentController {
   // Create Razorpay order
@@ -58,7 +60,6 @@ class PaymentController {
 
       // CRITICAL: Final availability check before creating payment order
       console.log('🔍 Backend: Performing final availability check before payment...');
-      const PropertyDailyCache = require('../models/PropertyDailyCache');
       
       const checkInDate = new Date(bookingData.checkIn);
       const checkOutDate = new Date(bookingData.checkOut);
@@ -440,9 +441,12 @@ class PaymentController {
                 email: bookingData.guestInfo.email,
                 phone: bookingData.guestInfo.phone,
                 propertyId: bookingData.unitId,
+                propertyName: unit.name,
                 city: unit.city,
                 bookingAmount: originalPrice,
                 nights: nights,
+                checkIn: bookingData.checkIn,
+                checkOut: bookingData.checkOut,
                 bookingId: booking._id || booking.id
               },
               session
@@ -450,6 +454,7 @@ class PaymentController {
             console.log('✅ Coupon usage recorded');
           } catch (couponError) {
             console.error('⚠️  Coupon usage tracking failed:', couponError.message);
+            console.error('Full error:', couponError);
             // Don't fail booking if tracking fails
           }
         }
@@ -549,7 +554,6 @@ class PaymentController {
             console.log('✅ Reservation created in RU:', ruReservationId);
 
             // Update cache to mark dates as unavailable
-            const PropertyDailyCache = require('../models/PropertyDailyCache');
             await PropertyDailyCache.updateMany(
               {
                 unitId: unit._id,

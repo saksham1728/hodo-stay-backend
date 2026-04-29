@@ -1,4 +1,4 @@
-const supabase = require('../db/supabaseClient');
+const { getSupabaseClient } = require('../db/supabaseClient');
 const { transformUnit } = require('../utils/responseTransformers');
 
 /**
@@ -11,13 +11,20 @@ class UnitRepository {
   }
 
   /**
+   * Get Supabase client instance
+   */
+  _getClient() {
+    return getSupabaseClient();
+  }
+
+  /**
    * Find unit by ID
    * @param {string} id - Unit ID
    * @param {Object} options - Query options (populate, select)
    * @returns {Promise<Object|null>}
    */
   async findById(id, options = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select(this._buildSelectString(options))
       .eq('id', id)
@@ -40,7 +47,7 @@ class UnitRepository {
    * @returns {Promise<Object|null>}
    */
   async findOne(conditions, options = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select(this._buildSelectString(options));
 
@@ -64,7 +71,7 @@ class UnitRepository {
    * @returns {Promise<Array>}
    */
   async find(conditions = {}, options = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select(this._buildSelectString(options));
 
@@ -103,7 +110,7 @@ class UnitRepository {
   async create(unitData) {
     const snakeCaseData = this._toSnakeCaseObject(unitData);
 
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .insert(snakeCaseData)
       .select()
@@ -125,7 +132,7 @@ class UnitRepository {
   async findByIdAndUpdate(id, updateData, options = {}) {
     const snakeCaseData = this._toSnakeCaseObject(updateData);
 
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .update(snakeCaseData)
       .eq('id', id)
@@ -161,7 +168,7 @@ class UnitRepository {
    * @returns {Promise<Object|null>}
    */
   async findByIdAndDelete(id) {
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .delete()
       .eq('id', id)
@@ -182,7 +189,7 @@ class UnitRepository {
    * @returns {Promise<number>}
    */
   async countDocuments(conditions = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select('id', { count: 'exact', head: true });
 
@@ -236,29 +243,46 @@ class UnitRepository {
     for (const [key, value] of Object.entries(conditions)) {
       const snakeKey = this._toSnakeCase(key);
 
-      if (value === null) {
+      if (value === null || value === 'null') {
+        // Handle null values (both actual null and string "null")
         query = query.is(snakeKey, null);
       } else if (typeof value === 'object' && !Array.isArray(value)) {
-        // Handle operators like $gte, $lte, $in, etc.
+        // Handle operators like $gte, $lte, $in, $ne, etc.
         for (const [op, opValue] of Object.entries(value)) {
+          // Normalize null values
+          const normalizedValue = (opValue === 'null' || opValue === null) ? null : opValue;
+          
           switch (op) {
             case '$gte':
-              query = query.gte(snakeKey, opValue);
+              query = query.gte(snakeKey, normalizedValue);
               break;
             case '$gt':
-              query = query.gt(snakeKey, opValue);
+              query = query.gt(snakeKey, normalizedValue);
               break;
             case '$lte':
-              query = query.lte(snakeKey, opValue);
+              query = query.lte(snakeKey, normalizedValue);
               break;
             case '$lt':
-              query = query.lt(snakeKey, opValue);
+              query = query.lt(snakeKey, normalizedValue);
               break;
             case '$ne':
-              query = query.neq(snakeKey, opValue);
+              // For $ne with null, check if field is not null
+              if (normalizedValue === null) {
+                query = query.not(snakeKey, 'is', null);
+              } else {
+                query = query.neq(snakeKey, normalizedValue);
+              }
               break;
             case '$in':
-              query = query.in(snakeKey, opValue);
+              query = query.in(snakeKey, normalizedValue);
+              break;
+            case '$exists':
+              // MongoDB $exists operator - check if field is not null
+              if (opValue) {
+                query = query.not(snakeKey, 'is', null);
+              } else {
+                query = query.is(snakeKey, null);
+              }
               break;
             default:
               query = query.eq(snakeKey, value);

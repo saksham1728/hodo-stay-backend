@@ -46,52 +46,109 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  maxPoolSize: 10,
-  serverSelectionTimeoutMS: 30000,
-  socketTimeoutMS: 60000,
-  connectTimeoutMS: 30000
-})
-.then(async () => {
-  console.log('✅ MongoDB connected successfully');
-  console.log(`📍 Database: ${mongoose.connection.name}`);
+const USE_SUPABASE = process.env.DATABASE_TYPE === 'supabase';
+
+if (USE_SUPABASE) {
+  // Using Supabase - Initialize and test connection
+  console.log('🔄 Initializing Supabase connection...');
+  const { initializeSupabase, testConnection } = require('./db/supabaseClient');
   
-  // Check cache and warm if needed
-  const PropertyDailyCache = require('./models/PropertyDailyCache');
-  const cacheCount = await PropertyDailyCache.countDocuments();
+  initializeSupabase();
   
-  if (cacheCount === 0) {
-    console.log('🔥 Cache is empty. Running initial sync...');
-    const propertyCacheSync = require('./services/propertyCacheSync');
-    try {
-      await propertyCacheSync.syncAllUnits();
-      console.log('✅ Initial cache sync completed');
-    } catch (error) {
-      console.error('⚠️  Initial cache sync failed:', error.message);
+  testConnection().then(async (connected) => {
+    if (connected) {
+      console.log('✅ Supabase connected successfully');
+      
+      // Check cache count
+      const propertyDailyCacheRepository = require('./repositories/propertyDailyCacheRepository');
+      const cacheRecords = await propertyDailyCacheRepository.find({});
+      const cacheCount = cacheRecords.length;
+      
+      if (cacheCount === 0) {
+        console.log('🔥 Cache is empty. Running initial sync...');
+        const propertyCacheSync = require('./services/propertyCacheSync');
+        try {
+          await propertyCacheSync.syncAllUnits();
+          console.log('✅ Initial cache sync completed');
+        } catch (error) {
+          console.error('⚠️  Initial cache sync failed:', error.message);
+        }
+      } else {
+        console.log(`📊 Cache has ${cacheCount} records`);
+      }
+      
+      // Start daily cache sync job
+      const { startDailySyncJob } = require('./jobs/dailyCacheSync');
+      global.cronJobInfo = startDailySyncJob();
+    } else {
+      console.error('❌ Supabase connection failed');
+      process.exit(1);
     }
-  } else {
-    console.log(`📊 Cache has ${cacheCount} records`);
+  }).catch(err => {
+    console.error('❌ Supabase initialization error:', err);
+    process.exit(1);
+  });
+  
+} else {
+  // Using MongoDB (Legacy)
+  if (!process.env.MONGODB_URI) {
+    console.error('❌ MONGODB_URI not found in environment variables');
+    console.error('   Please set DATABASE_TYPE=supabase to use Supabase instead');
+    process.exit(1);
   }
   
-  // Start daily cache sync job
-  const { startDailySyncJob } = require('./jobs/dailyCacheSync');
-  global.cronJobInfo = startDailySyncJob();
-})
-.catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
-  process.exit(1);
-});
+  mongoose.connect(process.env.MONGODB_URI, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 60000,
+    connectTimeoutMS: 30000
+  })
+  .then(async () => {
+    console.log('✅ MongoDB connected successfully');
+    console.log(`📍 Database: ${mongoose.connection.name}`);
+    
+    // Check cache and warm if needed
+    const PropertyDailyCache = require('./models/PropertyDailyCache');
+    const cacheCount = await PropertyDailyCache.countDocuments();
+    
+    if (cacheCount === 0) {
+      console.log('🔥 Cache is empty. Running initial sync...');
+      const propertyCacheSync = require('./services/propertyCacheSync');
+      try {
+        await propertyCacheSync.syncAllUnits();
+        console.log('✅ Initial cache sync completed');
+      } catch (error) {
+        console.error('⚠️  Initial cache sync failed:', error.message);
+      }
+    } else {
+      console.log(`📊 Cache has ${cacheCount} records`);
+    }
+    
+    // Start daily cache sync job
+    const { startDailySyncJob } = require('./jobs/dailyCacheSync');
+    global.cronJobInfo = startDailySyncJob();
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
+  });
+}
 
 // Health check route
 app.get('/health', (req, res) => {
   // Optional: Uncomment to see keep-alive pings in logs
   console.log('💓 Health check ping');
   
+  const dbStatus = USE_SUPABASE 
+    ? 'supabase' 
+    : (mongoose.connection.readyState === 1 ? 'mongodb-connected' : 'mongodb-disconnected');
+  
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    database: dbStatus,
+    databaseType: process.env.DATABASE_TYPE || 'mongodb',
     version: '2.0.0'
   });
 });

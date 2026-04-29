@@ -1,0 +1,633 @@
+[
+  {
+    "_id": "69bcd4daae13231af460bfce",
+    "slug": "hodo-stays-hsr-layout",
+    "name": "Hodo Stays HSR Layout",
+    "title": "Hodo Stays HSR Layout",
+    "subTitle": "Modern Serviced Apartments in HSR Layout",
+    "description": "Welcome to Hodo Stays, located in the heart of HSR Layout, Bangalore. Our modern apartments are perfect for both business and leisure travellers. Enjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping.",
+    "location": {
+      "addressLine1": "17th A Main Road",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "560102",
+      "latitude": 12.9073812,
+      "longitude": 77.6417597
+    },
+    "legacyLocation": {
+      "address": "17th A Main Road, HSR Layout",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "zipCode": "560102",
+      "country": "India",
+      "coordinates": {
+        "latitude": 12.9073812,
+        "longitude": 77.6417597
+      }
+    },
+    "heroImage": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719866879578.jpg",
+    "highlights": [
+      "High-speed WiFi",
+      "Fully equipped kitchen",
+      "Daily housekeeping",
+      "AC in all rooms",
+      "Smart TV",
+      "Lift access",
+      "Ground-level parking",
+      "Rooftop community area"
+    ],
+    "amenities": [
+      {
+        "id": "wifi",
+        "name": "High-Speed WiFi",
+        "icon": "wifi",
+        "category": "general"
+      },
+      {
+        "id": "ac",
+        "name": "Air Conditioning",
+        "icon": "ac",
+        "category": "general"
+      },
+      {
+        "id": "tv",
+        "name": "Smart TV",
+        "icon": "tv",
+        "category": "entertainment"
+      },
+      {
+        "id": "kitchen",
+        "name": "Fully Equipped Kitchen",
+        "icon": "kitchen",
+        "category": "kitchen"
+      },
+      {
+        "id": "parking",
+        "name": "Free Parking",
+        "icon": "parking",
+        "category": "parking"
+      },
+      {
+        "id": "housekeeping",
+        "name": "Daily Housekeeping",
+        "icon": "cleaning",
+        "category": "general"
+      }
+    ],
+    "legacyAmenities": [],
+    "seo": {
+      "metaTitle": "Hodo Stays HSR Layout - Modern Serviced Apartments in Bangalore",
+      "metaDescription": "Book your stay at Hodo Stays HSR Layout. Modern serviced apartments with high-speed WiFi, fully equipped kitchen, and daily housekeeping.",
+      "keywords": [
+        "serviced apartments hsr layout",
+        "hodo stays",
+        "bangalore accommodation",
+        "hsr layout hotels"
+      ]
+    },
+    "totalUnits": 10,
+    "isActive": true,
+    "gallery": [
+      {
+        "id": "hodo-stays-hsr-layout-img-1",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719866879578.jpg",
+        "altText": "Hodo Stays HSR Layout - Exterior",
+        "type": "exterior",
+        "order": 1
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-22",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894211/638678093089664549.jpg",
+        "altText": "Hodo Stays HSR Layout - Exterior",
+        "type": "exterior",
+        "order": 2
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-42",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894213/638678127957756093.jpg",
+        "altText": "Hodo Stays HSR Layout - Exterior",
+        "type": "exterior",
+        "order": 3
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-2",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719801956606.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 4
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-3",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719807461581.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 5
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-4",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719814961765.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 6
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-5",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719819649220.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 7
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-6",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719824805592.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 8
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-7",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719832171768.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 9
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-8",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719837484410.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 10
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-9",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719844359440.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 11
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-10",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721402348839.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 12
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-11",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721385807641.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 13
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-12",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719848734504.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 14
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-13",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719855152505.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 15
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-14",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719860933885.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 16
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-15",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719872347982.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 17
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-16",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679719877356180.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 18
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-17",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721382057504.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 19
+      },
+      {
+        "id": "hodo-stays-hsr-layout-img-18",
+        "url": "https://dwe6atvmvow8k.cloudfront.net/ru/725503/3894210/638679721394815124.jpg",
+        "altText": "Hodo Stays HSR Layout - Bedroom",
+        "type": "bedroom",
+        "order": 20
+      }
+    ],
+    "images": [
+      {
+        "id": "hsr-img-001",
+        "url": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
+        "altText": "HSR Layout Building Exterior",
+        "type": "exterior",
+        "order": 1
+      },
+      {
+        "id": "hsr-img-002",
+        "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
+        "altText": "HSR Layout Living Room",
+        "type": "living",
+        "order": 2
+      },
+      {
+        "id": "hsr-img-003",
+        "url": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+        "altText": "HSR Layout Bedroom",
+        "type": "bedroom",
+        "order": 3
+      },
+      {
+        "id": "hsr-img-004",
+        "url": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800",
+        "altText": "HSR Layout Kitchen",
+        "type": "kitchen",
+        "order": 4
+      },
+      {
+        "id": "hsr-img-005",
+        "url": "https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800",
+        "altText": "HSR Layout Common Area",
+        "type": "common",
+        "order": 5
+      },
+      {
+        "id": "hsr-img-006",
+        "url": "https://images.unsplash.com/photo-1556912167-f556f1f39faa?w=800",
+        "altText": "HSR Layout Bathroom",
+        "type": "bathroom",
+        "order": 6
+      },
+      {
+        "id": "hsr-img-007",
+        "url": "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800",
+        "altText": "HSR Layout View",
+        "type": "other",
+        "order": 7
+      },
+      {
+        "id": "hsr-img-008",
+        "url": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
+        "altText": "HSR Layout Interior",
+        "type": "other",
+        "order": 8
+      }
+    ],
+    "accessibility": [],
+    "policies": [],
+    "reviewSummary": [],
+    "reviews": [],
+    "roomTypes": [],
+    "createdAt": "2026-03-20T05:02:18.512Z",
+    "updatedAt": "2026-03-30T19:06:43.275Z",
+    "__v": 3
+  },
+  {
+    "_id": "69bcd4daae13231af460bfd4",
+    "slug": "hodo-stays-jp-nagar",
+    "name": "Hodo Stays JP Nagar",
+    "title": "Hodo Stays JP Nagar",
+    "subTitle": "Modern Serviced Apartments in JP Nagar",
+    "description": "Welcome to Hodo Stays JP Nagar, located in the heart of JP Nagar, Bangalore. Our modern apartments are perfect for both business and leisure travellers. Enjoy high-speed WiFi, TV, AC, a fully equipped kitchen, and daily housekeeping.",
+    "location": {
+      "addressLine1": "JP Nagar",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "560078",
+      "latitude": 12.9073812,
+      "longitude": 77.6417597
+    },
+    "legacyLocation": {
+      "address": "JP Nagar, Bangalore",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "zipCode": "560078",
+      "country": "India",
+      "coordinates": {
+        "latitude": 12.9073812,
+        "longitude": 77.6417597
+      }
+    },
+    "heroImage": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09998.webp",
+    "highlights": [
+      "High-speed WiFi",
+      "Fully equipped kitchen",
+      "Daily housekeeping",
+      "AC in all rooms",
+      "Smart TV",
+      "Lift access",
+      "Ground-level parking",
+      "Rooftop community area"
+    ],
+    "amenities": [
+      {
+        "id": "wifi",
+        "name": "High-Speed WiFi",
+        "icon": "wifi",
+        "category": "general"
+      },
+      {
+        "id": "ac",
+        "name": "Air Conditioning",
+        "icon": "ac",
+        "category": "general"
+      },
+      {
+        "id": "tv",
+        "name": "Smart TV",
+        "icon": "tv",
+        "category": "entertainment"
+      },
+      {
+        "id": "kitchen",
+        "name": "Fully Equipped Kitchen",
+        "icon": "kitchen",
+        "category": "kitchen"
+      },
+      {
+        "id": "parking",
+        "name": "Free Parking",
+        "icon": "parking",
+        "category": "parking"
+      },
+      {
+        "id": "housekeeping",
+        "name": "Daily Housekeeping",
+        "icon": "cleaning",
+        "category": "general"
+      }
+    ],
+    "legacyAmenities": [],
+    "seo": {
+      "metaTitle": "Hodo Stays JP Nagar - Modern Serviced Apartments in Bangalore",
+      "metaDescription": "Book your stay at Hodo Stays JP Nagar. Modern serviced apartments with high-speed WiFi, fully equipped kitchen, and daily housekeeping.",
+      "keywords": [
+        "serviced apartments jp nagar",
+        "hodo stays",
+        "bangalore accommodation",
+        "jp nagar hotels"
+      ]
+    },
+    "totalUnits": 9,
+    "isActive": true,
+    "gallery": [
+      {
+        "id": "jp-nagar-img-1",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09998.webp",
+        "altText": "Hodo Stays JP Nagar - Exterior",
+        "type": "exterior",
+        "order": 1
+      },
+      {
+        "id": "jp-nagar-img-2",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09996.webp",
+        "altText": "Hodo Stays JP Nagar - Exterior",
+        "type": "exterior",
+        "order": 2
+      },
+      {
+        "id": "jp-nagar-img-3",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09984.webp",
+        "altText": "Hodo Stays JP Nagar - Exterior",
+        "type": "exterior",
+        "order": 3
+      },
+      {
+        "id": "jp-nagar-img-4",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09974.webp",
+        "altText": "Hodo Stays JP Nagar - Exterior",
+        "type": "exterior",
+        "order": 4
+      },
+      {
+        "id": "jp-nagar-img-5",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09969.webp",
+        "altText": "Hodo Stays JP Nagar - Exterior",
+        "type": "exterior",
+        "order": 5
+      },
+      {
+        "id": "jp-nagar-img-6",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09968.webp",
+        "altText": "Hodo Stays JP Nagar - Living",
+        "type": "living",
+        "order": 6
+      },
+      {
+        "id": "jp-nagar-img-7",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09960.webp",
+        "altText": "Hodo Stays JP Nagar - Living",
+        "type": "living",
+        "order": 7
+      },
+      {
+        "id": "jp-nagar-img-8",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09958.webp",
+        "altText": "Hodo Stays JP Nagar - Living",
+        "type": "living",
+        "order": 8
+      },
+      {
+        "id": "jp-nagar-img-9",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09949.webp",
+        "altText": "Hodo Stays JP Nagar - Living",
+        "type": "living",
+        "order": 9
+      },
+      {
+        "id": "jp-nagar-img-10",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC09946.webp",
+        "altText": "Hodo Stays JP Nagar - Living",
+        "type": "living",
+        "order": 10
+      },
+      {
+        "id": "jp-nagar-img-11",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01355.webp",
+        "altText": "Hodo Stays JP Nagar - Bedroom",
+        "type": "bedroom",
+        "order": 11
+      },
+      {
+        "id": "jp-nagar-img-12",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01349.webp",
+        "altText": "Hodo Stays JP Nagar - Bedroom",
+        "type": "bedroom",
+        "order": 12
+      },
+      {
+        "id": "jp-nagar-img-13",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01338.webp",
+        "altText": "Hodo Stays JP Nagar - Bedroom",
+        "type": "bedroom",
+        "order": 13
+      },
+      {
+        "id": "jp-nagar-img-14",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01337.webp",
+        "altText": "Hodo Stays JP Nagar - Bedroom",
+        "type": "bedroom",
+        "order": 14
+      },
+      {
+        "id": "jp-nagar-img-15",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01332.webp",
+        "altText": "Hodo Stays JP Nagar - Bedroom",
+        "type": "bedroom",
+        "order": 15
+      },
+      {
+        "id": "jp-nagar-img-16",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC01326.webp",
+        "altText": "Hodo Stays JP Nagar - Kitchen",
+        "type": "kitchen",
+        "order": 16
+      },
+      {
+        "id": "jp-nagar-img-17",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00059.webp",
+        "altText": "Hodo Stays JP Nagar - Kitchen",
+        "type": "kitchen",
+        "order": 17
+      },
+      {
+        "id": "jp-nagar-img-18",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00052.webp",
+        "altText": "Hodo Stays JP Nagar - Kitchen",
+        "type": "kitchen",
+        "order": 18
+      },
+      {
+        "id": "jp-nagar-img-19",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00050.webp",
+        "altText": "Hodo Stays JP Nagar - Kitchen",
+        "type": "kitchen",
+        "order": 19
+      },
+      {
+        "id": "jp-nagar-img-20",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00029.webp",
+        "altText": "Hodo Stays JP Nagar - Kitchen",
+        "type": "kitchen",
+        "order": 20
+      },
+      {
+        "id": "jp-nagar-img-21",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00021.webp",
+        "altText": "Hodo Stays JP Nagar - Bathroom",
+        "type": "bathroom",
+        "order": 21
+      },
+      {
+        "id": "jp-nagar-img-22",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00018.webp",
+        "altText": "Hodo Stays JP Nagar - Bathroom",
+        "type": "bathroom",
+        "order": 22
+      },
+      {
+        "id": "jp-nagar-img-23",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00013.webp",
+        "altText": "Hodo Stays JP Nagar - Bathroom",
+        "type": "bathroom",
+        "order": 23
+      },
+      {
+        "id": "jp-nagar-img-24",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00011.webp",
+        "altText": "Hodo Stays JP Nagar - Bathroom",
+        "type": "bathroom",
+        "order": 24
+      },
+      {
+        "id": "jp-nagar-img-25",
+        "url": "https://jtdwarqrmaqtnqztmkyz.supabase.co/storage/v1/object/public/jp-nagar-images//DSC00002.webp",
+        "altText": "Hodo Stays JP Nagar - Bathroom",
+        "type": "bathroom",
+        "order": 25
+      }
+    ],
+    "images": [
+      {
+        "id": "jp-img-001",
+        "url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800",
+        "altText": "JP Nagar Building Exterior",
+        "type": "exterior",
+        "order": 1
+      },
+      {
+        "id": "jp-img-002",
+        "url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800",
+        "altText": "JP Nagar Living Room",
+        "type": "living",
+        "order": 2
+      },
+      {
+        "id": "jp-img-003",
+        "url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800",
+        "altText": "JP Nagar Bedroom",
+        "type": "bedroom",
+        "order": 3
+      },
+      {
+        "id": "jp-img-004",
+        "url": "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=800",
+        "altText": "JP Nagar Kitchen",
+        "type": "kitchen",
+        "order": 4
+      },
+      {
+        "id": "jp-img-005",
+        "url": "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=800",
+        "altText": "JP Nagar Common Area",
+        "type": "common",
+        "order": 5
+      },
+      {
+        "id": "jp-img-006",
+        "url": "https://images.unsplash.com/photo-1556912998-c57cc6b63cd7?w=800",
+        "altText": "JP Nagar Bathroom",
+        "type": "bathroom",
+        "order": 6
+      },
+      {
+        "id": "jp-img-007",
+        "url": "https://images.unsplash.com/photo-1556909114-4727aa1f0b5f?w=800",
+        "altText": "JP Nagar View",
+        "type": "other",
+        "order": 7
+      },
+      {
+        "id": "jp-img-008",
+        "url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800",
+        "altText": "JP Nagar Interior",
+        "type": "other",
+        "order": 8
+      }
+    ],
+    "accessibility": [],
+    "policies": [],
+    "reviewSummary": [],
+    "reviews": [],
+    "roomTypes": [],
+    "createdAt": "2026-03-20T05:02:18.708Z",
+    "updatedAt": "2026-03-31T16:24:31.107Z",
+    "__v": 3
+  }
+]

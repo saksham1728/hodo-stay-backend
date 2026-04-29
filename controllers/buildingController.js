@@ -427,7 +427,10 @@ class BuildingController {
       }
 
       // Check pricing for ALL available units using CACHE
-      const PropertyDailyCache = require('../models/PropertyDailyCache');
+      const USE_SUPABASE_CACHE = process.env.DATABASE_TYPE === 'supabase';
+      const PropertyDailyCache = USE_SUPABASE_CACHE 
+        ? require('../repositories/propertyDailyCacheRepository')
+        : require('../models/PropertyDailyCache');
       const { applyMarkup, calculateMarkupAmount, getMarkupPercentage } = require('../utils/pricingMarkup');
       
       const checkInDate = new Date(checkIn);
@@ -448,7 +451,7 @@ class BuildingController {
               $gte: checkInDate,
               $lt: checkOutDate
             }
-          }).sort({ date: 1 });
+          }, { sort: { date: 1 } });
 
           // Check if we have data for all nights
           if (cachedDays.length !== nights) {

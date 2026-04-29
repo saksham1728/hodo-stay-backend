@@ -1,4 +1,4 @@
-const supabase = require('../db/supabaseClient');
+const { getSupabaseClient } = require('../db/supabaseClient');
 const { transformCoupon } = require('../utils/responseTransformers');
 
 /**
@@ -11,12 +11,19 @@ class CouponRepository {
   }
 
   /**
+   * Get Supabase client instance
+   */
+  _getClient() {
+    return getSupabaseClient();
+  }
+
+  /**
    * Find coupon by ID
    * @param {string} id - Coupon ID
    * @returns {Promise<Object|null>}
    */
   async findById(id) {
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .select('*')
       .eq('id', id)
@@ -36,7 +43,7 @@ class CouponRepository {
    * @returns {Promise<Object|null>}
    */
   async findOne(conditions) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select('*');
 
@@ -60,7 +67,7 @@ class CouponRepository {
    * @returns {Promise<Array>}
    */
   async find(conditions = {}, options = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select('*');
 
@@ -99,7 +106,7 @@ class CouponRepository {
   async create(couponData) {
     const snakeCaseData = this._toSnakeCaseObject(couponData);
 
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .insert(snakeCaseData)
       .select()
@@ -121,7 +128,7 @@ class CouponRepository {
   async findByIdAndUpdate(id, updateData, options = {}) {
     const snakeCaseData = this._toSnakeCaseObject(updateData);
 
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .update(snakeCaseData)
       .eq('id', id)
@@ -157,7 +164,7 @@ class CouponRepository {
    * @returns {Promise<Object|null>}
    */
   async findByIdAndDelete(id) {
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .delete()
       .eq('id', id)
@@ -178,7 +185,7 @@ class CouponRepository {
    * @returns {Promise<number>}
    */
   async countDocuments(conditions = {}) {
-    let query = supabase
+    let query = this._getClient()
       .from(this.tableName)
       .select('id', { count: 'exact', head: true });
 
@@ -199,10 +206,16 @@ class CouponRepository {
    * @returns {Promise<Object>}
    */
   async save(coupon) {
-    if (coupon.id) {
-      return this.findByIdAndUpdate(coupon.id, coupon);
+    // Remove MongoDB-specific fields that shouldn't be sent to Supabase
+    const cleanCoupon = { ...coupon };
+    delete cleanCoupon._id;
+    delete cleanCoupon.__v;
+    
+    if (coupon.id || coupon._id) {
+      const id = coupon.id || coupon._id;
+      return this.findByIdAndUpdate(id, cleanCoupon);
     } else {
-      return this.create(coupon);
+      return this.create(cleanCoupon);
     }
   }
 
@@ -214,7 +227,7 @@ class CouponRepository {
   async findValidCoupon(code) {
     const now = new Date().toISOString();
     
-    const { data, error } = await supabase
+    const { data, error } = await this._getClient()
       .from(this.tableName)
       .select('*')
       .eq('code', code.toUpperCase())
@@ -241,29 +254,46 @@ class CouponRepository {
     for (const [key, value] of Object.entries(conditions)) {
       const snakeKey = this._toSnakeCase(key);
 
-      if (value === null) {
+      if (value === null || value === 'null') {
+        // Handle null values (both actual null and string "null")
         query = query.is(snakeKey, null);
       } else if (typeof value === 'object' && !Array.isArray(value)) {
-        // Handle operators like $gte, $lte, $in, etc.
+        // Handle operators like $gte, $lte, $in, $ne, etc.
         for (const [op, opValue] of Object.entries(value)) {
+          // Normalize null values
+          const normalizedValue = (opValue === 'null' || opValue === null) ? null : opValue;
+          
           switch (op) {
             case '$gte':
-              query = query.gte(snakeKey, opValue);
+              query = query.gte(snakeKey, normalizedValue);
               break;
             case '$gt':
-              query = query.gt(snakeKey, opValue);
+              query = query.gt(snakeKey, normalizedValue);
               break;
             case '$lte':
-              query = query.lte(snakeKey, opValue);
+              query = query.lte(snakeKey, normalizedValue);
               break;
             case '$lt':
-              query = query.lt(snakeKey, opValue);
+              query = query.lt(snakeKey, normalizedValue);
               break;
             case '$ne':
-              query = query.neq(snakeKey, opValue);
+              // For $ne with null, check if field is not null
+              if (normalizedValue === null) {
+                query = query.not(snakeKey, 'is', null);
+              } else {
+                query = query.neq(snakeKey, normalizedValue);
+              }
               break;
             case '$in':
-              query = query.in(snakeKey, opValue);
+              query = query.in(snakeKey, normalizedValue);
+              break;
+            case '$exists':
+              // MongoDB $exists operator - check if field is not null
+              if (opValue) {
+                query = query.not(snakeKey, 'is', null);
+              } else {
+                query = query.is(snakeKey, null);
+              }
               break;
             default:
               query = query.eq(snakeKey, value);

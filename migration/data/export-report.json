@@ -1,0 +1,38 @@
+{
+  "exportDate": "2026-04-23T05:05:15.057Z",
+  "duration": "1.77s",
+  "collections": [
+    {
+      "collection": "bookings",
+      "count": 130,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\bookings.json"
+    },
+    {
+      "collection": "units",
+      "count": 19,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\units.json"
+    },
+    {
+      "collection": "buildings",
+      "count": 2,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\buildings.json"
+    },
+    {
+      "collection": "users",
+      "count": 0,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\users.json"
+    },
+    {
+      "collection": "property_daily_cache",
+      "count": 4009,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\property_daily_cache.json"
+    },
+    {
+      "collection": "coupons",
+      "count": 10,
+      "filePath": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data\\coupons.json"
+    }
+  ],
+  "totalDocuments": 4170,
+  "dataDirectory": "D:\\hodo stay full\\hodo-stay-backend\\migration\\data"
+}
