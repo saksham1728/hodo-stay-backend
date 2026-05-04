@@ -113,12 +113,14 @@ function transformBooking(pgBooking) {
 
   // Add populated unit data if present
   if (pgBooking.ho_units) {
-    booking.unit = transformUnit(pgBooking.ho_units);
+    booking.unitId = transformUnit(pgBooking.ho_units);
+    booking.unit = booking.unitId; // Also set unit for compatibility
   }
 
   // Add populated building data if present
   if (pgBooking.ho_buildings) {
-    booking.building = transformBuilding(pgBooking.ho_buildings);
+    booking.buildingId = transformBuilding(pgBooking.ho_buildings);
+    booking.building = booking.buildingId; // Also set building for compatibility
   }
 
   return booking;

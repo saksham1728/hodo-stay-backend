@@ -59,7 +59,7 @@ class BookingRepository {
       if (options.populate && options.populate.includes('unitId')) {
         query = this.supabase
           .from(this.tableName)
-          .select('*, ho_units(*), ho_buildings(*)')
+          .select('*, ho_units!unit_id(*), ho_buildings!building_id(*)')
           .eq('id', id);
       }
 
@@ -93,7 +93,7 @@ class BookingRepository {
       if (options.populate) {
         supabaseQuery = this.supabase
           .from(this.tableName)
-          .select('*, ho_units(*), ho_buildings(*)');
+          .select('*, ho_units!unit_id(*), ho_buildings!building_id(*)');
       }
 
       // Apply filters
@@ -139,7 +139,7 @@ class BookingRepository {
       if (options.populate) {
         supabaseQuery = this.supabase
           .from(this.tableName)
-          .select('*, ho_units(*), ho_buildings(*)');
+          .select('*, ho_units!unit_id(*), ho_buildings!building_id(*)');
       }
 
       // Apply filters

@@ -137,16 +137,21 @@ class WebhookController {
   async processStayInfo(stayInfo, reservation, customerInfo, guestDetails) {
     try {
       console.log(`🏠 Processing PropertyID: ${stayInfo.PropertyID}`);
+      console.log(`🔍 Looking up unit with ruPropertyId: ${stayInfo.PropertyID}`);
 
       // Find unit by RU PropertyID
       const unit = await Unit.findOne({ ruPropertyId: stayInfo.PropertyID });
       
+      console.log(`📦 Unit lookup result:`, unit ? `Found: ${unit.name}` : 'NOT FOUND');
+      
       if (!unit) {
         console.error(`❌ Unit not found for PropertyID: ${stayInfo.PropertyID}`);
+        console.error(`❌ This booking will be created WITHOUT unit reference`);
+        console.error(`❌ Property will show as "N/A" in Slack notification`);
         return;
       }
 
-      console.log(`✅ Found unit: ${unit.name} (${unit._id})`);
+      console.log(`✅ Found unit: ${unit.name} (ID: ${unit._id || unit.id})`);
 
       // Parse dates
       const checkInDate = new Date(stayInfo.DateFrom);
