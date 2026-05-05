@@ -16,6 +16,10 @@ router.get('/unit/:unitId', pricingController.getUnitPricing);
 // POST /api/pricing/check-availability
 router.post('/check-availability', pricingController.checkAvailability);
 
+// Real-time availability check from Rentals United (before checkout)
+// POST /api/pricing/realtime-availability
+router.post('/realtime-availability', pricingController.checkRealtimeAvailability);
+
 // Calculate GST for a booking
 // POST /api/pricing/calculate-gst
 router.post('/calculate-gst', pricingController.calculateGST);

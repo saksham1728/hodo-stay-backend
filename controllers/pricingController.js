@@ -559,3 +559,114 @@ exports.calculateGST = async (req, res) => {
     });
   }
 };
+
+/**
+ * Check real-time availability from Rentals United API (before checkout)
+ * POST /api/pricing/realtime-availability
+ * Body: { unitId, checkIn, checkOut }
+ */
+exports.checkRealtimeAvailability = async (req, res) => {
+  try {
+    const { unitId, checkIn, checkOut } = req.body;
+
+    if (!unitId || !checkIn || !checkOut) {
+      return res.status(400).json({
+        success: false,
+        error: 'unitId, checkIn, and checkOut are required'
+      });
+    }
+
+    console.log(`🔍 Real-time availability check for unit ${unitId} from ${checkIn} to ${checkOut}`);
+
+    // Get unit to find RU Property ID
+    const unit = await Unit.findById(unitId);
+    if (!unit) {
+      return res.status(404).json({
+        success: false,
+        available: false,
+        error: 'Unit not found'
+      });
+    }
+
+    const ruPropertyId = unit.ruPropertyId || unit.ru_property_id;
+    if (!ruPropertyId) {
+      return res.status(400).json({
+        success: false,
+        available: false,
+        error: 'Unit does not have Rentals United Property ID'
+      });
+    }
+
+    console.log(`📡 Calling Rentals United API for PropertyID: ${ruPropertyId}`);
+
+    // Call Rentals United API
+    const ruClient = require('../utils/ruClient');
+    const xmlResponse = await ruClient.pullGetPropertyAvbPrice(
+      ruPropertyId,
+      checkIn,
+      checkOut
+    );
+
+    console.log(`📥 RU API Response:`, xmlResponse);
+
+    // Parse XML response
+    const { XMLParser } = require('fast-xml-parser');
+    const xmlParser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: '@_'
+    });
+    const parsed = xmlParser.parse(xmlResponse);
+
+    console.log(`📊 Parsed Response:`, JSON.stringify(parsed, null, 2));
+
+    // Check response status
+    const response = parsed.Pull_GetPropertyAvbPrice_RS;
+    
+    if (!response) {
+      throw new Error('Invalid response from Rentals United API');
+    }
+
+    // Check if property is not available
+    if (response.Status && response.Status['@_ID'] === '1') {
+      // Status ID 1 means property is not available
+      console.log(`❌ Property not available: ${response.Status}`);
+      
+      return res.json({
+        success: true,
+        available: false,
+        message: 'This property is already booked for the selected dates. Please search for a different property or choose different dates.',
+        reason: response.Status
+      });
+    }
+
+    // Check if property is available (Status ID 0 = Success)
+    if (response.Status && response.Status['@_ID'] === '0') {
+      console.log(`✅ Property is available!`);
+      
+      return res.json({
+        success: true,
+        available: true,
+        message: 'Property is available for the selected dates'
+      });
+    }
+
+    // Unknown status
+    console.log(`⚠️  Unknown status from RU API:`, response.Status);
+    
+    return res.json({
+      success: true,
+      available: false,
+      message: 'Unable to verify availability. Please try again.',
+      reason: 'Unknown response from availability service'
+    });
+
+  } catch (error) {
+    console.error('❌ Error checking real-time availability:', error);
+    res.status(500).json({
+      success: false,
+      available: false,
+      error: 'Failed to check real-time availability',
+      details: error.message
+    });
+  }
+};
