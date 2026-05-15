@@ -12,7 +12,7 @@ async function checkProperties() {
 
     // Get all units
     const { data: units, error } = await supabase
-      .from('ho_units')
+      .from('units')
       .select('id, ru_property_id, name')
       .order('ru_property_id');
 

@@ -112,14 +112,14 @@ function transformBooking(pgBooking) {
   };
 
   // Add populated unit data if present
-  if (pgBooking.ho_units) {
-    booking.unitId = transformUnit(pgBooking.ho_units);
+  if (pgBooking.units) {
+    booking.unitId = transformUnit(pgBooking.units);
     booking.unit = booking.unitId; // Also set unit for compatibility
   }
 
   // Add populated building data if present
-  if (pgBooking.ho_buildings) {
-    booking.buildingId = transformBuilding(pgBooking.ho_buildings);
+  if (pgBooking.buildings) {
+    booking.buildingId = transformBuilding(pgBooking.buildings);
     booking.building = booking.buildingId; // Also set building for compatibility
   }
 

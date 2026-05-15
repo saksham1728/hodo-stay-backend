@@ -7,7 +7,7 @@ const { transformCoupon } = require('../utils/responseTransformers');
  */
 class CouponRepository {
   constructor() {
-    this.tableName = 'ho_coupons';
+    this.tableName = 'coupons';
   }
 
   /**

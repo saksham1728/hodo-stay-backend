@@ -7,7 +7,7 @@ const { transformBuilding } = require('../utils/responseTransformers');
  */
 class BuildingRepository {
   constructor() {
-    this.tableName = 'ho_buildings';
+    this.tableName = 'buildings';
   }
 
   /**

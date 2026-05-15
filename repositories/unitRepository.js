@@ -7,7 +7,7 @@ const { transformUnit } = require('../utils/responseTransformers');
  */
 class UnitRepository {
   constructor() {
-    this.tableName = 'ho_units';
+    this.tableName = 'units';
   }
 
   /**
@@ -229,7 +229,7 @@ class UnitRepository {
       const populates = Array.isArray(options.populate) ? options.populate : [options.populate];
       
       if (populates.includes('buildingId')) {
-        selectStr += ', ho_buildings!building_id(*)';
+        selectStr += ', buildings!building_id(*)';
       }
     }
 

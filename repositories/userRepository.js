@@ -7,7 +7,7 @@ const { transformUser } = require('../utils/responseTransformers');
  */
 class UserRepository {
   constructor() {
-    this.tableName = 'ho_users';
+    this.tableName = 'users';
   }
 
   /**

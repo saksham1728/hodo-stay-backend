@@ -9,7 +9,7 @@ const { getSupabaseClient, DatabaseError, NotFoundError } = require('../db/supab
 
 class PropertyDailyCacheRepository {
   constructor() {
-    this.tableName = 'ho_property_daily_cache';
+    this.tableName = 'property_daily_cache';
     this.supabase = getSupabaseClient();
   }
 

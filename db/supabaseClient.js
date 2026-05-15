@@ -73,7 +73,7 @@ async function testConnection() {
   try {
     const client = getSupabaseClient();
     const { data, error } = await client
-      .from('ho_buildings')
+      .from('buildings')
       .select('count')
       .limit(1);
     

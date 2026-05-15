@@ -9,7 +9,7 @@ const { getSupabaseClient, DatabaseError } = require('../db/supabaseClient');
 
 class CouponUsageRepository {
   constructor() {
-    this.tableName = 'ho_coupon_usage';
+    this.tableName = 'coupon_usage';
   }
 
   /**
